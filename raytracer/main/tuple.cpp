@@ -19,14 +19,6 @@ Tuple::Tuple(qreal x, qreal y, qreal z, qreal w) :
     qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
 }
 
-Tuple Tuple::Point(qreal x, qreal y, qreal z) {
-    return Tuple(x, y, z, 1);
-}
-
-Tuple Tuple::Vector(qreal x, qreal y, qreal z) {
-    return Tuple(x, y, z, 0);
-}
-
 bool Tuple::isPoint() {
     return equal(m_w, 1.0);
 }

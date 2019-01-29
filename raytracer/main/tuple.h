@@ -10,8 +10,6 @@ public:
     Tuple(double x, double y, double z, double w);
 
 public:
-    static Tuple Point(double x, double y, double z);
-    static Tuple Vector(double x, double y, double z);
 
     Tuple operator -();
     Tuple operator +(const Tuple& tuple) const;
