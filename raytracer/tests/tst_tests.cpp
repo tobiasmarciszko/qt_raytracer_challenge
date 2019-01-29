@@ -20,6 +20,9 @@ private Q_SLOTS:
     void testSubtractVectorFromPoint();
     void testSubtractVectors();
     void testNegate();
+    void testScalarMultiply();
+    void testFractionMultiply();
+    void testScalarDivision();
 };
 
 Tests::Tests()
@@ -113,6 +116,39 @@ void Tests::testNegate()
     QVERIFY(equal(2, tuple.y()));
     QVERIFY(equal(-3, tuple.z()));
     QVERIFY(equal(4, tuple.w()));
+}
+
+void Tests::testScalarMultiply()
+{
+    Tuple a = Tuple(1, -2, 3, -4);
+    Tuple tuple = a * 3.5;
+
+    QVERIFY(equal(3.5, tuple.x()));
+    QVERIFY(equal(-7, tuple.y()));
+    QVERIFY(equal(10.5, tuple.z()));
+    QVERIFY(equal(-14, tuple.w()));
+}
+
+void Tests::testFractionMultiply()
+{
+    Tuple a = Tuple(1, -2, 3, -4);
+    Tuple tuple = a * 0.5;
+
+    QVERIFY(equal(0.5, tuple.x()));
+    QVERIFY(equal(-1, tuple.y()));
+    QVERIFY(equal(1.5, tuple.z()));
+    QVERIFY(equal(-2, tuple.w()));
+}
+
+void Tests::testScalarDivision()
+{
+    Tuple a = Tuple(1, -2, 3, -4);
+    Tuple tuple = a / 2;
+
+    QVERIFY(equal(0.5, tuple.x()));
+    QVERIFY(equal(-1, tuple.y()));
+    QVERIFY(equal(1.5, tuple.z()));
+    QVERIFY(equal(-2, tuple.w()));
 }
 
 QTEST_APPLESS_MAIN(Tests)

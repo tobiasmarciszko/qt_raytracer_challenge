@@ -46,3 +46,19 @@ Tuple Tuple::operator-(const Tuple& tuple) const {
     double w = m_w - tuple.m_w;
     return Tuple(x, y, z, w);
 }
+
+Tuple Tuple::operator*(const double& multiplier) const {
+    double x = m_x * multiplier;
+    double y = m_y * multiplier;
+    double z = m_z * multiplier;
+    double w = m_w * multiplier;
+    return Tuple(x, y, z, w);
+}
+
+Tuple Tuple::operator/(const double& divider) const {
+    double x = m_x / divider;
+    double y = m_y / divider;
+    double z = m_z / divider;
+    double w = m_w / divider;
+    return Tuple(x, y, z, w);
+}
