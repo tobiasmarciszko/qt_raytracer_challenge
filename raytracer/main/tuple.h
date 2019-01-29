@@ -15,6 +15,7 @@ public:
 
     Tuple operator -();
     Tuple operator +(const Tuple& tuple) const;
+    Tuple operator -(const Tuple& tuple) const;
 
     bool isPoint();
     bool isVector();

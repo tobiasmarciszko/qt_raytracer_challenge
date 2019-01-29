@@ -14,6 +14,9 @@ private Q_SLOTS:
     void testPoint();
     void testVector();
     void testAdd();
+    void testSubtractPoints();
+    void testSubtractVectorFromPoint();
+    void testSubtractVectors();
     void testNegate();
 };
 
@@ -53,6 +56,45 @@ void Tests::testAdd()
     QVERIFY(equal(1, a3.y()));
     QVERIFY(equal(6, a3.z()));
     QVERIFY(equal(1, a3.w()));
+}
+
+void Tests::testSubtractPoints()
+{
+    Tuple p1 = Tuple::Point(3, 2, 1);
+    Tuple p2 = Tuple::Point(5, 6, 7);
+
+    Tuple v1 = p1 - p2;
+
+    QVERIFY(v1.isVector());
+    QVERIFY(equal(-2, v1.x()));
+    QVERIFY(equal(-4, v1.y()));
+    QVERIFY(equal(-6, v1.z()));
+}
+
+void Tests::testSubtractVectorFromPoint()
+{
+    Tuple p = Tuple::Point(3, 2, 1);
+    Tuple v = Tuple::Vector(5, 6, 7);
+
+    Tuple p1 = p - v;
+
+    QVERIFY(p1.isPoint());
+    QVERIFY(equal(-2, p1.x()));
+    QVERIFY(equal(-4, p1.y()));
+    QVERIFY(equal(-6, p1.z()));
+}
+
+void Tests::testSubtractVectors()
+{
+    Tuple v1 = Tuple::Vector(3, 2, 1);
+    Tuple v2 = Tuple::Vector(5, 6, 7);
+
+    Tuple v3 = v1 - v2;
+
+    QVERIFY(v3.isVector());
+    QVERIFY(equal(-2, v3.x()));
+    QVERIFY(equal(-4, v3.y()));
+    QVERIFY(equal(-6, v3.z()));
 }
 
 void Tests::testNegate()

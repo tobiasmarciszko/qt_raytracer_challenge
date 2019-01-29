@@ -47,4 +47,10 @@ Tuple Tuple::operator+(const Tuple& tuple) const {
     return Tuple(x, y, z, w);
 }
 
-
+Tuple Tuple::operator-(const Tuple& tuple) const {
+    double x = m_x - tuple.m_x;
+    double y = m_y - tuple.m_y;
+    double z = m_z - tuple.m_z;
+    double w = m_w - tuple.m_w;
+    return Tuple(x, y, z, w);
+}
