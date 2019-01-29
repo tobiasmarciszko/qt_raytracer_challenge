@@ -28,10 +28,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         tst_tests.cpp \ 
-    ../main/tuple.cpp
+    ../main/tuple.cpp \
+    ../main/point.cpp
 
 HEADERS += \
-    ../main/tuple.h
+    ../main/tuple.h \
+    ../main/point.h
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 INCLUDEPATH += ../main/

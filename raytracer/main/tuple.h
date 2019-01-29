@@ -25,10 +25,11 @@ public:
     inline double z() { return m_z; }
     inline double w() { return m_w; }
 
-private:
+protected:
     double m_x;
     double m_y;
     double m_z;
+private:
     double m_w;
 };
 

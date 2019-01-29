@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include "tuple.h"
+#include "point.h"
 
 class Tests : public QObject
 {
@@ -35,8 +36,11 @@ void Tests::testTuple()
 
 void Tests::testPoint()
 {
-    Tuple point = Tuple::Point(1, 2, 3);
+    Point point = Point(1, 2, 3);
     QVERIFY2(point.isPoint(), "Not a point!");
+
+    Tuple tuple = point;
+    QVERIFY(equal(1, tuple.w()));
 }
 
 void Tests::testVector()
@@ -60,8 +64,8 @@ void Tests::testAdd()
 
 void Tests::testSubtractPoints()
 {
-    Tuple p1 = Tuple::Point(3, 2, 1);
-    Tuple p2 = Tuple::Point(5, 6, 7);
+    Point p1 = Point(3, 2, 1);
+    Point p2 = Point(5, 6, 7);
 
     Tuple v1 = p1 - p2;
 
@@ -73,7 +77,7 @@ void Tests::testSubtractPoints()
 
 void Tests::testSubtractVectorFromPoint()
 {
-    Tuple p = Tuple::Point(3, 2, 1);
+    Point p = Point(3, 2, 1);
     Tuple v = Tuple::Vector(5, 6, 7);
 
     Tuple p1 = p - v;
