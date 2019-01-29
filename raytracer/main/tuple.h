@@ -1,38 +1,34 @@
 #ifndef TUPLE_H
 #define TUPLE_H
 
-#include <QObject>
+#define EPSILON 0.00001
+bool equal(double a, double b);
 
-#define EPSILON = 0.00001;
-
-class Tuple : public QObject
+class Tuple
 {
-    Q_OBJECT
 public:
-    explicit Tuple(QObject *parent = nullptr);
-    Tuple(qreal x, qreal y, qreal z, qreal w);
+    Tuple(double x, double y, double z, double w);
 
-signals:
+public:
+    static Tuple Point(double x, double y, double z);
+    static Tuple Vector(double x, double y, double z);
 
-public slots:
-    static Tuple* Point(qreal x, qreal y, qreal z);
-    static Tuple* Vector(qreal x, qreal y, qreal z);
-
-    static bool Equal(qreal a, qreal b);
+    Tuple operator -();
+    Tuple operator +(const Tuple& tuple) const;
 
     bool isPoint();
     bool isVector();
 
-    inline qreal x() { return m_x; }
-    inline qreal y() { return m_y; }
-    inline qreal z() { return m_z; }
-    inline qreal w() { return m_w; }
+    inline double x() { return m_x; }
+    inline double y() { return m_y; }
+    inline double z() { return m_z; }
+    inline double w() { return m_w; }
 
 private:
-    qreal m_x;
-    qreal m_y;
-    qreal m_z;
-    qreal m_w;
+    double m_x;
+    double m_y;
+    double m_z;
+    double m_w;
 };
 
 #endif // TUPLE_H
