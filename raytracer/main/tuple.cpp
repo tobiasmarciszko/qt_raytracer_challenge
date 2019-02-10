@@ -1,4 +1,7 @@
 #include "tuple.h"
+#include "point.h"
+#include "vector.h"
+
 #include <QDebug>
 #include <cmath>
 

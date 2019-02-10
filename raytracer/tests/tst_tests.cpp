@@ -23,6 +23,7 @@ private Q_SLOTS:
     void testScalarMultiply();
     void testFractionMultiply();
     void testScalarDivision();
+    void testMagnitude();
 };
 
 Tests::Tests()
@@ -58,10 +59,10 @@ void Tests::testVector()
 
 void Tests::testAdd()
 {
-    Tuple a1 = Tuple(3, -2, 5, 1);
-    Tuple a2 = Tuple(-2, 3, 1, 0);
+    auto a1 = Tuple(3, -2, 5, 1);
+    auto a2 = Tuple(-2, 3, 1, 0);
 
-    Tuple a3 = a1 + a2;
+    auto a3 = a1 + a2;
 
     QVERIFY(equal(1, a3.x()));
     QVERIFY(equal(1, a3.y()));
@@ -149,6 +150,24 @@ void Tests::testScalarDivision()
     QVERIFY(equal(-1, tuple.y()));
     QVERIFY(equal(1.5, tuple.z()));
     QVERIFY(equal(-2, tuple.w()));
+}
+
+void Tests::testMagnitude()
+{
+    Vector v1 = Vector(1,0,0);
+    QVERIFY(equal(1, v1.magnitude()));
+
+    Vector v2 = Vector(0,1,0);
+    QVERIFY(equal(1, v2.magnitude()));
+
+    Vector v3 = Vector(0,0,1);
+    QVERIFY(equal(1, v3.magnitude()));
+
+    Vector v4 = Vector(1,2,3);
+    QVERIFY(equal(sqrt(14), v4.magnitude()));
+
+    Vector v5 = Vector(-1,-2,-3);
+    QVERIFY(equal(sqrt(14), v5.magnitude()));
 }
 
 QTEST_APPLESS_MAIN(Tests)
