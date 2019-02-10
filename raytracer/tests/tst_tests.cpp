@@ -1,5 +1,6 @@
 #include <QString>
 #include <QtTest>
+#include <QDebug>
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
@@ -24,6 +25,7 @@ private Q_SLOTS:
     void testFractionMultiply();
     void testScalarDivision();
     void testMagnitude();
+    void testNormalize();
 };
 
 Tests::Tests()
@@ -168,6 +170,21 @@ void Tests::testMagnitude()
 
     Vector v5 = Vector(-1,-2,-3);
     QVERIFY(equal(sqrt(14), v5.magnitude()));
+}
+
+void Tests::testNormalize()
+{
+    Vector v1 = Vector(4,0,0);
+    Vector v2 = v1.normalize();
+
+    QVERIFY(equal(1, v2.x()));
+
+    Vector v3 = Vector(1,2,3);
+    Vector v4 = v3.normalize();
+
+    QVERIFY(equal(1 / sqrt(14), v4.x()));
+    QVERIFY(equal(2 / sqrt(14), v4.y()));
+    QVERIFY(equal(3 / sqrt(14), v4.z()));
 }
 
 QTEST_APPLESS_MAIN(Tests)

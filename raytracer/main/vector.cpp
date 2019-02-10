@@ -10,8 +10,17 @@ Vector::Vector(double x,
     qDebug() << "Created Vector. x:" << x << " y:" << y << " z:" << z;
 }
 
-// sqrt(x^2 + y^2 + z^2 + w^2)
 double Vector::magnitude() const
 {
+    // aka length
+    // Pythagoras to the rescue!
     return sqrt( (m_x*m_x) + (m_y*m_y) + (m_z*m_z));
+}
+
+Vector Vector::normalize() const
+{
+    double magnitude = this->magnitude();
+    return Vector(m_x / magnitude,
+                  m_y / magnitude,
+                  m_z / magnitude);
 }
