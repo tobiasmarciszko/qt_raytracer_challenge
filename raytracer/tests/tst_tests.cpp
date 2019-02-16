@@ -26,6 +26,8 @@ private Q_SLOTS:
     void testScalarDivision();
     void testMagnitude();
     void testNormalize();
+    void testDot();
+    void testCross();
 };
 
 Tests::Tests()
@@ -185,6 +187,33 @@ void Tests::testNormalize()
     QVERIFY(equal(1 / sqrt(14), v4.x()));
     QVERIFY(equal(2 / sqrt(14), v4.y()));
     QVERIFY(equal(3 / sqrt(14), v4.z()));
+}
+
+void Tests::testDot()
+{
+    Vector a = Vector(1,2,3);
+    Vector b = Vector(2,3,4);
+
+    double dot = a.dot(b);
+
+    QVERIFY(equal(20, dot));
+}
+
+void Tests::testCross()
+{
+    Vector a = Vector(1,2,3);
+    Vector b = Vector(2,3,4);
+
+    Vector cross1 = a.cross(b);
+    QVERIFY(equal(-1, cross1.x()));
+    QVERIFY(equal(2, cross1.y()));
+    QVERIFY(equal(-1, cross1.z()));
+
+    Vector cross2 = b.cross(a);
+    QVERIFY(equal(1, cross2.x()));
+    QVERIFY(equal(-2, cross2.y()));
+    QVERIFY(equal(1, cross2.z()));
+
 }
 
 QTEST_APPLESS_MAIN(Tests)

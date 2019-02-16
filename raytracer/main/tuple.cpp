@@ -19,7 +19,7 @@ Tuple::Tuple(qreal x, qreal y, qreal z, qreal w) :
     m_z(z),
     m_w(w)
 {
-    qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
+    // qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
 }
 
 bool Tuple::isPoint() {
@@ -39,7 +39,12 @@ Tuple Tuple::operator+(const Tuple& tuple) const {
     double y = m_y + tuple.m_y;
     double z = m_z + tuple.m_z;
     double w = m_w + tuple.m_w;
-    return Tuple(x, y, z, w);
+
+    if (equal(w, 0)) {
+        return Vector(x, y, z);
+    } else {
+        return Point(x, y, z);
+    }
 }
 
 Tuple Tuple::operator-(const Tuple& tuple) const {
