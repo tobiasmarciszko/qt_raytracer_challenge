@@ -25,14 +25,14 @@ Vector Vector::normalize() const
                   m_z / magnitude);
 }
 
-double Vector::dot(Vector b) const
+double Vector::dot(const Vector& b) const
 {
     return (m_x * b.x() +
             m_y * b.y() +
             m_z * b.z());
 }
 
-Vector Vector::cross(Vector b) const
+Vector Vector::cross(const Vector& b) const
 {
     return Vector(m_y * b.z() - m_z * b.y(),
                   m_z * b.x() - m_x * b.z(),

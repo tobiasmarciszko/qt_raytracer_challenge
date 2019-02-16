@@ -5,11 +5,11 @@
 #include <QDebug>
 #include <cmath>
 
-bool equal(double a, double b) {
-    if (std::abs(a -b) < EPSILON) {
-    return true;
-} else {
-    return false;
+bool equal(const double& a, const double& b) {
+    if (std::abs(a - b) < EPSILON) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -22,11 +22,11 @@ Tuple::Tuple(qreal x, qreal y, qreal z, qreal w) :
     // qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
 }
 
-bool Tuple::isPoint() {
+bool Tuple::isPoint() const {
     return equal(m_w, 1.0);
 }
 
-bool Tuple::isVector() {
+bool Tuple::isVector() const {
     return equal(m_w, 0.0);
 }
 

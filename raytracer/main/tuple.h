@@ -2,7 +2,7 @@
 #define TUPLE_H
 
 #define EPSILON 0.00001
-bool equal(double a, double b);
+bool equal(const double& a, const double& b);
 
 class Tuple
 {
@@ -12,18 +12,19 @@ public:
 public:
 
     Tuple operator -();
+
     Tuple operator +(const Tuple& tuple) const;
     Tuple operator -(const Tuple& tuple) const;
     Tuple operator *(const double& multiplier) const;
     Tuple operator /(const double& divider) const;
 
-    bool isPoint();
-    bool isVector();
+    bool isPoint() const;
+    bool isVector() const;
 
-    inline double x() { return m_x; }
-    inline double y() { return m_y; }
-    inline double z() { return m_z; }
-    inline double w() { return m_w; }
+    inline double x() const { return m_x; }
+    inline double y() const { return m_y; }
+    inline double z() const { return m_z; }
+    inline double w() const { return m_w; }
 
 protected:
     double m_x;

@@ -12,8 +12,8 @@ public:
 
     double magnitude() const;
     Vector normalize() const;
-    double dot(Vector b) const;
-    Vector cross(Vector b) const;
+    double dot(const Vector& b) const;
+    Vector cross(const Vector& b) const;
 };
 
 #endif // VECTOR_H

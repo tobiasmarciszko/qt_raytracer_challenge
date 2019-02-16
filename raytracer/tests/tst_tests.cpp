@@ -63,10 +63,10 @@ void Tests::testVector()
 
 void Tests::testAdd()
 {
-    auto a1 = Tuple(3, -2, 5, 1);
-    auto a2 = Tuple(-2, 3, 1, 0);
+    Tuple a1 = Tuple(3, -2, 5, 1);
+    Tuple a2 = Tuple(-2, 3, 1, 0);
 
-    auto a3 = a1 + a2;
+    Tuple a3 = a1 + a2;
 
     QVERIFY(equal(1, a3.x()));
     QVERIFY(equal(1, a3.y()));
@@ -79,7 +79,7 @@ void Tests::testSubtractPoints()
     Point p1 = Point(3, 2, 1);
     Point p2 = Point(5, 6, 7);
 
-    Tuple v1 = p1 - p2;
+    Vector v1 = p1 - p2;
 
     QVERIFY(v1.isVector());
     QVERIFY(equal(-2, v1.x()));
@@ -92,7 +92,7 @@ void Tests::testSubtractVectorFromPoint()
     Point p = Point(3, 2, 1);
     Vector v = Vector(5, 6, 7);
 
-    Tuple p1 = p - v;
+    Point p1 = p - v;
 
     QVERIFY(p1.isPoint());
     QVERIFY(equal(-2, p1.x()));
@@ -105,7 +105,7 @@ void Tests::testSubtractVectors()
     Vector v1 = Vector(3, 2, 1);
     Vector v2 = Vector(5, 6, 7);
 
-    Tuple v3 = v1 - v2;
+    Vector v3 = v1 - v2;
 
     QVERIFY(v3.isVector());
     QVERIFY(equal(-2, v3.x()));
