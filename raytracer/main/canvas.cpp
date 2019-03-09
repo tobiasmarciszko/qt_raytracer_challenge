@@ -12,7 +12,7 @@ Canvas::Canvas(unsigned int width, unsigned int height):
 
     for (unsigned int i = 0; i < m_width; ++i) {
         for (unsigned int j = 0; j < m_height; ++j) {
-            m_pixels[i][j] = Color(0,0,0);
+            m_pixels[i][j] = Color(0.2,0.2,0.2);
         }
     }
 }

@@ -22,7 +22,7 @@ environment e(Vector(0, -0.0098, 0), Vector(0.01, 0, 0));
 raytracer::raytracer() : m_canvas(Canvas(320,240))
 {
     // Initialize framebuffer
-    framebuffer = QImage(320, 240, QImage::Format_RGB16);
+    framebuffer = QImage(320, 240, QImage::Format_RGB32);
     m_canvas = Canvas(320,240);
 }
 
@@ -40,14 +40,18 @@ void raytracer::update()
         int y = 240 - p.position.y();
         y = y % 239;
         if (y < 0) y = 0;
-        m_canvas.write_pixel(x, y, Color(1, 0, 0));
+        m_canvas.write_pixel(x, y, Color(1.0, 1.0, 1.0));
     }
 
     // Transfer canvas colors to framebuffer, maybe there is no need for an intermediate canvas?
     for (unsigned int i = 0; i < 320; ++i) {
         for (unsigned int j = 0; j < 240; ++j) {
             Color c = m_canvas.pixel_at(i, j);
-            framebuffer.setPixel(i, j, qRgb(255/c.red(), 255/c.green(), 255/c.blue()));
+            double r = c.red() * 255;
+            double g = c.green() * 255;
+            double b = c.blue() * 255;
+
+            framebuffer.setPixel(i, j, qRgb(r, g, b));
         }
     }
 }
