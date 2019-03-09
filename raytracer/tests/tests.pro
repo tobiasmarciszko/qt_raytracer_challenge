@@ -30,12 +30,14 @@ SOURCES += \
         tst_tests.cpp \ 
     ../main/tuple.cpp \
     ../main/point.cpp \
-    ../main/vector.cpp
+    ../main/vector.cpp \
+    ../main/color.cpp
 
 HEADERS += \
     ../main/tuple.h \
     ../main/point.h \
-    ../main/vector.h
+    ../main/vector.h \
+    ../main/color.h
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 INCLUDEPATH += ../main/

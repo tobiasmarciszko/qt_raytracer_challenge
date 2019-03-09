@@ -4,6 +4,7 @@
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
+#include "color.h"
 
 class Tests : public QObject
 {
@@ -28,6 +29,14 @@ private Q_SLOTS:
     void testNormalize();
     void testDot();
     void testCross();
+
+    // Chapter 2
+    void testColor();
+    void testColorAdd();
+    void testColorSubtract();
+    void testColorScalar();
+    void testColorHadamard();
+
 };
 
 Tests::Tests()
@@ -214,6 +223,63 @@ void Tests::testCross()
     QVERIFY(equal(-2, cross2.y()));
     QVERIFY(equal(1, cross2.z()));
 
+}
+
+// Chapter 2
+
+void Tests::testColor()
+{
+    Color c = Color(-0.5, 0.4, 1.7);
+
+    QVERIFY(equal(-0.5, c.red()));
+    QVERIFY(equal(0.4, c.green()));
+    QVERIFY(equal(1.7, c.blue()));
+}
+
+void Tests::testColorAdd()
+{
+    Color c1 = Color(0.9, 0.6, 0.75);
+    Color c2 = Color(0.7, 0.1, 0.25);
+
+    Color c3 = c1 + c2;
+
+    QVERIFY(equal(1.6, c3.red()));
+    QVERIFY(equal(0.7, c3.green()));
+    QVERIFY(equal(1.0, c3.blue()));
+}
+
+void Tests::testColorSubtract()
+{
+    Color c1 = Color(0.9, 0.6, 0.75);
+    Color c2 = Color(0.7, 0.1, 0.25);
+
+    Color c3 = c1 - c2;
+
+    QVERIFY(equal(0.2, c3.red()));
+    QVERIFY(equal(0.5, c3.green()));
+    QVERIFY(equal(0.5, c3.blue()));
+}
+
+void Tests::testColorScalar()
+{
+    Color c1 = Color(0.2, 0.3, 0.4);
+    Color c2 = c1 * 2;
+
+    QVERIFY(equal(0.4, c2.red()));
+    QVERIFY(equal(0.6, c2.green()));
+    QVERIFY(equal(0.8, c2.blue()));
+}
+
+void Tests::testColorHadamard() {
+
+    Color c1 = Color(1, 0.2, 0.4);
+    Color c2 = Color(0.9, 1, 0.1);
+
+    Color c3 = c1 * c2;
+
+    QVERIFY(equal(0.9, c3.red()));
+    QVERIFY(equal(0.2, c3.green()));
+    QVERIFY(equal(0.04, c3.blue()));
 }
 
 QTEST_APPLESS_MAIN(Tests)
