@@ -1,11 +1,11 @@
 QT += core
-QT -= gui
+QT += gui
+QT += widgets
 
 CONFIG += c++11
 
 TARGET = main
-CONFIG += console
-CONFIG -= app_bundle
+# CONFIG -= app_bundle
 
 TEMPLATE = app
 
@@ -14,7 +14,11 @@ SOURCES += main.cpp \
     point.cpp \
     vector.cpp \
     color.cpp \
-    canvas.cpp
+    canvas.cpp \
+    mainwindow.cpp \
+    helper.cpp \
+    glwidget.cpp \
+    raytracer.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -32,4 +36,12 @@ HEADERS += \
     point.h \
     vector.h \
     color.h \
-    canvas.h
+    canvas.h \
+    mainwindow.h \
+    helper.h \
+    glwidget.h \
+    effect.h \
+    raytracer.h
+
+FORMS += \
+    mainwindow.ui
