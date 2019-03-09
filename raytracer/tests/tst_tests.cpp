@@ -5,6 +5,7 @@
 #include "point.h"
 #include "vector.h"
 #include "color.h"
+#include "canvas.h"
 
 class Tests : public QObject
 {
@@ -36,7 +37,7 @@ private Q_SLOTS:
     void testColorSubtract();
     void testColorScalar();
     void testColorHadamard();
-
+    void testCanvas();
 };
 
 Tests::Tests()
@@ -280,6 +281,17 @@ void Tests::testColorHadamard() {
     QVERIFY(equal(0.9, c3.red()));
     QVERIFY(equal(0.2, c3.green()));
     QVERIFY(equal(0.04, c3.blue()));
+}
+
+void Tests::testCanvas() {
+    Canvas c = Canvas(10, 20);
+    Color red = Color(1, 0, 0);
+
+    c.write_pixel(0, 0, red);
+    QVERIFY(equal(1, c.pixel_at(0, 0).red()));
+
+    c.write_pixel(10 - 1, 20 - 1, red);
+    QVERIFY(equal(1, c.pixel_at(10 - 1, 20 - 1).red()));
 }
 
 QTEST_APPLESS_MAIN(Tests)

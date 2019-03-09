@@ -6,6 +6,7 @@
 class Color
 {
 public:
+    Color() {}
     Color(double red, double green, double blue);
 
     inline double red() { return m_red; }
