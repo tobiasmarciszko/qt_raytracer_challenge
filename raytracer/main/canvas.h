@@ -7,6 +7,7 @@ class Canvas
 {
 public:
     Canvas(unsigned int width, unsigned int height);
+    ~Canvas();
 
     void write_pixel(unsigned int x, unsigned int y, const Color& color);
     Color pixel_at(unsigned int x, unsigned int y) const;

@@ -14,9 +14,9 @@ class Helper : public QObject
 
 public:
     explicit Helper(QObject *parent = nullptr);
+    ~Helper();
 
 public:
-    void setEffect(int num);
     void paint(QPainter *painter);
 
 public slots:

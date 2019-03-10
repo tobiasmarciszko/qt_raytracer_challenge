@@ -23,7 +23,6 @@ raytracer::raytracer() : m_canvas(Canvas(320,240))
 {
     // Initialize framebuffer
     framebuffer = QImage(320, 240, QImage::Format_RGB32);
-    m_canvas = Canvas(320,240);
 }
 
 void raytracer::update()
