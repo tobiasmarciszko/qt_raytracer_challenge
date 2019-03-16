@@ -5,19 +5,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    helper(new Helper(this))
 {
-    helper = new Helper(this);
-
     ui->setupUi(this);
 
     refreshRate = 60; // FPS
-    framebufferRate = 30; // FPS
+    framebufferRate = 60; // FPS
 
     // Framebuffer update ticks
     framebufferUpdater = new QTimer(this);
     connect(framebufferUpdater, &QTimer::timeout, helper, &Helper::tick);
-    framebufferUpdater->start(33);
+    framebufferUpdater->start(1000/framebufferRate);
     ui->fpsLabel_2->setText(QString::number(framebufferRate) + " FPS");
 
     // Framebuffer to screen updates
@@ -32,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete helper;
 }
 
 void MainWindow::on_pushButton_clicked()
