@@ -33,7 +33,7 @@ SOURCES += \
     ../main/vector.cpp \
     ../main/color.cpp \
     ../main/canvas.cpp \
-    ../main/matrix4x4.cpp
+    ../main/matrix.cpp
 
 HEADERS += \
     ../main/tuple.h \
@@ -41,7 +41,7 @@ HEADERS += \
     ../main/vector.h \
     ../main/color.h \
     ../main/canvas.h \
-    ../main/matrix4x4.h
+    ../main/matrix.h
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 INCLUDEPATH += ../main/

@@ -6,7 +6,7 @@
 #include "vector.h"
 #include "color.h"
 #include "canvas.h"
-#include "matrix4x4.h"
+#include "matrix.h"
 
 class Tests : public QObject
 {
@@ -42,6 +42,7 @@ private Q_SLOTS:
 
     // Chapter 3
     void testMatrix4x4();
+
 };
 
 Tests::Tests()
@@ -299,10 +300,11 @@ void Tests::testCanvas() {
 }
 
 void Tests::testMatrix4x4() {
-    Matrix4x4 m = Matrix4x4(1,    2,    3,    4,
-                            5.5,  6.5,  7.5,  8.5,
-                            9,    10,   11,   12,
-                            13.5, 14.5, 15.5, 16.5);
+    Matrix<4,4> m = Matrix<4,4>(
+                                1,    2,    3,    4,
+                                5.5,  6.5,  7.5,  8.5,
+                                9,    10,   11,   12,
+                                13.5, 14.5, 15.5, 16.5);
 
     QVERIFY(equal(1,    m.get(0, 0)));
     QVERIFY(equal(4,    m.get(0, 3)));

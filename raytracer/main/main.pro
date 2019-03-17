@@ -19,7 +19,7 @@ SOURCES += main.cpp \
     helper.cpp \
     glwidget.cpp \
     raytracer.cpp \
-    matrix4x4.cpp
+    matrix.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -43,7 +43,7 @@ HEADERS += \
     glwidget.h \
     effect.h \
     raytracer.h \
-    matrix4x4.h
+    matrix.h
 
 FORMS += \
     mainwindow.ui
