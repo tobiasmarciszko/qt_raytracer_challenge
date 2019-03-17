@@ -42,7 +42,8 @@ private Q_SLOTS:
 
     // Chapter 3
     void testMatrix4x4();
-
+    void testMatrix3x3();
+    void testMatrix2x2();
 };
 
 Tests::Tests()
@@ -300,7 +301,7 @@ void Tests::testCanvas() {
 }
 
 void Tests::testMatrix4x4() {
-    Matrix<4,4> m = Matrix<4,4>(
+    const auto m = Matrix<4,4>(
                                 1,    2,    3,    4,
                                 5.5,  6.5,  7.5,  8.5,
                                 9,    10,   11,   12,
@@ -314,6 +315,28 @@ void Tests::testMatrix4x4() {
     QVERIFY(equal(13.5, m.get(3, 0)));
     QVERIFY(equal(15.5, m.get(3, 2)));
 }
+
+void Tests::testMatrix3x3() {
+    const auto m = Matrix<3,3>(-3,    5,   0,
+                                1,   -2,  -7,
+                                0,    1,   1);
+
+    QVERIFY(equal(-3, m.get(0, 0)));
+    QVERIFY(equal(-2, m.get(1, 1)));
+    QVERIFY(equal(1,  m.get(2, 2)));
+}
+
+void Tests::testMatrix2x2() {
+    const auto m = Matrix<2,2>(-3,  5,
+                                1, -2);
+
+    QVERIFY(equal(-3, m.get(0, 0)));
+    QVERIFY(equal(5,  m.get(0, 1)));
+    QVERIFY(equal(1,  m.get(1, 0)));
+    QVERIFY(equal(-2,  m.get(1, 1)));
+}
+
+
 
 QTEST_APPLESS_MAIN(Tests)
 

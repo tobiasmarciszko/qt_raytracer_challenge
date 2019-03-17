@@ -90,7 +90,7 @@ public:
         m_data[3][3] = m33;
     }
 
-    inline double get(int row, int col) { return m_data[row][col]; }
+    inline double get(int row, int col) const { return m_data[row][col]; }
 
 private:
 
