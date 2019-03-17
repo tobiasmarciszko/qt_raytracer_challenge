@@ -91,6 +91,27 @@ public:
     }
 
     inline double get(int row, int col) const { return m_data[row][col]; }
+    inline size_t getRowCount() const { return m_rows; }
+    inline size_t getColCount() const { return m_cols; }
+
+    bool operator==(const Matrix<rows, cols>& matrix) const {
+
+        if (m_rows != matrix.getRowCount()) return false;
+        if (m_cols != matrix.getColCount()) return false;
+
+        for (size_t i = 0; i < m_rows; i++) {
+            for (size_t j = 0; j < m_cols; j++) {
+                if (m_data[i][j] != matrix.get(i, j)) return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool operator!=(const Matrix<rows, cols>& matrix) const {
+        return !(*this == matrix);
+    }
+
 
 private:
 

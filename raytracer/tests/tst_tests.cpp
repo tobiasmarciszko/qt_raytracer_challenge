@@ -44,6 +44,9 @@ private Q_SLOTS:
     void testMatrix4x4();
     void testMatrix3x3();
     void testMatrix2x2();
+
+    void testMatrixEqual();
+    void testMatrixNotEqual();
 };
 
 Tests::Tests()
@@ -336,6 +339,38 @@ void Tests::testMatrix2x2() {
     QVERIFY(equal(-2,  m.get(1, 1)));
 }
 
+void Tests::testMatrixEqual() {
+    const auto a = Matrix<4,4>(
+                1,2,3,4,
+                5,6,7,8,
+                9,8,7,6,
+                5,4,3,2);
+
+    const auto b = Matrix<4,4>(
+                1,2,3,4,
+                5,6,7,8,
+                9,8,7,6,
+                5,4,3,2);
+
+    QVERIFY(a == b);
+
+}
+
+void Tests::testMatrixNotEqual() {
+    const auto a = Matrix<4,4>(
+                1,2,3,4,
+                5,6,7,8,
+                9,8,7,6,
+                5,4,3,2);
+
+    const auto b = Matrix<4,4>(
+                2,3,4,5,
+                6,7,8,9,
+                8,7,6,5,
+                4,3,2,1);
+
+    QVERIFY(a != b);
+}
 
 
 QTEST_APPLESS_MAIN(Tests)
