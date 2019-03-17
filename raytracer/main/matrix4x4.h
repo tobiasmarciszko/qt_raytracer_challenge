@@ -1,7 +1,6 @@
 #ifndef MATRIX4X4_H
 #define MATRIX4X4_H
 
-
 class Matrix4x4
 {
 public:
@@ -26,30 +25,16 @@ public:
             double m33
           );
 
-public:
-    // Row 0
-    double m00;
-    double m01;
-    double m02;
-    double m03;
+    inline double get(int row, int col) { return m_data[row][col]; }
 
-    // Row 1
-    double m10;
-    double m11;
-    double m12;
-    double m13;
+private:
 
-    // Row 2
-    double m20;
-    double m21;
-    double m22;
-    double m23;
-
-    // Row3
-    double m30;
-    double m31;
-    double m32;
-    double m33;
+    double m_data[4][4] = {
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                        };
 };
 
 #endif // MATRIX4X4_H

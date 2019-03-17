@@ -304,13 +304,13 @@ void Tests::testMatrix4x4() {
                             9,    10,   11,   12,
                             13.5, 14.5, 15.5, 16.5);
 
-    QVERIFY(equal(1, m.m00));
-    QVERIFY(equal(4, m.m03));
-    QVERIFY(equal(5.5, m.m10));
-    QVERIFY(equal(7.5, m.m12));
-    QVERIFY(equal(11, m.m22));
-    QVERIFY(equal(13.5, m.m30));
-    QVERIFY(equal(15.5, m.m32));
+    QVERIFY(equal(1,    m.get(0, 0)));
+    QVERIFY(equal(4,    m.get(0, 3)));
+    QVERIFY(equal(5.5,  m.get(1, 0)));
+    QVERIFY(equal(7.5,  m.get(1, 2)));
+    QVERIFY(equal(11,   m.get(2, 2)));
+    QVERIFY(equal(13.5, m.get(3, 0)));
+    QVERIFY(equal(15.5, m.get(3, 2)));
 }
 
 QTEST_APPLESS_MAIN(Tests)
