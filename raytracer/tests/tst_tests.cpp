@@ -48,6 +48,7 @@ private Q_SLOTS:
     void testMatrixEqual();
     void testMatrixNotEqual();
     void testMatrixMultiplication();
+    void testMatrixTupleMultiplication();
 };
 
 Tests::Tests()
@@ -390,8 +391,7 @@ void Tests::testMatrixMultiplication() {
                 20,22,50,48,
                 44,54,114,108,
                 40,58,110,102,
-                16,26,46,42
-                );
+                16,26,46,42);
 
     const auto result = a * b;
 
@@ -399,6 +399,21 @@ void Tests::testMatrixMultiplication() {
 
 }
 
+void Tests::testMatrixTupleMultiplication() {
+    const auto a = Matrix<4,4>(
+                1,2,3,4,
+                2,4,4,2,
+                8,6,4,1,
+                0,0,0,1);
+
+    const auto b = Tuple(1, 2, 3, 1);
+
+    const auto expected = Tuple(18, 24, 33, 1);
+
+    const auto result = a * b;
+
+    QVERIFY(result == expected);
+}
 
 QTEST_APPLESS_MAIN(Tests)
 

@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <stdlib.h>
+#include "tuple.h"
 
 template <size_t rows, size_t cols>
 class Matrix
@@ -121,21 +122,8 @@ public:
         return !(*this == matrix);
     }
 
-    inline Matrix<rows,cols> operator*(const Matrix<rows,cols>& multiplier) const {
-        Matrix<4,4> result;
-        for (size_t i = 0; i < rows; i++) {
-            for (size_t j = 0; j < cols; j++) {
-                auto value = m_data[i][0] * multiplier.get(0, j) +
-                                   m_data[i][1] * multiplier.get(1, j) +
-                                   m_data[i][2] * multiplier.get(2, j) +
-                                   m_data[i][3] * multiplier.get(3, j);
-
-                result.set(i, j, value);
-            }
-        }
-
-        return result;
-    }
+    inline Matrix<rows,cols> operator*(const Matrix<rows,cols>& multiplier) const;
+    inline Tuple operator*(const Tuple& tuple) const;
 
 private:
 
@@ -145,5 +133,38 @@ private:
     double m_data[rows][cols];
 
 };
+
+// 4x4 specializations
+template<>
+inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
+    double result[4];
+    for (size_t i = 0; i < 4; i++) {
+            result[i] = m_data[i][0] * tuple.x() +
+                        m_data[i][1] * tuple.y() +
+                        m_data[i][2] * tuple.z() +
+                        m_data[i][3] * tuple.w();
+        }
+
+    return Tuple(result[0], result[1], result[2], result[3]);
+}
+
+template<>
+inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const {
+    Matrix<4,4> result;
+    for (size_t i = 0; i < 4; i++) {
+        for (size_t j = 0; j < 4; j++) {
+            int row = static_cast<int>(i);
+            int col = static_cast<int>(j);
+            auto value = m_data[row][0] * multiplier.get(0, col) +
+                         m_data[row][1] * multiplier.get(1, col) +
+                         m_data[row][2] * multiplier.get(2, col) +
+                         m_data[row][3] * multiplier.get(3, col);
+
+            result.set(row, col, value);
+        }
+    }
+
+    return result;
+}
 
 #endif // MATRIX_H

@@ -11,12 +11,12 @@ public:
 
 public:
 
-    Tuple operator -();
-
+    Tuple operator -() const;
     Tuple operator +(const Tuple& tuple) const;
     Tuple operator -(const Tuple& tuple) const;
     Tuple operator *(const double& multiplier) const;
     Tuple operator /(const double& divider) const;
+    bool operator ==(const Tuple& tuple) const;
 
     bool isPoint() const;
     bool isVector() const;

@@ -5,7 +5,7 @@ Canvas::Canvas(unsigned int width, unsigned int height):
     m_width(width),
     m_height(height)
 {
-    qDebug() << "Creating canvas";
+    // qDebug() << "Creating canvas";
 
     m_pixels = new Color*[m_width];
 
@@ -21,7 +21,7 @@ Canvas::Canvas(unsigned int width, unsigned int height):
 }
 
 Canvas::~Canvas() {
-    qDebug() << "Destroying canvas";
+    // qDebug() << "Destroying canvas";
     for (unsigned int i = 0; i < m_width; ++i) {
         delete m_pixels[i];
     }

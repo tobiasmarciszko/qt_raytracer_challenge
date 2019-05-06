@@ -30,7 +30,7 @@ bool Tuple::isVector() const {
     return equal(m_w, 0.0);
 }
 
-Tuple Tuple::operator-() {
+Tuple Tuple::operator-() const {
     return Tuple(-m_x, -m_y, -m_z, -m_w);
 }
 
@@ -69,4 +69,13 @@ Tuple Tuple::operator/(const double& divider) const {
     double z = m_z / divider;
     double w = m_w / divider;
     return Tuple(x, y, z, w);
+}
+
+bool Tuple::operator==(const Tuple& tuple) const {
+    if (!equal(m_x, tuple.x())) return false;
+    if (!equal(m_y, tuple.y())) return false;
+    if (!equal(m_z, tuple.z())) return false;
+    if (!equal(m_w, tuple.w())) return false;
+
+    return true;
 }
