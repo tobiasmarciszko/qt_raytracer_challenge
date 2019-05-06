@@ -90,11 +90,20 @@ public:
         m_data[3][3] = m33;
     }
 
+    Matrix<rows,cols>() {
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                m_data[i][j] = 0.0;
+            }
+        }
+    }
+
+    inline void set(int row, int col, double value) { m_data[row][col] = value; }
     inline double get(int row, int col) const { return m_data[row][col]; }
     inline size_t getRowCount() const { return m_rows; }
     inline size_t getColCount() const { return m_cols; }
 
-    bool operator==(const Matrix<rows, cols>& matrix) const {
+    inline bool operator==(const Matrix<rows, cols>& matrix) const {
 
         if (m_rows != matrix.getRowCount()) return false;
         if (m_cols != matrix.getColCount()) return false;
@@ -108,10 +117,25 @@ public:
         return true;
     }
 
-    bool operator!=(const Matrix<rows, cols>& matrix) const {
+    inline bool operator!=(const Matrix<rows, cols>& matrix) const {
         return !(*this == matrix);
     }
 
+    inline Matrix<rows,cols> operator*(const Matrix<rows,cols>& multiplier) const {
+        Matrix<4,4> result;
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                auto value = m_data[i][0] * multiplier.get(0, j) +
+                                   m_data[i][1] * multiplier.get(1, j) +
+                                   m_data[i][2] * multiplier.get(2, j) +
+                                   m_data[i][3] * multiplier.get(3, j);
+
+                result.set(i, j, value);
+            }
+        }
+
+        return result;
+    }
 
 private:
 
@@ -119,6 +143,7 @@ private:
     size_t m_cols = cols;
 
     double m_data[rows][cols];
+
 };
 
 #endif // MATRIX_H
