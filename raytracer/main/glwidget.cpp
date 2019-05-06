@@ -21,6 +21,7 @@ void GLWidget::animate()
 
 void GLWidget::paintEvent(QPaintEvent *event)
 {
+    UNUSED_PARAM(event);
     QPainter painter;
     painter.begin(this);
     helper->paint(&painter);

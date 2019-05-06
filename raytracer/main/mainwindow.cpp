@@ -47,6 +47,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_horizontalSlider_sliderMoved(int position)
 {
+    UNUSED_PARAM(position);
 //    fps = ui->horizontalSlider->value();
 //    timer->setInterval(1000/fps);
 //    ui->fpsLabel->setText(QString::number(fps) + " FPS");
@@ -54,6 +55,7 @@ void MainWindow::on_horizontalSlider_sliderMoved(int position)
 
 void MainWindow::on_horizontalSlider_actionTriggered(int action)
 {
+    UNUSED_PARAM(action);
     refreshRate = ui->horizontalSlider->value();
     screenRefresh->setInterval(1000/refreshRate);
     ui->fpsLabel->setText(QString::number(refreshRate) + " FPS");
@@ -77,6 +79,7 @@ void MainWindow::on_pushButton_5_clicked()
 
 void MainWindow::on_horizontalSlider_2_actionTriggered(int action)
 {
+    UNUSED_PARAM(action);
     framebufferRate = ui->horizontalSlider_2->value();
     framebufferUpdater->setInterval(1000/framebufferRate);
     ui->fpsLabel_2->setText(QString::number(framebufferRate) + " FPS");
