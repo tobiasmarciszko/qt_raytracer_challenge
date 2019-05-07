@@ -167,4 +167,10 @@ inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const
     return result;
 }
 
+static const Matrix<4,4> identity_matrix = Matrix<4,4>(
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1);
+
 #endif // MATRIX_H

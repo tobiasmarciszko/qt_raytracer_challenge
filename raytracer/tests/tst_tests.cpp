@@ -49,6 +49,7 @@ private Q_SLOTS:
     void testMatrixNotEqual();
     void testMatrixMultiplication();
     void testMatrixTupleMultiplication();
+    void testMultiplicationWithIdentityMatrix();
 };
 
 Tests::Tests()
@@ -413,6 +414,21 @@ void Tests::testMatrixTupleMultiplication() {
     const auto result = a * b;
 
     QVERIFY(result == expected);
+}
+
+void Tests::testMultiplicationWithIdentityMatrix() {
+
+    const auto A = Matrix<4,4>(
+                0,1,2,4,
+                1,2,4,8,
+                2,4,8,16,
+                4,8,16,32);
+
+    QVERIFY((A *identity_matrix) == A);
+
+    const auto a = Tuple(1, 2, 3, 4);
+
+    QVERIFY((identity_matrix * a) == a);
 }
 
 QTEST_APPLESS_MAIN(Tests)
