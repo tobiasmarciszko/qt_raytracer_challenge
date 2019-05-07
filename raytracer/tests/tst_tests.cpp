@@ -50,6 +50,8 @@ private Q_SLOTS:
     void testMatrixMultiplication();
     void testMatrixTupleMultiplication();
     void testMultiplicationWithIdentityMatrix();
+    void testMatrixTranspose();
+    void testMatrixTransposeIdentity();
 };
 
 Tests::Tests()
@@ -429,6 +431,33 @@ void Tests::testMultiplicationWithIdentityMatrix() {
     const auto a = Tuple(1, 2, 3, 4);
 
     QVERIFY((identity_matrix * a) == a);
+}
+
+void Tests::testMatrixTranspose() {
+
+    const auto A = Matrix<4,4>(
+                0,9,3,0,
+                9,8,0,8,
+                1,8,5,3,
+                0,0,5,8);
+
+    const auto expected = Matrix<4,4>(
+                0,9,1,0,
+                9,8,8,0,
+                3,0,5,5,
+                0,8,3,8);
+
+    const auto result = Matrix<4,4>::transpose(A);
+
+    QVERIFY(result == expected);
+}
+
+void Tests::testMatrixTransposeIdentity()
+{
+    // Transposing the identity matrix should be the... identity matrix! :)
+
+    const auto result = Matrix<4,4>::transpose(identity_matrix);
+    QVERIFY(identity_matrix == result);
 }
 
 QTEST_APPLESS_MAIN(Tests)

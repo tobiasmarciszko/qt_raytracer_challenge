@@ -13,6 +13,7 @@ public:
     Matrix(
             double m00,
             double m01,
+
             double m10,
             double m11
           )
@@ -29,9 +30,11 @@ public:
             double m00,
             double m01,
             double m02,
+
             double m10,
             double m11,
             double m12,
+
             double m20,
             double m21,
             double m22
@@ -56,14 +59,17 @@ public:
             double m01,
             double m02,
             double m03,
+
             double m10,
             double m11,
             double m12,
             double m13,
+
             double m20,
             double m21,
             double m22,
             double m23,
+
             double m30,
             double m31,
             double m32,
@@ -124,6 +130,22 @@ public:
 
     inline Matrix<rows,cols> operator*(const Matrix<rows,cols>& multiplier) const;
     inline Tuple operator*(const Tuple& tuple) const;
+
+
+    static inline Matrix<rows, cols> transpose(const Matrix<rows, cols>& matrix) {
+        Matrix<rows, cols> result;
+
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                int row = static_cast<int>(i);
+                int col = static_cast<int>(j);
+
+                result.set(col, row, matrix.get(row, col));
+            }
+        }
+
+        return result;
+    }
 
 private:
 
