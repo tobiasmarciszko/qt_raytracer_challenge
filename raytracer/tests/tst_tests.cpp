@@ -53,6 +53,8 @@ private Q_SLOTS:
     void testMatrixTranspose();
     void testMatrixTransposeIdentity();
     void testMatrix2x2Determinant();
+    void test2x2SubMatrix();
+    void test3x3SubMatrix();
 };
 
 Tests::Tests() = default;
@@ -469,6 +471,41 @@ void Tests::testMatrix2x2Determinant()
     const auto result = A.determinant();
 
     QVERIFY(equal(result, expected));
+}
+
+void Tests::test2x2SubMatrix()
+{
+    const auto A = Matrix<3,3>(
+                1,5,0,
+                -3,2,7,
+                0,6,-3
+                );
+
+    const auto expected = Matrix<2,2>(
+                -3,2,
+                0,6);
+
+    const auto result = A.submatrix(0,2);
+
+    QVERIFY(expected == result);
+}
+
+void Tests::test3x3SubMatrix()
+{
+    const auto A = Matrix<4,4>(
+                -6,1,1,6,
+                -8,5,8,6,
+                -1,0,8,2,
+                -7,1,-1,1);
+
+    const auto expected = Matrix<3,3>(
+                -6,1,6,
+                -8,8,6,
+                -7,-1,1);
+
+    const auto result = A.submatrix(2,1);
+
+    QVERIFY(expected == result);
 }
 
 QTEST_APPLESS_MAIN(Tests)

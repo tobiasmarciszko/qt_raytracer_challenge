@@ -148,6 +148,31 @@ public:
 
     inline double determinant() const;
 
+    inline Matrix<rows-1, cols-1> submatrix(int rowToRemove, int colToRemove) const {
+        Matrix<rows-1, cols-1> result;
+
+        int sourceRow = 0;
+        for (size_t i = 0; i < rows-1; i++) {
+            int row = static_cast<int>(i);
+
+            // skip this row
+            if (row == rowToRemove) { sourceRow++; }
+
+            int sourceCol = 0;
+            for (size_t j = 0; j < cols-1; j++) {
+                int col = static_cast<int>(j);
+
+                // skip this col
+                if (col == colToRemove) { sourceCol++; }
+
+                result.set(row, col, m_data[sourceRow][sourceCol]);
+                sourceCol++;
+            }
+            sourceRow++;
+        }
+        return result;
+    }
+
 private:
 
     size_t m_rows = rows;
