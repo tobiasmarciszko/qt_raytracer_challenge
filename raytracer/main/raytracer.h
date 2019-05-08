@@ -11,7 +11,7 @@ public:
     raytracer();
 
 public slots:
-    virtual void update();
+    void update() override;
 
 private:
     Canvas<320,240> m_canvas;

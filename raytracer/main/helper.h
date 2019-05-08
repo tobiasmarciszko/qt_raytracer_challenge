@@ -14,7 +14,7 @@ class Helper : public QObject
 
 public:
     explicit Helper(QObject *parent = nullptr);
-    ~Helper();
+    ~Helper() final;
 
 public:
     void paint(QPainter *painter);

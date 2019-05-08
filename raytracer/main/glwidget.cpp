@@ -9,7 +9,7 @@
 GLWidget::GLWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
-    helper = ((MainWindow*)(parent)->parent())->getHelper();
+    helper = (dynamic_cast<MainWindow*>((parent)->parent())->getHelper());
     setFixedSize(320, 240);
     setAutoFillBackground(false);
 }

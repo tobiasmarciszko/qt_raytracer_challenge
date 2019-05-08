@@ -55,9 +55,7 @@ private Q_SLOTS:
     void testMatrix2x2Determinant();
 };
 
-Tests::Tests()
-{
-}
+Tests::Tests() = default;
 
 void Tests::testTuple()
 {

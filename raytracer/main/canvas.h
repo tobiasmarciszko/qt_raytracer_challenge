@@ -1,7 +1,7 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "color.h"
 
 template<size_t width, size_t height>
@@ -11,7 +11,7 @@ public:
     Canvas() {
         for (unsigned int i = 0; i < m_width; ++i) {
             for (unsigned int j = 0; j < m_height; ++j) {
-                m_pixels[i][j] = Color(0.2,0.2,0.2);
+                 m_pixels[i][j] = Color(0.2,0.2,0.2);
             }
         }
     }

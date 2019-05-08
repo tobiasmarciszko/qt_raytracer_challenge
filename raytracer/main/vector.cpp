@@ -20,9 +20,9 @@ double Vector::magnitude() const
 Vector Vector::normalize() const
 {
     double magnitude = this->magnitude();
-    return Vector(m_x / magnitude,
+    return {m_x / magnitude,
                   m_y / magnitude,
-                  m_z / magnitude);
+                  m_z / magnitude};
 }
 
 double Vector::dot(const Vector& b) const
@@ -34,7 +34,7 @@ double Vector::dot(const Vector& b) const
 
 Vector Vector::cross(const Vector& b) const
 {
-    return Vector(m_y * b.z() - m_z * b.y(),
+    return {m_y * b.z() - m_z * b.y(),
                   m_z * b.x() - m_x * b.z(),
-                  m_x * b.y() - m_y * b.x());
+                  m_x * b.y() - m_y * b.x()};
 }

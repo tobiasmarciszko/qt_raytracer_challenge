@@ -2,7 +2,7 @@
 #define EFFECT_H
 
 #include "QImage"
-typedef QImage FrameBuffer;
+using FrameBuffer = QImage;
 
 #include <QObject>
 class IEffect : public QObject
@@ -13,7 +13,7 @@ public slots:
     virtual void update() = 0;
 
 public:
-    QImage framebuffer;
+    FrameBuffer framebuffer;
 };
 
 #endif // EFFECT_H

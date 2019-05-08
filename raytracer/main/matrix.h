@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "tuple.h"
 
 template <size_t rows, size_t cols>
@@ -153,7 +153,7 @@ private:
     size_t m_rows = rows;
     size_t m_cols = cols;
 
-    double m_data[rows][cols];
+    double m_data[rows][cols]{};
 
 };
 
@@ -184,7 +184,7 @@ inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
                         m_data[i][3] * tuple.w();
         }
 
-    return Tuple(result[0], result[1], result[2], result[3]);
+    return {result[0], result[1], result[2], result[3]};
 }
 
 template<>

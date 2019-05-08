@@ -13,28 +13,28 @@ Color Color::operator+(const Color& color) const {
     double g = m_green + color.m_green;
     double b = m_blue + color.m_blue;
 
-    return Color(r, g, b);
+    return {r, g, b};
 }
 
 Color Color::operator-(const Color& color) const {
     double r = m_red - color.m_red;
     double g = m_green - color.m_green;
     double b = m_blue - color.m_blue;
-    return Color(r, g, b);
+    return {r, g, b};
 }
 
 Color Color::operator*(const double& multiplier) const {
     double r = m_red * multiplier;
     double g = m_green * multiplier;
     double b = m_blue * multiplier;
-    return Color(r, g, b);
+    return {r, g, b};
 }
 
 Color Color::operator/(const double& divider) const {
     double r = m_red / divider;
     double g = m_green / divider;
     double b = m_blue / divider;
-    return Color(r, g, b);
+    return {r, g, b};
 }
 
 // Hadamard product (Schur product)
@@ -43,5 +43,5 @@ Color Color::operator *(const Color& color) const {
     double g = m_green * color.m_green;
     double b = m_blue * color.m_blue;
 
-    return Color(r, g, b);
+    return {r, g, b};
 }

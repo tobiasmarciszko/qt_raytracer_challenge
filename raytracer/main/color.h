@@ -6,7 +6,7 @@
 class Color
 {
 public:
-    Color() {}
+    Color() : m_red{0}, m_green{0}, m_blue{0} {}
     Color(double red, double green, double blue);
 
     inline double red() { return m_red; }
@@ -23,7 +23,6 @@ private:
     double m_red;
     double m_green;
     double m_blue;
-
 };
 
 #endif // COLOR_H
