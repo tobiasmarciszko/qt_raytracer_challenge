@@ -55,6 +55,7 @@ private Q_SLOTS:
     void testMatrix2x2Determinant();
     void test2x2SubMatrix();
     void test3x3SubMatrix();
+    void testMinor();
 };
 
 Tests::Tests() = default;
@@ -506,6 +507,24 @@ void Tests::test3x3SubMatrix()
     const auto result = A.submatrix(2,1);
 
     QVERIFY(expected == result);
+}
+
+void Tests::testMinor()
+{
+    const auto A = Matrix<3,3>(
+                3,5,0,
+                2,-1,-7,
+                6,-1,5);
+
+    const auto B = A.submatrix(1,0);
+
+    const auto expected = 25;
+
+    const auto determinant = B.determinant();
+    const auto minor = A.minor(1,0);
+
+    QVERIFY(equal(expected, determinant));
+    QVERIFY(equal(expected, minor));
 }
 
 QTEST_APPLESS_MAIN(Tests)
