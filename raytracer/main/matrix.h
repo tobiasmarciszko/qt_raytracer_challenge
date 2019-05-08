@@ -128,11 +128,10 @@ public:
         return !(*this == matrix);
     }
 
-    inline Matrix<rows,cols> operator*(const Matrix<rows,cols>& multiplier) const;
+    inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
     inline Tuple operator*(const Tuple& tuple) const;
 
-
-    static inline Matrix<rows, cols> transpose(const Matrix<rows, cols>& matrix) {
+    inline Matrix<rows, cols> transpose() const {
         Matrix<rows, cols> result;
 
         for (size_t i = 0; i < rows; i++) {
@@ -140,12 +139,14 @@ public:
                 int row = static_cast<int>(i);
                 int col = static_cast<int>(j);
 
-                result.set(col, row, matrix.get(row, col));
+                result.set(col, row, m_data[row][col]);
             }
         }
 
         return result;
     }
+
+    inline double determinant() const;
 
 private:
 
@@ -155,6 +156,22 @@ private:
     double m_data[rows][cols];
 
 };
+
+// 2x2 specializations
+template<>
+inline double Matrix<2, 2>::determinant() const {
+    // [a b]
+    // [c d]
+    //
+    // determinant = a*d - b*c
+
+    double ad = m_data[0][0] * m_data[1][1];
+    double bc = m_data[0][1] * m_data[1][0];
+
+    double result = ad - bc;
+
+    return result;
+}
 
 // 4x4 specializations
 template<>

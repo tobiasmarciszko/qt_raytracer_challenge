@@ -14,7 +14,6 @@ SOURCES += main.cpp \
     point.cpp \
     vector.cpp \
     color.cpp \
-    canvas.cpp \
     mainwindow.cpp \
     helper.cpp \
     glwidget.cpp \

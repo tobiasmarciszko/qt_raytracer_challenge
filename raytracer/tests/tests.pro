@@ -32,8 +32,7 @@ SOURCES += \
     ../main/tuple.cpp \
     ../main/point.cpp \
     ../main/vector.cpp \
-    ../main/color.cpp \
-    ../main/canvas.cpp
+    ../main/color.cpp
 
 HEADERS += \
     ../main/tuple.h \

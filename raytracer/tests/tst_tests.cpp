@@ -52,6 +52,7 @@ private Q_SLOTS:
     void testMultiplicationWithIdentityMatrix();
     void testMatrixTranspose();
     void testMatrixTransposeIdentity();
+    void testMatrix2x2Determinant();
 };
 
 Tests::Tests()
@@ -298,7 +299,7 @@ void Tests::testColorHadamard() {
 }
 
 void Tests::testCanvas() {
-    Canvas c = Canvas(10, 20);
+    Canvas<10,20> c;
     Color red = Color(1, 0, 0);
 
     c.write_pixel(0, 0, red);
@@ -447,7 +448,7 @@ void Tests::testMatrixTranspose() {
                 3,0,5,5,
                 0,8,3,8);
 
-    const auto result = Matrix<4,4>::transpose(A);
+    const auto result = A.transpose();
 
     QVERIFY(result == expected);
 }
@@ -456,8 +457,20 @@ void Tests::testMatrixTransposeIdentity()
 {
     // Transposing the identity matrix should be the... identity matrix! :)
 
-    const auto result = Matrix<4,4>::transpose(identity_matrix);
+    const auto result = identity_matrix.transpose();
     QVERIFY(identity_matrix == result);
+}
+
+void Tests::testMatrix2x2Determinant()
+{
+    const auto A = Matrix<2,2>(
+                1, 5,
+                -3, 2);
+
+    const auto expected = 17;
+    const auto result = A.determinant();
+
+    QVERIFY(equal(result, expected));
 }
 
 QTEST_APPLESS_MAIN(Tests)

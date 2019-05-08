@@ -19,7 +19,7 @@ struct environment {
 static projectile p(Point(0,1,0), Vector(10,100,0).normalize());
 static environment e(Vector(0, -0.0098, 0), Vector(0.01, 0, 0));
 
-raytracer::raytracer() : m_canvas(Canvas(320,240))
+raytracer::raytracer() : m_canvas(Canvas<320,240>())
 {
     // Initialize framebuffer
     framebuffer = QImage(320, 240, QImage::Format_RGB32);

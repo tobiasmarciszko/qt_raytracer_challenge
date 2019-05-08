@@ -14,7 +14,7 @@ public slots:
     virtual void update();
 
 private:
-    Canvas m_canvas;
+    Canvas<320,240> m_canvas;
 };
 
 #endif // RAYTRACER_H
