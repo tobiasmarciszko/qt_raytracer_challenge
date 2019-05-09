@@ -117,7 +117,7 @@ public:
 
         for (size_t i = 0; i < m_rows; i++) {
             for (size_t j = 0; j < m_cols; j++) {
-                if (m_data[i][j] != matrix.get(i, j)) return false;
+                if (!equal(m_data[i][j], matrix.get(i, j))) return false;
             }
         }
 
@@ -202,6 +202,24 @@ public:
 
     inline bool invertible() const {
         return determinant() != 0;
+    }
+
+    inline Matrix<rows, cols> inverse() const {
+        Matrix<rows, cols> result;
+        const auto det = determinant();
+
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                const int row = static_cast<int>(i);
+                const int col = static_cast<int>(j);
+
+                const auto c = cofactor(row, col);
+
+                result.set(col, row, c / det);
+            }
+        }
+
+        return result;
     }
 
 private:
