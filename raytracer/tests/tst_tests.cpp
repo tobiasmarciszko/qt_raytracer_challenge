@@ -56,6 +56,7 @@ private Q_SLOTS:
     void test2x2SubMatrix();
     void test3x3SubMatrix();
     void testMinor();
+    void testCofactor();
 };
 
 Tests::Tests() = default;
@@ -525,6 +526,19 @@ void Tests::testMinor()
 
     QVERIFY(equal(expected, determinant));
     QVERIFY(equal(expected, minor));
+}
+
+void Tests::testCofactor()
+{
+    const auto A = Matrix<3,3>(
+                3,5,0,
+                2,-1,-7,
+                6,-1,5);
+
+    QVERIFY(equal(A.minor(0,0), -12));
+    QVERIFY(equal(A.cofactor(0,0), -12));
+    QVERIFY(equal(A.minor(1,0), 25));
+    QVERIFY(equal(A.cofactor(1,0), -25));
 }
 
 QTEST_APPLESS_MAIN(Tests)

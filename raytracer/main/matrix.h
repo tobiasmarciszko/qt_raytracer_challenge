@@ -179,6 +179,19 @@ public:
         return sub.determinant();
     }
 
+    double cofactor(const int row, const int column) const {
+        auto minorValue = minor(row, column);
+
+        // Cofactor is the same as the minor expected:
+        // If row+column is an odd number, negate!
+
+        if ((row + column) % 2 != 0) {
+            minorValue *= -1;
+        }
+
+        return minorValue;
+    }
+
 private:
 
     size_t m_rows = rows;
