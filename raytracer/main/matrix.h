@@ -146,7 +146,15 @@ public:
         return result;
     }
 
-    inline double determinant() const;
+    inline double determinant() const {
+        double det = 0;
+        for (size_t i = 0; i < cols; i++) {
+            const int col = static_cast<int>(i);
+            det += m_data[0][col] * cofactor(0, col);
+        }
+
+        return det;
+    }
 
     inline Matrix<rows-1, cols-1> submatrix(const int rowToRemove, const int colToRemove) const {
         Matrix<rows-1, cols-1> result;

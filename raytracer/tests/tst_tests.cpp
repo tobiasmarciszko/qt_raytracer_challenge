@@ -57,6 +57,8 @@ private Q_SLOTS:
     void test3x3SubMatrix();
     void testMinor();
     void testCofactor();
+    void testMatrix3x3Determinant();
+    void testMatrix4x4Determinant();
 };
 
 Tests::Tests() = default;
@@ -539,6 +541,34 @@ void Tests::testCofactor()
     QVERIFY(equal(A.cofactor(0,0), -12));
     QVERIFY(equal(A.minor(1,0), 25));
     QVERIFY(equal(A.cofactor(1,0), -25));
+}
+
+void Tests::testMatrix3x3Determinant()
+{
+    const auto A = Matrix<3,3>(
+                1,2,6,
+                -5,8,-4,
+                2,6,4);
+
+    QVERIFY(equal(A.cofactor(0,0), 56));
+    QVERIFY(equal(A.cofactor(0,1), 12));
+    QVERIFY(equal(A.cofactor(0,2), -46));
+    QVERIFY(equal(A.determinant(), -196));
+}
+
+void Tests::testMatrix4x4Determinant()
+{
+    const auto A = Matrix<4,4>(
+                -2,-8,3,5,
+                -3,1,7,3,
+                1,2,-9,6,
+                -6,7,7,-9);
+
+    QVERIFY(equal(A.cofactor(0,0), 690));
+    QVERIFY(equal(A.cofactor(0,1), 447));
+    QVERIFY(equal(A.cofactor(0,2), 210));
+    QVERIFY(equal(A.cofactor(0,3), 51));
+    QVERIFY(equal(A.determinant(), -4071));
 }
 
 QTEST_APPLESS_MAIN(Tests)
