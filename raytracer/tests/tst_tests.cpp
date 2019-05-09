@@ -59,6 +59,8 @@ private Q_SLOTS:
     void testCofactor();
     void testMatrix3x3Determinant();
     void testMatrix4x4Determinant();
+    void testInvertible();
+    void testNonInvertible();
 };
 
 Tests::Tests() = default;
@@ -569,6 +571,30 @@ void Tests::testMatrix4x4Determinant()
     QVERIFY(equal(A.cofactor(0,2), 210));
     QVERIFY(equal(A.cofactor(0,3), 51));
     QVERIFY(equal(A.determinant(), -4071));
+}
+
+void Tests::testInvertible()
+{
+    const auto A = Matrix<4,4>(
+                6,4,4,4,
+                5,5,7,6,
+                4,-9,3,-7,
+                9,1,7,-6);
+
+    QVERIFY(equal(A.determinant(), -2120));
+    QVERIFY(A.invertible());
+}
+
+void Tests::testNonInvertible()
+{
+    const auto A = Matrix<4,4>(
+                -4,2,-2,-3,
+                9,6,2,6,
+                0,-5,1,-5,
+                0,0,0,0);
+
+    QVERIFY(equal(A.determinant(), 0));
+    QVERIFY(A.invertible() == false);
 }
 
 QTEST_APPLESS_MAIN(Tests)

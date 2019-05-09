@@ -182,12 +182,12 @@ public:
     }
 
     #undef minor
-    double minor(const int row, const int column) const {
+    inline double minor(const int row, const int column) const {
         const auto sub = submatrix(row, column);
         return sub.determinant();
     }
 
-    double cofactor(const int row, const int column) const {
+    inline double cofactor(const int row, const int column) const {
         auto minorValue = minor(row, column);
 
         // Cofactor is the same as the minor expected:
@@ -198,6 +198,10 @@ public:
         }
 
         return minorValue;
+    }
+
+    inline bool invertible() const {
+        return determinant() != 0;
     }
 
 private:
