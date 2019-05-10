@@ -286,4 +286,14 @@ static const Matrix<4,4> identity_matrix = Matrix<4,4>(
         0,0,1,0,
         0,0,0,1);
 
+static Matrix<4,4> translation(const int x,
+                               const int y,
+                               const int z) {
+    return Matrix<4,4>(
+                1,0,0,x,
+                0,1,0,y,
+                0,0,1,z,
+                0,0,0,1);
+}
+
 #endif // MATRIX_H

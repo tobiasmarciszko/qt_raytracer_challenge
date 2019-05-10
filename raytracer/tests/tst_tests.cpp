@@ -65,6 +65,12 @@ private Q_SLOTS:
     void testInverseAnother();
     void testInverseThird();
     void testInverseMultiply();
+
+    // Chapter 4
+    void testMultiplyByTranslation();
+    void testMultiplyByInverseTranslation();
+    void testMultiplyTranslationWithVector();
+
 };
 
 Tests::Tests() = default;
@@ -678,6 +684,37 @@ void Tests::testInverseMultiply()
     const auto C = A * B;
 
     QVERIFY((C * B.inverse()) == A);
+}
+
+void Tests::testMultiplyByTranslation()
+{
+    const auto transform = translation(5, -3, 2);
+    const auto p = Point(-3, 4, 5);
+
+    const auto result = transform * p;
+
+    QVERIFY(result == Point(2, 1, 7));
+}
+
+void Tests::testMultiplyByInverseTranslation()
+{
+    const auto transform = translation(5, -3, 2);
+    const auto inv = transform.inverse();
+    const auto p = Point(-3, 4, 5);
+
+    const auto result = inv * p;
+
+    QVERIFY(result == Point(-8, 7, 3));
+}
+
+void Tests::testMultiplyTranslationWithVector()
+{
+    const auto transform = translation(5, -3, 2);
+    const auto v = Vector(-3, 4, 5);
+
+    const auto result = transform * v;
+
+    QVERIFY(result == v);
 }
 
 QTEST_APPLESS_MAIN(Tests)
