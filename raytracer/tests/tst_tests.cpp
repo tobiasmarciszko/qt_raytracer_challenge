@@ -67,10 +67,13 @@ private Q_SLOTS:
     void testInverseMultiply();
 
     // Chapter 4
-    void testMultiplyByTranslation();
-    void testMultiplyByInverseTranslation();
-    void testMultiplyTranslationWithVector();
-
+    void testTranslation();
+    void testInverseTranslation();
+    void testTranslateVector();
+    void testScalePoint();
+    void testScaleVector();
+    void testInverseScale();
+    void testReflection();
 };
 
 Tests::Tests() = default;
@@ -686,7 +689,7 @@ void Tests::testInverseMultiply()
     QVERIFY((C * B.inverse()) == A);
 }
 
-void Tests::testMultiplyByTranslation()
+void Tests::testTranslation()
 {
     const auto transform = translation(5, -3, 2);
     const auto p = Point(-3, 4, 5);
@@ -696,7 +699,7 @@ void Tests::testMultiplyByTranslation()
     QVERIFY(result == Point(2, 1, 7));
 }
 
-void Tests::testMultiplyByInverseTranslation()
+void Tests::testInverseTranslation()
 {
     const auto transform = translation(5, -3, 2);
     const auto inv = transform.inverse();
@@ -707,7 +710,7 @@ void Tests::testMultiplyByInverseTranslation()
     QVERIFY(result == Point(-8, 7, 3));
 }
 
-void Tests::testMultiplyTranslationWithVector()
+void Tests::testTranslateVector()
 {
     const auto transform = translation(5, -3, 2);
     const auto v = Vector(-3, 4, 5);
@@ -715,6 +718,47 @@ void Tests::testMultiplyTranslationWithVector()
     const auto result = transform * v;
 
     QVERIFY(result == v);
+}
+
+void Tests::testScalePoint()
+{
+    const auto transform = scaling(2, 3, 4);
+    const auto p = Point(-4, 6, 8);
+
+    const auto result = transform * p;
+
+    QVERIFY(result == Point(-8, 18, 32));
+}
+
+void Tests::testScaleVector()
+{
+    const auto transform = scaling(2, 3, 4);
+    const auto v = Vector(-4, 6, 8);
+
+    const auto result = transform * v;
+
+    QVERIFY(result == Vector(-8, 18, 32));
+}
+
+void Tests::testInverseScale()
+{
+    const auto transform = scaling(2, 3, 4);
+    const auto inv = transform.inverse();
+    const auto v = Vector(-4, 6, 8);
+
+    const auto result = inv * v;
+
+    QVERIFY(result == Vector(-2, 2, 2));
+}
+
+void Tests::testReflection()
+{
+    const auto transform = scaling(-1, 1, 1);
+    const auto p = Point(2, 3, 4);
+
+    const auto result = transform * p;
+
+    QVERIFY(result == Point(-2, 3, 4));
 }
 
 QTEST_APPLESS_MAIN(Tests)

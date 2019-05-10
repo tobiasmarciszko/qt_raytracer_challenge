@@ -286,6 +286,7 @@ static const Matrix<4,4> identity_matrix = Matrix<4,4>(
         0,0,1,0,
         0,0,0,1);
 
+// Transformation matrices
 static Matrix<4,4> translation(const int x,
                                const int y,
                                const int z) {
@@ -295,5 +296,16 @@ static Matrix<4,4> translation(const int x,
                 0,0,1,z,
                 0,0,0,1);
 }
+
+static Matrix<4,4> scaling(const int x,
+                           const int y,
+                           const int z) {
+    return Matrix<4,4>(
+                x,0,0,0,
+                0,y,0,0,
+                0,0,z,0,
+                0,0,0,1);
+}
+
 
 #endif // MATRIX_H
