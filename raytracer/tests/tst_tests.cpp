@@ -1,15 +1,12 @@
 #include <QString>
 #include <QtTest>
 #include <QDebug>
-#include <cmath>
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
 #include "color.h"
 #include "canvas.h"
 #include "matrix.h"
-
-const double pi = std::acos(-1);
 
 class Tests : public QObject
 {
@@ -776,59 +773,59 @@ void Tests::testReflection()
 void Tests::testRotateX()
 {
     const auto p = Point(0, 1, 0);
-    const auto half_quarter = rotation_x(pi / 4);
-    const auto full_quarter = rotation_x(pi / 2);
+    const auto half_quarter = rotation_x(M_PI_4);
+    const auto full_quarter = rotation_x(M_PI_2);
 
-    QVERIFY(half_quarter * p == Point(0, std::sqrt(2) / 2, std::sqrt(2) / 2));
+    QVERIFY(half_quarter * p == Point(0, M_SQRT2 / 2, M_SQRT2 / 2));
     QVERIFY(full_quarter * p == Point(0, 0, 1));
 }
 
 void Tests::testRotateInverseX()
 {
     const auto p = Point(0, 1, 0);
-    const auto half_quarter = rotation_x(pi / 4);
+    const auto half_quarter = rotation_x(M_PI_4);
     const auto inv = half_quarter.inverse();
 
-    QVERIFY(inv * p == Point(0, std::sqrt(2) / 2, - std::sqrt(2) / 2));
+    QVERIFY(inv * p == Point(0, M_SQRT2 / 2, - M_SQRT2 / 2));
 }
 
 void Tests::testRotateY()
 {
     const auto p = Point(0, 0, 1);
-    const auto half_quarter = rotation_y(pi / 4);
-    const auto full_quarter = rotation_y(pi / 2);
+    const auto half_quarter = rotation_y(M_PI_4);
+    const auto full_quarter = rotation_y(M_PI_2);
 
-    QVERIFY(half_quarter * p == Point(std::sqrt(2) / 2, 0, std::sqrt(2) / 2));
+    QVERIFY(half_quarter * p == Point(M_SQRT2 / 2, 0, M_SQRT2 / 2));
     QVERIFY(full_quarter * p == Point(1, 0, 0));
 }
 
 void Tests::testRotateInverseY()
 {
     const auto p = Point(0, 0, 1);
-    const auto half_quarter = rotation_y(pi / 4);
+    const auto half_quarter = rotation_y(M_PI_4);
     const auto inv = half_quarter.inverse();
 
-    QVERIFY(inv * p == Point(-std::sqrt(2) / 2, 0, std::sqrt(2) / 2));
+    QVERIFY(inv * p == Point(-M_SQRT2 / 2, 0, M_SQRT2 / 2));
 }
 
 
 void Tests::testRotateZ()
 {
     const auto p = Point(0, 1, 0);
-    const auto half_quarter = rotation_z(pi / 4);
-    const auto full_quarter = rotation_z(pi / 2);
+    const auto half_quarter = rotation_z(M_PI_4);
+    const auto full_quarter = rotation_z(M_PI_2);
 
-    QVERIFY(half_quarter * p == Point(-std::sqrt(2) / 2, std::sqrt(2) / 2, 0));
+    QVERIFY(half_quarter * p == Point(-M_SQRT2 / 2, M_SQRT2 / 2, 0));
     QVERIFY(full_quarter * p == Point(-1, 0, 0));
 }
 
 void Tests::testRotateInverseZ()
 {
     const auto p = Point(0, 1, 0);
-    const auto half_quarter = rotation_z(pi / 4);
+    const auto half_quarter = rotation_z(M_PI_4);
     const auto inv = half_quarter.inverse();
 
-    QVERIFY(inv * p == Point(std::sqrt(2) / 2, std::sqrt(2) / 2, 0));
+    QVERIFY(inv * p == Point(M_SQRT2 / 2, M_SQRT2 / 2, 0));
 }
 
 QTEST_APPLESS_MAIN(Tests)
