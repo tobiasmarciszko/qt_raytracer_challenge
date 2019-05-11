@@ -335,4 +335,13 @@ static Matrix<4,4> rotation_z(const double r) {
                 );
 }
 
+static Matrix<4,4> shearing(const double xy, const double xz,
+                            const double yx, const double yz,
+                            const double zx, const double zy) {
+    return Matrix<4,4>(
+                1,  xy, xz, 0,
+                yx, 1,  yz, 0,
+                zx, zy,  1, 0,
+                0,  0,   0, 1);
+}
 #endif // MATRIX_H

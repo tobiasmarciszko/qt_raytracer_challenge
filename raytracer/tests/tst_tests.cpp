@@ -83,6 +83,18 @@ private Q_SLOTS:
 
     void testRotateZ();
     void testRotateInverseZ();
+
+    void testShearingXY();
+    void testShearingXZ();
+
+    void testShearingYX();
+    void testShearingYZ();
+
+    void testShearingZX();
+    void testShearingZY();
+
+    void testTransformationSequence();
+    void testChainTransformationsInReverseOrder();
 };
 
 Tests::Tests() = default;
@@ -826,6 +838,85 @@ void Tests::testRotateInverseZ()
     const auto inv = half_quarter.inverse();
 
     QVERIFY(inv * p == Point(M_SQRT2 / 2, M_SQRT2 / 2, 0));
+}
+
+void Tests::testShearingXY()
+{
+    auto const transform = shearing(1, 0, 0, 0, 0, 0);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(5, 3, 4));
+}
+
+void Tests::testShearingXZ()
+{
+    auto const transform = shearing(0, 1, 0, 0, 0, 0);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(6, 3, 4));
+}
+
+void Tests::testShearingYX()
+{
+    auto const transform = shearing(0, 0, 1, 0, 0, 0);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(2, 5, 4));
+}
+
+void Tests::testShearingYZ()
+{
+    auto const transform = shearing(0, 0, 0, 1, 0, 0);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(2, 7, 4));
+}
+
+void Tests::testShearingZX()
+{
+    auto const transform = shearing(0, 0, 0, 0, 1, 0);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(2, 3, 6));
+}
+
+void Tests::testShearingZY()
+{
+    auto const transform = shearing(0, 0, 0, 0, 0, 1);
+    auto const p = Point(2, 3, 4);
+
+    QVERIFY(transform * p == Point(2, 3, 7));
+}
+
+void Tests::testTransformationSequence()
+{
+    const auto p = Point(1, 0, 1);
+    const auto A = rotation_x(M_PI_2);
+    const auto B = scaling(5, 5, 5);
+    const auto C = translation(10, 5, 7);
+
+    // apply rotation
+    const auto p2 = A * p;
+    QVERIFY(p2 == Point(1, -1, 0));
+
+    // apply scaling
+    const auto p3 = B * p2;
+    QVERIFY(p3 == Point(5, -5, 0));
+
+    // apply translation
+    const auto p4 = C * p3;
+    QVERIFY(p4 == Point(15, 0, 7));
+}
+
+void Tests::testChainTransformationsInReverseOrder()
+{
+    const auto p = Point(1, 0, 1);
+    const auto A = rotation_x(M_PI_2);
+    const auto B = scaling(5, 5, 5);
+    const auto C = translation(10, 5, 7);
+
+    const auto T = C * B * A;
+    QVERIFY((T * p) == Point(15, 0, 7));
 }
 
 QTEST_APPLESS_MAIN(Tests)
