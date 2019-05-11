@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <cstdlib>
+#include <cmath>
 #include "tuple.h"
 
 template <size_t rows, size_t cols>
@@ -307,5 +308,13 @@ static Matrix<4,4> scaling(const int x,
                 0,0,0,1);
 }
 
+static Matrix<4,4> rotation_x(const double r) {
+    return Matrix<4,4>(
+                1, 0, 0, 0,
+                0, std::cos(r), -std::sin(r), 0,
+                0, std::sin(r), std::cos(r), 0,
+                0, 0, 0, 1
+                );
+}
 
 #endif // MATRIX_H

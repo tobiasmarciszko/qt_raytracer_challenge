@@ -1,12 +1,15 @@
 #include <QString>
 #include <QtTest>
 #include <QDebug>
+#include <cmath>
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
 #include "color.h"
 #include "canvas.h"
 #include "matrix.h"
+
+const double pi = std::acos(-1);
 
 class Tests : public QObject
 {
@@ -74,6 +77,9 @@ private Q_SLOTS:
     void testScaleVector();
     void testInverseScale();
     void testReflection();
+
+    void testRotateX();
+    void testRotateInverseX();
 };
 
 Tests::Tests() = default;
@@ -759,6 +765,25 @@ void Tests::testReflection()
     const auto result = transform * p;
 
     QVERIFY(result == Point(-2, 3, 4));
+}
+
+void Tests::testRotateX()
+{
+    const auto p = Point(0, 1, 0);
+    const auto half_quarter = rotation_x(pi / 4);
+    const auto full_quarter = rotation_x(pi / 2);
+
+    QVERIFY(half_quarter * p == Point(0, std::sqrt(2) / 2, std::sqrt(2) / 2));
+    QVERIFY(full_quarter * p == Point(0, 0, 1));
+}
+
+void Tests::testRotateInverseX()
+{
+    const auto p = Point(0, 1, 0);
+    const auto half_quarter = rotation_x(pi / 4);
+    const auto inv = half_quarter.inverse();
+
+    QVERIFY(inv * p == Point(0, std::sqrt(2) / 2, - std::sqrt(2) / 2));
 }
 
 QTEST_APPLESS_MAIN(Tests)
