@@ -14,7 +14,15 @@ public slots:
     void update() override;
 
 private:
-    Canvas<320,240> m_canvas;
+    void projectileEffect();
+    void clockEffect();
+
+    // Boilerplate
+private:
+    void copyCanvasToFramebuffer();
+
+private:
+        Canvas<320,240> m_canvas;
 };
 
 #endif // RAYTRACER_H

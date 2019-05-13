@@ -281,14 +281,14 @@ inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const
     return result;
 }
 
-static const Matrix<4,4> identity_matrix = Matrix<4,4>(
+const Matrix<4,4> identity_matrix = Matrix<4,4>(
         1,0,0,0,
         0,1,0,0,
         0,0,1,0,
         0,0,0,1);
 
 // Transformation matrices
-static Matrix<4,4> translation(const int x,
+inline Matrix<4,4> translation(const int x,
                                const int y,
                                const int z) {
     return Matrix<4,4>(
@@ -298,7 +298,7 @@ static Matrix<4,4> translation(const int x,
                 0,0,0,1);
 }
 
-static Matrix<4,4> scaling(const int x,
+inline Matrix<4,4> scaling(const int x,
                            const int y,
                            const int z) {
     return Matrix<4,4>(
@@ -308,7 +308,7 @@ static Matrix<4,4> scaling(const int x,
                 0,0,0,1);
 }
 
-static Matrix<4,4> rotation_x(const double r) {
+inline Matrix<4,4> rotation_x(const double r) {
     return Matrix<4,4>(
                 1, 0, 0, 0,
                 0, std::cos(r), -std::sin(r), 0,
@@ -317,7 +317,7 @@ static Matrix<4,4> rotation_x(const double r) {
                 );
 }
 
-static Matrix<4,4> rotation_y(const double r) {
+inline Matrix<4,4> rotation_y(const double r) {
     return Matrix<4,4>(
                 std::cos(r), 0, std::sin(r), 0,
                 0, 1, 0, 0,
@@ -326,7 +326,7 @@ static Matrix<4,4> rotation_y(const double r) {
                 );
 }
 
-static Matrix<4,4> rotation_z(const double r) {
+inline Matrix<4,4> rotation_z(const double r) {
     return Matrix<4,4>(
                 std::cos(r), -std::sin(r), 0, 0,
                 std::sin(r), std::cos(r), 0, 0,
@@ -335,7 +335,7 @@ static Matrix<4,4> rotation_z(const double r) {
                 );
 }
 
-static Matrix<4,4> shearing(const double xy, const double xz,
+inline Matrix<4,4> shearing(const double xy, const double xz,
                             const double yx, const double yz,
                             const double zx, const double zy) {
     return Matrix<4,4>(
