@@ -256,8 +256,8 @@
    <widget class="GLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>10</y>
+      <x>110</x>
+      <y>50</y>
       <width>320</width>
       <height>240</height>
      </rect>
@@ -267,8 +267,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
-      <width>321</width>
+      <y>317</y>
+      <width>531</width>
       <height>101</height>
      </rect>
     </property>
@@ -306,9 +306,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>6</x>
-       <y>50</y>
-       <width>311</width>
+       <x>200</x>
+       <y>30</y>
+       <width>341</width>
        <height>22</height>
       </rect>
      </property>
@@ -358,8 +358,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>360</y>
-      <width>321</width>
+      <y>387</y>
+      <width>521</width>
       <height>101</height>
      </rect>
     </property>
@@ -385,9 +385,9 @@
     <widget class="QSlider" name="horizontalSlider_2">
      <property name="geometry">
       <rect>
-       <x>7</x>
-       <y>50</y>
-       <width>311</width>
+       <x>200</x>
+       <y>30</y>
+       <width>331</width>
        <height>22</height>
       </rect>
      </property>
@@ -433,6 +433,32 @@
      </property>
     </widget>
    </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>99</x>
+      <y>39</y>
+      <width>341</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 0, 0);
+border: 1px solid lightgray; 
+border-radius: 10px;
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>groupBox_2</zorder>
+   <zorder>openGLWidget</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
