@@ -78,9 +78,8 @@ void raytracer::writePixel(const int x, const int y, const Color& c) {
     // Since we are using the canvas to populate our final image, and possible changing colors
     // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
 
-    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), Color(1.0, 0.5, 1.0));
-    const auto r = static_cast<int>(c.red() * 255);
-    const auto g = static_cast<int>(c.green() * 255);
-    const auto b = static_cast<int>(c.blue() * 255);
-    framebuffer.setPixel(x, y, qRgb(r, g, b));
+    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
+    QColor color;
+    color.setRgbF(c.red(), c.green(), c.blue());
+    framebuffer.setPixelColor(x, y, color);
 }
