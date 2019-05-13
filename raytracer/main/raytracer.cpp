@@ -56,7 +56,7 @@ void raytracer::clockEffect() {
 
     // X and Z is in the 2D plane, Y is depth
 
-    tick++;
+    // tick++;
     m_canvas.fill(Color(0, 0, 0));
 
     for (int i = 0; i < 12; i++) {
@@ -69,7 +69,7 @@ void raytracer::clockEffect() {
 
         const auto x = point.x();
         const auto y = point.z();
-        m_canvas.write_pixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
+        m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), Color(1.0, 1.0, 1.0));
     }
 }
 
