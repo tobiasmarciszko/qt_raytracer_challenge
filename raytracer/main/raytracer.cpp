@@ -4,6 +4,7 @@
 #include "point.h"
 #include "vector.h"
 #include "matrix.h"
+#include <QRgb>
 
 struct projectile {
     projectile(Point pos, Vector v) : position(pos), velocity(v) {}
@@ -31,8 +32,6 @@ void raytracer::update()
 {
     // projectileEffect();
     clockEffect();
-
-    copyCanvasToFramebuffer();
 }
 
 void raytracer::projectileEffect() {
@@ -48,7 +47,7 @@ void raytracer::projectileEffect() {
         int y = 240 - static_cast<int>(p.position.y());
         y = y % 239;
         if (y < 0) y = 0;
-        m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), Color(1.0, 0.5, 1.0));
+        writePixel(x, y, Color(1.0, 0.5, 1.0));
     }
 }
 
@@ -56,8 +55,9 @@ void raytracer::clockEffect() {
 
     // X and Z is in the 2D plane, Y is depth
 
-    // tick++;
+    tick++;
     m_canvas.fill(Color(0, 0, 0));
+    framebuffer.fill(qRgb(0, 0, 0));
 
     for (int i = 0; i < 12; i++) {
         Point point = Point(0, 0, 1);
@@ -69,18 +69,18 @@ void raytracer::clockEffect() {
 
         const auto x = point.x();
         const auto y = point.z();
-        m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), Color(1.0, 1.0, 1.0));
+        writePixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
     }
 }
 
-void raytracer::copyCanvasToFramebuffer() {
-    for (unsigned int i = 0; i < 320; ++i) {
-        for (unsigned int j = 0; j < 240; ++j) {
-            const Color c = m_canvas.pixel_at(i, j);
-            const auto r = static_cast<int>(c.red() * 255);
-            const auto g = static_cast<int>(c.green() * 255);
-            const auto b = static_cast<int>(c.blue() * 255);
-            framebuffer.setPixel(static_cast<int>(i), static_cast<int>(j), qRgb(r, g, b));
-        }
-    }
+void raytracer::writePixel(const int x, const int y, const Color& c) {
+
+    // Since we are using the canvas to populate our final image, and possible changing colors
+    // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
+
+    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), Color(1.0, 0.5, 1.0));
+    const auto r = static_cast<int>(c.red() * 255);
+    const auto g = static_cast<int>(c.green() * 255);
+    const auto b = static_cast<int>(c.blue() * 255);
+    framebuffer.setPixel(x, y, qRgb(r, g, b));
 }

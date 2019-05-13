@@ -13,13 +13,14 @@ public:
 public slots:
     void update() override;
 
+    // Effects
 private:
     void projectileEffect();
     void clockEffect();
 
-    // Boilerplate
+    // Helpers
 private:
-    void copyCanvasToFramebuffer();
+    void writePixel(const int x, const int y, const Color& color);
 
 private:
         Canvas<320,240> m_canvas;
