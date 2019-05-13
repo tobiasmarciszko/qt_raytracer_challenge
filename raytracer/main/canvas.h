@@ -9,11 +9,7 @@ class Canvas
 {
 public:
     Canvas() {
-        for (unsigned int i = 0; i < m_width; ++i) {
-            for (unsigned int j = 0; j < m_height; ++j) {
-                 m_pixels[i][j] = Color(0.2,0.2,0.2);
-            }
-        }
+        fill(Color(0.2,0.2,0.2));
     }
 
     void write_pixel(unsigned int x, unsigned int y, const Color& color) {
@@ -22,6 +18,14 @@ public:
 
     Color pixel_at(unsigned int x, unsigned int y) const {
         return m_pixels[x][y];
+    }
+
+    void fill(const Color& color) {
+        for (unsigned int i = 0; i < m_width; ++i) {
+            for (unsigned int j = 0; j < m_height; ++j) {
+                 m_pixels[i][j] = color;
+            }
+        }
     }
 
 private:
