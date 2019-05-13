@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QTimer>
+#include <QDesktopWidget>
+#include <QScreen>
 #include "helper.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,7 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
     screenRefresh->start(1000/refreshRate);
     ui->fpsLabel->setText(QString::number(refreshRate) + " FPS");
 
-
+    // Center application window on current screen
+    const QScreen *screen = QApplication::screens()[0];
+    auto geo = geometry();
+    geo.moveCenter(screen->geometry().center());
+    setGeometry(geo);
 }
 
 MainWindow::~MainWindow()
