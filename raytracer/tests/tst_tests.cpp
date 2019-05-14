@@ -8,6 +8,7 @@
 #include "canvas.h"
 #include "matrix.h"
 #include "ray.h"
+#include "sphere.h"
 
 class Tests : public QObject
 {
@@ -101,6 +102,13 @@ private Q_SLOTS:
 
     void testRayCreation();
     void testRayPosition();
+
+    void testRayIntersectsSphereAtTwoPoints();
+    void testRayIntersectsSphereAtTangent();
+    void testRayMissesSphere();
+    void testRayOriginatesInsideSphere();
+    void testRayIsInFrontOfSphere();
+
 };
 
 Tests::Tests() = default;
@@ -944,6 +952,64 @@ void Tests::testRayPosition()
     QVERIFY(r.position(1) == Point(3, 3, 4));
     QVERIFY(r.position(-1) == Point(1, 3, 4));
     QVERIFY(r.position(2.5) == Point(4.5, 3, 4));
+}
+
+void Tests::testRayIntersectsSphereAtTwoPoints()
+{
+    const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
+    const auto s = Sphere();
+
+    const auto xs = s.intersect(r);
+
+    QVERIFY(xs.size() == 2);
+    QVERIFY(equal(xs.at(0), 4.0));
+    QVERIFY(equal(xs.at(1), 6.0));
+}
+
+void Tests::testRayIntersectsSphereAtTangent()
+{
+    const auto r = Ray(Point(0, 1, -5), Vector(0, 0, 1));
+    const auto s = Sphere();
+
+    const auto xs = s.intersect(r);
+
+    QVERIFY(xs.size() == 2);
+    QVERIFY(equal(xs.at(0), 5.0));
+    QVERIFY(equal(xs.at(1), 5.0));
+}
+
+void Tests::testRayMissesSphere()
+{
+    const auto r = Ray(Point(0, 2, -5), Vector(0, 0, 1));
+    const auto s = Sphere();
+
+    const auto xs = s.intersect(r);
+
+    QVERIFY(xs.empty());
+}
+
+void Tests::testRayOriginatesInsideSphere()
+{
+    const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
+    const auto s = Sphere();
+
+    const auto xs = s.intersect(r);
+
+    QVERIFY(xs.size() == 2);
+    QVERIFY(equal(xs.at(0), -1.0));
+    QVERIFY(equal(xs.at(1), 1.0));
+}
+
+void Tests::testRayIsInFrontOfSphere()
+{
+    const auto r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
+    const auto s = Sphere();
+
+    const auto xs = s.intersect(r);
+
+    QVERIFY(xs.size() == 2);
+    QVERIFY(equal(xs.at(0), -6.0));
+    QVERIFY(equal(xs.at(1), -4.0));
 }
 
 QTEST_APPLESS_MAIN(Tests)

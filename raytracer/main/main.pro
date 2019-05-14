@@ -11,6 +11,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     ray.cpp \
+    sphere.cpp \
     tuple.cpp \
     point.cpp \
     vector.cpp \
@@ -33,6 +34,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 HEADERS += \
     ray.h \
+    sphere.h \
     tuple.h \
     point.h \
     vector.h \

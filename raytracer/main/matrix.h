@@ -281,67 +281,71 @@ inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const
     return result;
 }
 
-const Matrix<4,4> identity_matrix = Matrix<4,4>(
-        1,0,0,0,
-        0,1,0,0,
-        0,0,1,0,
-        0,0,0,1);
+const auto identity_matrix = Matrix<4,4>(
+                                        1,0,0,0,
+                                        0,1,0,0,
+                                        0,0,1,0,
+                                        0,0,0,1);
 
 // Transformation matrices
-inline Matrix<4,4> translation(const int x,
-                               const int y,
-                               const int z) {
-    return Matrix<4,4>(
-                1,0,0,x,
-                0,1,0,y,
-                0,0,1,z,
-                0,0,0,1);
+inline Matrix<4,4> translation(const double x,
+                               const double y,
+                               const double z) {
+    return {
+            1,0,0,x,
+            0,1,0,y,
+            0,0,1,z,
+            0,0,0,1
+    };
+
 }
 
-inline Matrix<4,4> scaling(const int x,
-                           const int y,
-                           const int z) {
-    return Matrix<4,4>(
-                x,0,0,0,
-                0,y,0,0,
-                0,0,z,0,
-                0,0,0,1);
+inline Matrix<4,4> scaling(const double x,
+                           const double y,
+                           const double z) {
+    return {
+            x,0,0,0,
+            0,y,0,0,
+            0,0,z,0,
+            0,0,0,1
+    };
 }
 
 inline Matrix<4,4> rotation_x(const double r) {
-    return Matrix<4,4>(
-                1, 0, 0, 0,
-                0, std::cos(r), -std::sin(r), 0,
-                0, std::sin(r), std::cos(r), 0,
-                0, 0, 0, 1
-                );
+    return {
+            1, 0, 0, 0,
+            0, std::cos(r), -std::sin(r), 0,
+            0, std::sin(r), std::cos(r), 0,
+            0, 0, 0, 1
+    };
 }
 
 inline Matrix<4,4> rotation_y(const double r) {
-    return Matrix<4,4>(
-                std::cos(r), 0, std::sin(r), 0,
-                0, 1, 0, 0,
-                -std::sin(r), 0, std::cos(r), 0,
-                0, 0, 0, 1
-                );
+    return {
+            std::cos(r), 0, std::sin(r), 0,
+            0, 1, 0, 0,
+            -std::sin(r), 0, std::cos(r), 0,
+            0, 0, 0, 1
+    };
 }
 
 inline Matrix<4,4> rotation_z(const double r) {
-    return Matrix<4,4>(
-                std::cos(r), -std::sin(r), 0, 0,
-                std::sin(r), std::cos(r), 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-                );
+    return {
+            std::cos(r), -std::sin(r), 0, 0,
+            std::sin(r), std::cos(r), 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+    };
 }
 
 inline Matrix<4,4> shearing(const double xy, const double xz,
                             const double yx, const double yz,
                             const double zx, const double zy) {
-    return Matrix<4,4>(
-                1,  xy, xz, 0,
-                yx, 1,  yz, 0,
-                zx, zy,  1, 0,
-                0,  0,   0, 1);
+    return {
+            1,  xy, xz, 0,
+            yx, 1,  yz, 0,
+            zx, zy,  1, 0,
+            0,  0,   0, 1
+    };
 }
 #endif // MATRIX_H

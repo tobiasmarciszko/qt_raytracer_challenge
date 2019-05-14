@@ -20,7 +20,7 @@ private:
 
     // Helpers
 private:
-    void writePixel(const int x, const int y, const Color& color);
+    void writePixel(int x, int y, const Color& color);
 
 private:
         Canvas<320,240> m_canvas;
