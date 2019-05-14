@@ -32,7 +32,8 @@ SOURCES += \
     ../main/tuple.cpp \
     ../main/point.cpp \
     ../main/vector.cpp \
-    ../main/color.cpp
+    ../main/color.cpp \
+    ../main/ray.cpp
 
 HEADERS += \
     ../main/tuple.h \
@@ -40,7 +41,8 @@ HEADERS += \
     ../main/vector.h \
     ../main/color.h \
     ../main/canvas.h \
-    ../main/matrix.h
+    ../main/matrix.h \
+    ../main/ray.h
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 INCLUDEPATH += ../main/

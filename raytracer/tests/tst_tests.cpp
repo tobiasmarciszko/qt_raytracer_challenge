@@ -7,6 +7,7 @@
 #include "color.h"
 #include "canvas.h"
 #include "matrix.h"
+#include "ray.h"
 
 class Tests : public QObject
 {
@@ -95,6 +96,11 @@ private Q_SLOTS:
 
     void testTransformationSequence();
     void testChainTransformationsInReverseOrder();
+
+    // Chapter 5
+
+    void testRayCreation();
+    void testRayPosition();
 };
 
 Tests::Tests() = default;
@@ -917,6 +923,27 @@ void Tests::testChainTransformationsInReverseOrder()
 
     const auto T = C * B * A;
     QVERIFY((T * p) == Point(15, 0, 7));
+}
+
+void Tests::testRayCreation()
+{
+    const auto origin = Point(1, 2, 3);
+    const auto direction = Vector(4, 5, 6);
+
+    const auto r = Ray(origin, direction);
+
+    QVERIFY(r.origin() == origin);
+    QVERIFY(r.direction() == direction);
+}
+
+void Tests::testRayPosition()
+{
+    const auto r = Ray(Point(2, 3, 4), Vector(1, 0, 0));
+
+    QVERIFY(r.position(0) == Point(2, 3, 4));
+    QVERIFY(r.position(1) == Point(3, 3, 4));
+    QVERIFY(r.position(-1) == Point(1, 3, 4));
+    QVERIFY(r.position(2.5) == Point(4.5, 3, 4));
 }
 
 QTEST_APPLESS_MAIN(Tests)
