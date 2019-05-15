@@ -6,8 +6,10 @@
 #include "ray.h"
 #include "point.h"
 #include "vector.h"
+#include "object.h"
+#include "intersection.h"
 
-class Sphere
+class Sphere : public Object
 {
 public:
     Sphere() = default;
@@ -29,6 +31,10 @@ public:
         const double t1 = (-b - std::sqrt(discriminant)) / ( 2.0 * a);
         const double t2 = (-b + std::sqrt(discriminant)) / ( 2.0 * a);
         return {t1, t2};
+    }
+
+    inline Intersection intersection(double t) {
+        return Intersection(t, *this);
     }
 };
 
