@@ -10,11 +10,11 @@ public:
         m_t(t),
         m_object(object) {}
 
-    constexpr inline double t() const {
+    inline double t() const {
         return m_t;
     }
 
-    constexpr inline Object object() const {
+    inline Object object() const {
         return m_object;
     }
 

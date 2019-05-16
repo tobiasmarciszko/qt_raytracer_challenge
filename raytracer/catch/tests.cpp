@@ -908,3 +908,18 @@ TEST_CASE("testRayIsInFrontOfSphere")
     REQUIRE(equal(xs.at(0), -6.0));
     REQUIRE(equal(xs.at(1), -4.0));
 }
+
+TEST_CASE("Spheres should have unique ids") {
+    const auto s1 = Sphere();
+    const auto s2 = Sphere();
+
+    REQUIRE(s1.id() != s2.id());
+}
+
+TEST_CASE("An intersection encapsulates t and object") {
+        Object s = Sphere();
+        const auto i = Intersection(3.5, s);
+        REQUIRE(equal(i.t(), 3.5));
+        REQUIRE(s == i.object());
+}
+
