@@ -2,6 +2,7 @@
 #define INTERSECTION_H
 
 #include "object.h"
+#include <vector>
 
 class Intersection
 {
@@ -22,5 +23,12 @@ private:
     double m_t;
     Object m_object;
 };
+
+
+inline std::vector<Intersection> intersections(
+        const Intersection& i1,
+        const Intersection& i2) {
+    return {i1, i2};
+}
 
 #endif // INTERSECTION_H

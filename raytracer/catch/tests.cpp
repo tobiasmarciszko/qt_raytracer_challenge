@@ -917,9 +917,20 @@ TEST_CASE("Spheres should have unique ids") {
 }
 
 TEST_CASE("An intersection encapsulates t and object") {
-        Object s = Sphere();
+        const auto s = Sphere();
         const auto i = Intersection(3.5, s);
         REQUIRE(equal(i.t(), 3.5));
         REQUIRE(s == i.object());
 }
 
+TEST_CASE("Aggregating intersections") {
+    const auto s = Sphere();
+    const auto i1 = Intersection(1, s);
+    const auto i2 = Intersection(2, s);
+
+    const auto xs = intersections(i1, i2);
+
+    REQUIRE(xs.size() == 2);
+    REQUIRE(equal(xs.at(0).t(), 1));
+    REQUIRE(equal(xs.at(1).t(), 2));
+}
