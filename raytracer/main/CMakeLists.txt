@@ -15,7 +15,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-# find_package(Qt5Quick REQUIRED)
 
 add_executable(raytracer
         canvas.h
