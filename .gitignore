@@ -1,4 +1,2 @@
-build-raytracer-Desktop_Qt_5_12_3_GCC_64bit-Debug/
-build-raytracer-Desktop_Qt_5_12_3_GCC_64bit-Profile/
-build-raytracer-Desktop_Qt_5_12_3_GCC_64bit-Release/
+build-*/
 *.o

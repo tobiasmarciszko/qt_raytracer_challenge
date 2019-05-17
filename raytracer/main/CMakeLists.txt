@@ -20,6 +20,20 @@ find_package(Qt5Widgets REQUIRED)
 
 add_executable(raytracer
         effect.h
+        canvas.h
+        color.h
+        glwidget.h
+        helper.h
+        intersection.h
+        mainwindow.h
+        matrix.h
+        object.h
+        point.h
+        ray.h
+        raytracer.h
+        sphere.h
+        tuple.h
+        vector.h
         color.cpp
         glwidget.cpp
         helper.cpp
