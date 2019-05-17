@@ -40,6 +40,7 @@ add_executable(raytracer
         intersection.cpp
         main.cpp
         mainwindow.cpp
+        mainwindow.ui
         object.cpp
         point.cpp
         ray.cpp
