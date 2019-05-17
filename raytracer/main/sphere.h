@@ -14,7 +14,7 @@ class Sphere : public Object
 public:
     Sphere() = default;
 
-    inline std::vector<double> intersect(const Ray& ray) const {
+    inline std::vector<Intersection> intersect(const Ray& ray) const {
 
         const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
         const double a = ray.direction().dot(ray.direction());
@@ -30,11 +30,11 @@ public:
         // or one on the tanget
         const double t1 = (-b - std::sqrt(discriminant)) / ( 2.0 * a);
         const double t2 = (-b + std::sqrt(discriminant)) / ( 2.0 * a);
-        return {t1, t2};
+        return {intersection(t1), intersection(t2)};
     }
 
-    inline Intersection intersection(double t) {
-        return Intersection(t, *this);
+    inline Intersection intersection(double t) const {
+        return {t, *this};
     }
 };
 

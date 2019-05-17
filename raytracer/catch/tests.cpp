@@ -859,8 +859,8 @@ TEST_CASE("testRayIntersectsSphereAtTwoPoints")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0), 4.0));
-    REQUIRE(equal(xs.at(1), 6.0));
+    REQUIRE(equal(xs.at(0).t(), 4.0));
+    REQUIRE(equal(xs.at(1).t(), 6.0));
 }
 
 TEST_CASE("testRayIntersectsSphereAtTangent")
@@ -871,8 +871,8 @@ TEST_CASE("testRayIntersectsSphereAtTangent")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0), 5.0));
-    REQUIRE(equal(xs.at(1), 5.0));
+    REQUIRE(equal(xs.at(0).t(), 5.0));
+    REQUIRE(equal(xs.at(1).t(), 5.0));
 }
 
 TEST_CASE("testRayMissesSphere")
@@ -893,8 +893,8 @@ TEST_CASE("testRayOriginatesInsideSphere")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0), -1.0));
-    REQUIRE(equal(xs.at(1), 1.0));
+    REQUIRE(equal(xs.at(0).t(), -1.0));
+    REQUIRE(equal(xs.at(1).t(), 1.0));
 }
 
 TEST_CASE("testRayIsInFrontOfSphere")
@@ -905,8 +905,8 @@ TEST_CASE("testRayIsInFrontOfSphere")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0), -6.0));
-    REQUIRE(equal(xs.at(1), -4.0));
+    REQUIRE(equal(xs.at(0).t(), -6.0));
+    REQUIRE(equal(xs.at(1).t(), -4.0));
 }
 
 TEST_CASE("Spheres should have unique ids") {
@@ -934,3 +934,15 @@ TEST_CASE("Aggregating intersections") {
     REQUIRE(equal(xs.at(0).t(), 1));
     REQUIRE(equal(xs.at(1).t(), 2));
 }
+
+TEST_CASE("Intersect sets the object on the intersection") {
+    const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
+    const auto s = Sphere();
+    const auto xs = s.intersect(r);
+
+    REQUIRE(xs.size() == 2);
+
+    REQUIRE(xs.at(0).object() == s);
+    REQUIRE(xs.at(1).object() == s);
+}
+
