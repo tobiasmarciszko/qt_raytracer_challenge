@@ -3,9 +3,11 @@ project(raytracer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(..)
-include_directories(.)
-include_directories(../tests)
+# Sanitizers
+message(WARNING "Sanitizer(s) enabled!")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -g -O1")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak -g -O1")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -fPIE -pie -g")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -17,35 +19,20 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
 add_executable(raytracer
-        canvas.h
-        color.cpp
-        color.h
         effect.h
+        color.cpp
         glwidget.cpp
-        glwidget.h
         helper.cpp
-        helper.h
         intersection.cpp
-        intersection.h
         main.cpp
         mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        matrix.h
         object.cpp
-        object.h
         point.cpp
-        point.h
         ray.cpp
-        ray.h
         raytracer.cpp
-        raytracer.h
         sphere.cpp
-        sphere.h
         tuple.cpp
-        tuple.h
         vector.cpp
-        vector.h
         )
 
 target_link_libraries(raytracer Qt5::Core)

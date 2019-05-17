@@ -10,30 +10,17 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Test REQUIRED)
 
-include_directories(/usr/include)
 include_directories(../main)
-include_directories(.)
 
 add_executable(catchtests
-        ../main/canvas.h
         ../main/color.cpp
-        ../main/color.h
         ../main/intersection.cpp
-        ../main/intersection.h
-        ../main/matrix.h
         ../main/object.cpp
-        ../main/object.h
         ../main/point.cpp
-        ../main/point.h
         ../main/ray.cpp
-        ../main/ray.h
         ../main/sphere.cpp
-        ../main/sphere.h
         ../main/tuple.cpp
-        ../main/tuple.h
         ../main/vector.cpp
-        ../main/vector.h
-
         main.cpp
         tests.cpp)
 
