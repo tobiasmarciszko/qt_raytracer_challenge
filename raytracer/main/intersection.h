@@ -37,13 +37,9 @@ private:
     Object m_object;
 };
 
-inline std::vector<Intersection> intersections(std::initializer_list<Intersection> l) {
-    std::vector<Intersection> v;
-    v.insert(v.end(), l.begin(), l.end());
-    return v;
-}
+using Intersections = std::vector<Intersection>;
 
-inline std::optional<Intersection> hit(std::vector<Intersection> intersections) {
+inline std::optional<Intersection> hit(Intersections intersections) {
 
     // sort the list of intersections and return the first intersection
     // with a non negative t value
@@ -56,7 +52,7 @@ inline std::optional<Intersection> hit(std::vector<Intersection> intersections) 
             return i1.t() < i2.t();
     });
 
-    for (const auto& intersection: intersections) {
+    for (const Intersection& intersection: intersections) {
         if (intersection.t() >= 0) {
             return {intersection};
         }
