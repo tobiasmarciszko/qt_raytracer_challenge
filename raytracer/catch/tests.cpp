@@ -928,7 +928,7 @@ TEST_CASE("Aggregating intersections") {
     const auto i1 = Intersection(1, s);
     const auto i2 = Intersection(2, s);
 
-    const auto xs = intersections(i1, i2);
+    const auto xs = intersections({i1, i2});
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), 1));
@@ -946,3 +946,49 @@ TEST_CASE("Intersect sets the object on the intersection") {
     REQUIRE(xs.at(1).object() == s);
 }
 
+TEST_CASE("The hit, when all intersections have positive t") {
+    const auto s = Sphere();
+    const auto i1 = s.intersection(1);
+    const auto i2 = s.intersection(2);
+
+    const auto xs = intersections({i1, i2});
+    const auto i = hit(xs);
+
+    REQUIRE(i == i1);
+}
+
+TEST_CASE("The hit, when some intersections have negative t") {
+    const auto s = Sphere();
+    const auto i1 = s.intersection(-1);
+    const auto i2 = s.intersection(1);
+
+    const auto xs = intersections({i1, i2});
+    const auto i = hit(xs);
+
+    REQUIRE(i == i2);
+}
+
+TEST_CASE("The hit, when all intersections have negative t") {
+    const auto s = Sphere();
+    const auto i1 = s.intersection(-2);
+    const auto i2 = s.intersection(-1);
+
+    const auto xs = intersections({i1, i2});
+    const auto i = hit(xs);
+
+    REQUIRE(i.has_value() == false);
+}
+
+TEST_CASE("The hit is always the lowest non negative intersection") {
+    const auto s = Sphere();
+
+    const auto i1 = s.intersection(5);
+    const auto i2 = s.intersection(7);
+    const auto i3 = s.intersection(-3);
+    const auto i4 = s.intersection(2);
+
+    const auto xs = intersections({i1, i2, i3, i4});
+    const auto i = hit(xs);
+
+    REQUIRE(i == i4);
+}
