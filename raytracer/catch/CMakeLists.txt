@@ -9,8 +9,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Test REQUIRED)
 
 include_directories(../main)
 
@@ -23,7 +21,13 @@ add_executable(catchtests
         ../main/sphere.cpp
         ../main/tuple.cpp
         ../main/vector.cpp
+
         main.cpp
-        tests.cpp)
+        chapter1.cpp
+        chapter2.cpp
+        chapter3.cpp
+        chapter4.cpp
+        chapter5.cpp
+        )
 
 target_link_libraries(catchtests Qt5::Core)

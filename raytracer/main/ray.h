@@ -3,6 +3,7 @@
 
 #include "point.h"
 #include "vector.h"
+#include "matrix.h"
 
 class Ray
 {
@@ -21,6 +22,10 @@ public:
 
     inline Point position(const double t) const {
         return m_origin + m_direction * t;
+    }
+
+    inline Ray transform(const Matrix<4,4>& matrix) const {
+        return {matrix * m_origin, matrix * m_direction};
     }
 
 private:

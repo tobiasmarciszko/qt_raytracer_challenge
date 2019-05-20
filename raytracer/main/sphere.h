@@ -8,13 +8,16 @@
 #include "vector.h"
 #include "object.h"
 #include "intersection.h"
+#include "matrix.h"
 
 class Sphere : public Object
 {
 public:
     Sphere() = default;
 
-    inline std::vector<Intersection> intersect(const Ray& ray) const {
+    inline std::vector<Intersection> intersect(const Ray& r) const {
+
+        const auto ray = r.transform(m_transform.inverse());
 
         const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
         const double a = ray.direction().dot(ray.direction());
@@ -36,6 +39,17 @@ public:
     inline Intersection intersection(double t) const {
         return {t, *this};
     }
+
+    inline void set_transform(const Matrix<4,4>& transform) {
+        m_transform = transform;
+    }
+
+    inline auto transform() const {
+        return m_transform;
+    }
+
+private:
+    Matrix<4,4> m_transform = identity_matrix;
 };
 
 #endif // SPHERE_H
