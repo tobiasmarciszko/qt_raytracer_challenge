@@ -32,6 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
     auto geo = geometry();
     geo.moveCenter(screen->geometry().center());
     setGeometry(geo);
+
+    // Pause as initial state:
+    on_pushButton_clicked();
+    on_pushButton_5_clicked();
+    helper->tick();
 }
 
 MainWindow::~MainWindow()

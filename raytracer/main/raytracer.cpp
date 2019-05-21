@@ -4,6 +4,9 @@
 #include "point.h"
 #include "vector.h"
 #include "matrix.h"
+#include "ray.h"
+#include "sphere.h"
+
 #include <QRgb>
 
 struct projectile {
@@ -30,8 +33,12 @@ raytracer::raytracer() : m_canvas(Canvas<320,240>())
 
 void raytracer::update()
 {
-    // projectileEffect();
+// Pick one effect plz ;)
+#if 0
+    projectileEffect();
     clockEffect();
+#endif
+    flatSphere();
 }
 
 void raytracer::projectileEffect() {
@@ -70,6 +77,52 @@ void raytracer::clockEffect() {
         const auto x = point.x();
         const auto y = point.z();
         writePixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
+    }
+}
+
+// First step in casting rays!
+void raytracer::flatSphere()
+{
+    const auto ray_origin = Point(0, 0, -5);
+    const auto wall_z = 10;
+    const auto wall_size = 7.0;
+
+    const auto canvas_pixels = 240; // (assuming 240 by 240)
+    const auto pixel_size = wall_size / canvas_pixels;
+
+    const auto half = wall_size / 2;
+
+    auto shape = Sphere();
+
+    // it can be transformed any way we want :)
+    shape.set_transform(rotation_z(M_PI_4) * shearing(1, 0, 0, 0, 0, 0) * scaling(0.5, 0.5, 0.5));
+
+    // for every pixel row in the canvas
+    for(int y = 0; y < canvas_pixels -1; y++) {
+
+        // compute world y coordinate
+        const auto world_y = half - pixel_size * y;
+
+        // for each pixel in the row!
+        for (int x = 0; x < canvas_pixels -1; x++) {
+            const auto world_x = - half + pixel_size * x;
+
+            // the target point on the wall that the ray aim for
+            const auto position = Point(world_x, world_y, wall_z);
+
+            // the ray is pointing from its origin to the position on the wall
+            const Vector ray_direction = position - ray_origin;
+
+            const auto r = Ray(ray_origin, ray_direction.normalize());
+
+            // will the ray hit the sphere?
+            const auto xs = shape.intersect(r);
+            const auto i = hit(xs);
+
+            if (i.has_value()) {
+                writePixel(x, y, Color(1, 0, 0));
+            }
+        }
     }
 }
 

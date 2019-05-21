@@ -17,6 +17,7 @@ public slots:
 private:
     void projectileEffect();
     void clockEffect();
+    void flatSphere();
 
     // Helpers
 private:
