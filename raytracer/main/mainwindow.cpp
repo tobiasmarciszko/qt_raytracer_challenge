@@ -12,20 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    refreshRate = 60; // FPS
     framebufferRate = 60; // FPS
 
     // Framebuffer update ticks
     framebufferUpdater = new QTimer(this);
     connect(framebufferUpdater, &QTimer::timeout, helper, &Helper::tick);
+    connect(framebufferUpdater, &QTimer::timeout, ui->openGLWidget, &GLWidget::animate);
     framebufferUpdater->start(1000/framebufferRate);
     ui->fpsLabel_2->setText(QString::number(framebufferRate) + " FPS");
-
-    // Framebuffer to screen updates
-    screenRefresh = new QTimer(this);
-    connect(screenRefresh, &QTimer::timeout, ui->openGLWidget, &GLWidget::animate);
-    screenRefresh->start(1000/refreshRate);
-    ui->fpsLabel->setText(QString::number(refreshRate) + " FPS");
 
     // Center application window on current screen
     const QScreen *screen = QApplication::screens()[0];
@@ -34,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setGeometry(geo);
 
     // Pause as initial state:
-    on_pushButton_clicked();
     on_pushButton_5_clicked();
     helper->tick();
 }
@@ -43,33 +36,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete helper;
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    if (screenRefresh->isActive()) {
-        screenRefresh->stop();
-        ui->pushButton->setText("Play");
-    } else {
-        screenRefresh->start(1000/refreshRate);
-        ui->pushButton->setText("Pause");
-    }
-}
-
-void MainWindow::on_horizontalSlider_sliderMoved(int position)
-{
-    UNUSED_PARAM(position);
-//    fps = ui->horizontalSlider->value();
-//    timer->setInterval(1000/fps);
-//    ui->fpsLabel->setText(QString::number(fps) + " FPS");
-}
-
-void MainWindow::on_horizontalSlider_actionTriggered(int action)
-{
-    UNUSED_PARAM(action);
-    refreshRate = ui->horizontalSlider->value();
-    screenRefresh->setInterval(1000/refreshRate);
-    ui->fpsLabel->setText(QString::number(refreshRate) + " FPS");
 }
 
 Helper* MainWindow::getHelper()

@@ -23,20 +23,12 @@ public:
     Helper* getHelper();
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_horizontalSlider_sliderMoved(int position);
-    void on_horizontalSlider_actionTriggered(int action);
-
     void on_pushButton_5_clicked();
-
     void on_horizontalSlider_2_actionTriggered(int action);
 
 private:
     Ui::MainWindow *ui;
-    QTimer *screenRefresh;
     QTimer *framebufferUpdater;
-    int refreshRate;
     int framebufferRate;
     Helper *helper;
 };

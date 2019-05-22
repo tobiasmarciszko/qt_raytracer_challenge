@@ -8,6 +8,8 @@
 #include "sphere.h"
 
 #include <QRgb>
+#include <QDebug>
+#include <QElapsedTimer>
 
 struct projectile {
     projectile(Point pos, Vector v) : position(pos), velocity(v) {}
@@ -33,12 +35,18 @@ raytracer::raytracer() : m_canvas(Canvas<320,240>())
 
 void raytracer::update()
 {
+    // QElapsedTimer timer;
+    // timer.start();
+    // qDebug() << "Start of effect";
+
 // Pick one effect plz ;)
 #if 0
     projectileEffect();
     clockEffect();
 #endif
     flatSphere();
+
+    // qDebug() << "Time elapsed: " << timer.elapsed() << "ms";
 }
 
 void raytracer::projectileEffect() {
@@ -83,6 +91,10 @@ void raytracer::clockEffect() {
 // First step in casting rays!
 void raytracer::flatSphere()
 {
+    tick++;
+    m_canvas.fill(Color(0, 0, 0));
+    framebuffer.fill(qRgb(0, 0, 0));
+
     const auto ray_origin = Point(0, 0, -5);
     const auto wall_z = 10;
     const auto wall_size = 7.0;
@@ -95,7 +107,7 @@ void raytracer::flatSphere()
     auto shape = Sphere();
 
     // it can be transformed any way we want :)
-    shape.set_transform(rotation_z(M_PI_4) * shearing(1, 0, 0, 0, 0, 0) * scaling(0.5, 0.5, 0.5));
+    shape.set_transform(rotation_z(tick * M_PI/180) * shearing(1, 0, 0, 0, 0, 0) * scaling(0.0 + (tick/1000.0), 0.0 + (tick/1000.0), 0.0 + (tick/1000.0)));
 
     // for every pixel row in the canvas
     for(int y = 0; y < canvas_pixels -1; y++) {

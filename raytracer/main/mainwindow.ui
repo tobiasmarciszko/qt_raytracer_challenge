@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
-    <height>458</height>
+    <width>360</width>
+    <height>373</height>
    </rect>
   </property>
   <property name="palette">
@@ -256,138 +256,31 @@
    <widget class="GLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>50</y>
+      <x>20</x>
+      <y>20</y>
       <width>320</width>
       <height>240</height>
      </rect>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>317</y>
-      <width>531</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Framebuffer to screen</string>
-    </property>
-    <widget class="QPushButton" name="pushButton">
-     <property name="geometry">
-      <rect>
-       <x>8</x>
-       <y>22</y>
-       <width>113</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(138, 226, 52);</string>
-     </property>
-     <property name="text">
-      <string>Pause</string>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QSlider" name="horizontalSlider">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>30</y>
-       <width>341</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="pageStep">
-      <number>1</number>
-     </property>
-     <property name="value">
-      <number>60</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
-     </property>
-     <property name="invertedControls">
-      <bool>false</bool>
-     </property>
-     <property name="tickPosition">
-      <enum>QSlider::TicksBelow</enum>
-     </property>
-     <property name="tickInterval">
-      <number>10</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="fpsLabel">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>30</y>
-       <width>60</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>XX FPS</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>387</y>
+      <y>280</y>
       <width>521</width>
       <height>101</height>
      </rect>
     </property>
     <property name="title">
-     <string>Framebuffer update rate</string>
+     <string/>
     </property>
-    <widget class="QPushButton" name="pushButton_5">
-     <property name="geometry">
-      <rect>
-       <x>8</x>
-       <y>22</y>
-       <width>113</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(138, 226, 52);</string>
-     </property>
-     <property name="text">
-      <string>Pause</string>
-     </property>
-    </widget>
     <widget class="QSlider" name="horizontalSlider_2">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>30</y>
-       <width>331</width>
+       <x>0</x>
+       <y>60</y>
+       <width>341</width>
        <height>22</height>
       </rect>
      </property>
@@ -422,8 +315,8 @@
     <widget class="QLabel" name="fpsLabel_2">
      <property name="geometry">
       <rect>
-       <x>137</x>
-       <y>31</y>
+       <x>140</x>
+       <y>40</y>
        <width>60</width>
        <height>16</height>
       </rect>
@@ -432,12 +325,28 @@
       <string>XX FPS</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton_5">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>0</y>
+       <width>113</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(138, 226, 52);</string>
+     </property>
+     <property name="text">
+      <string>Pause</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>99</x>
-      <y>39</y>
+      <x>9</x>
+      <y>9</y>
       <width>341</width>
       <height>261</height>
      </rect>
@@ -456,7 +365,6 @@ border-radius: 10px;
     </property>
    </widget>
    <zorder>frame</zorder>
-   <zorder>groupBox</zorder>
    <zorder>groupBox_2</zorder>
    <zorder>openGLWidget</zorder>
   </widget>
