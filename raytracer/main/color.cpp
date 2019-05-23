@@ -45,3 +45,11 @@ Color Color::operator *(const Color& color) const {
 
     return {r, g, b};
 }
+
+bool Color::operator ==(const Color& color) const {
+    if (!equal(m_red, color.red())) return false;
+    if (!equal(m_green, color.green())) return false;
+    if (!equal(m_blue, color.blue())) return false;
+
+    return true;
+}

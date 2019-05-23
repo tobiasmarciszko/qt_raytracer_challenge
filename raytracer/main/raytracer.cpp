@@ -6,6 +6,9 @@
 #include "matrix.h"
 #include "ray.h"
 #include "sphere.h"
+#include "light.h"
+#include "lighting.h"
+#include "intersection.h"
 
 #include <QRgb>
 #include <QDebug>
@@ -43,8 +46,9 @@ void raytracer::update()
 #if 0
     projectileEffect();
     clockEffect();
-#endif
     flatSphere();
+#endif
+    shadedSphere();
 
     // qDebug() << "Time elapsed: " << timer.elapsed() << "ms";
 }
@@ -128,7 +132,7 @@ void raytracer::flatSphere()
             const auto r = Ray(ray_origin, ray_direction.normalize());
 
             // will the ray hit the sphere?
-            const auto xs = shape.intersect(r);
+            const auto xs = intersect(r, shape);
             const auto i = hit(xs);
 
             if (i.has_value()) {
@@ -138,6 +142,73 @@ void raytracer::flatSphere()
     }
 }
 
+void raytracer::shadedSphere()
+{
+    tick++;
+    m_canvas.fill(Color(0, 0, 0));
+    framebuffer.fill(qRgb(0, 0, 0));
+
+    const auto ray_origin = Point(0, 0, -5);
+    const auto wall_z = 10;
+    const auto wall_size = 7.0;
+
+    const auto canvas_pixels = 240; // (assuming 240 by 240)
+    const auto pixel_size = wall_size / canvas_pixels;
+
+    const auto half = wall_size / 2;
+
+    auto shape = Sphere();
+
+    // 1. Add material to the sphere
+    auto material = shape.material();
+    material.color = Color(0.5, 0.8, 0.4);
+    shape.set_material(material);
+
+    // 2. Add a light source!
+    const auto light_position = Point(-10, 10, -10);
+    const auto light_color = Color(1, 1, 1);
+    const auto light = PointLight(light_position, light_color);
+
+    // it can be transformed any way we want :)
+    shape.set_transform(rotation_z(tick * M_PI/180) * shearing(0.2, 0, 0, 0, 0, 0));
+
+    // for every pixel row in the canvas
+    for(int y = 0; y < canvas_pixels -1; y++) {
+
+        // compute world y coordinate
+        const auto world_y = half - pixel_size * y;
+
+        // for each pixel in the row!
+        for (int x = 0; x < canvas_pixels -1; x++) {
+            const auto world_x = - half + pixel_size * x;
+
+            // the target point on the wall that the ray aim for
+            const auto position = Point(world_x, world_y, wall_z);
+
+            // the ray is pointing from its origin to the position on the wall
+            const Vector ray_direction = position - ray_origin;
+
+            const auto r = Ray(ray_origin, ray_direction.normalize());
+
+            // will the ray hit the sphere?
+            const auto xs = intersect(r, shape);
+            const auto i = hit(xs);
+
+            if (i.has_value()) {
+
+                const auto point = r.position(i->t());
+                const Sphere sphere = i->object();
+                const auto normal = sphere.normal_at(point);
+                const auto eye = -r.direction();
+                const auto color = lighting(sphere.material(), light, point, eye, normal);
+
+                writePixel(x, y, color);
+            }
+        }
+    }
+}
+
+
 void raytracer::writePixel(const int x, const int y, const Color& c) {
 
     // Since we are using the canvas to populate our final image, and possible changing colors
@@ -145,6 +216,11 @@ void raytracer::writePixel(const int x, const int y, const Color& c) {
 
     m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
     QColor color;
-    color.setRgbF(c.red(), c.green(), c.blue());
+
+    qreal r = c.red() < 1.0 ? c.red() : 1.0;
+    qreal g = c.green() < 1.0 ? c.green() : 1.0;
+    qreal b = c.blue() < 1.0 ? c.blue() : 1.0;
+
+    color.setRgbF(r, g, b);
     framebuffer.setPixelColor(x, y, color);
 }

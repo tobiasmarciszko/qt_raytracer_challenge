@@ -9,6 +9,7 @@
 #include "matrix.h"
 #include "ray.h"
 #include "sphere.h"
+#include "intersection.h"
 
 TEST_CASE("testRayCreation")
 {
@@ -36,7 +37,7 @@ TEST_CASE("testRayIntersectsSphereAtTwoPoints")
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r,s);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), 4.0));
@@ -48,7 +49,7 @@ TEST_CASE("testRayIntersectsSphereAtTangent")
     const auto r = Ray(Point(0, 1, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), 5.0));
@@ -60,7 +61,7 @@ TEST_CASE("testRayMissesSphere")
     const auto r = Ray(Point(0, 2, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.empty());
 }
@@ -70,7 +71,7 @@ TEST_CASE("testRayOriginatesInsideSphere")
     const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), -1.0));
@@ -82,7 +83,7 @@ TEST_CASE("testRayIsInFrontOfSphere")
     const auto r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), -6.0));
@@ -118,7 +119,7 @@ TEST_CASE("Aggregating intersections") {
 TEST_CASE("Intersect sets the object on the intersection") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     const auto s = Sphere();
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.size() == 2);
 
@@ -128,8 +129,8 @@ TEST_CASE("Intersect sets the object on the intersection") {
 
 TEST_CASE("The hit, when all intersections have positive t") {
     const auto s = Sphere();
-    const auto i1 = s.intersection(1);
-    const auto i2 = s.intersection(2);
+    const auto i1 = intersection(1, s);
+    const auto i2 = intersection(2, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -139,8 +140,8 @@ TEST_CASE("The hit, when all intersections have positive t") {
 
 TEST_CASE("The hit, when some intersections have negative t") {
     const auto s = Sphere();
-    const auto i1 = s.intersection(-1);
-    const auto i2 = s.intersection(1);
+    const auto i1 = intersection(-1, s);
+    const auto i2 = intersection(1, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -150,8 +151,8 @@ TEST_CASE("The hit, when some intersections have negative t") {
 
 TEST_CASE("The hit, when all intersections have negative t") {
     const auto s = Sphere();
-    const auto i1 = s.intersection(-2);
-    const auto i2 = s.intersection(-1);
+    const auto i1 = intersection(-2, s);
+    const auto i2 = intersection(-1, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -162,10 +163,10 @@ TEST_CASE("The hit, when all intersections have negative t") {
 TEST_CASE("The hit is always the lowest non negative intersection") {
     const auto s = Sphere();
 
-    const auto i1 = s.intersection(5);
-    const auto i2 = s.intersection(7);
-    const auto i3 = s.intersection(-3);
-    const auto i4 = s.intersection(2);
+    const auto i1 = intersection(5, s);
+    const auto i2 = intersection(7, s);
+    const auto i3 = intersection(-3, s);
+    const auto i4 = intersection(2, s);
 
     const auto xs = Intersections({i1, i2, i3, i4});
     const auto i = hit(xs);
@@ -209,7 +210,7 @@ TEST_CASE("Intersecting a scaled sphere with a ray") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     auto s = Sphere();
     s.set_transform(scaling(2, 2, 2));
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(xs.at(0).t() == 3);
@@ -220,7 +221,7 @@ TEST_CASE("Intersecting a translated sphere with a ray") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     auto s = Sphere();
     s.set_transform(translation(5, 0, 0));
-    const auto xs = s.intersect(r);
+    const auto xs = intersect(r, s);
 
     REQUIRE(xs.empty());
 }

@@ -18,6 +18,7 @@ private:
     void projectileEffect();
     void clockEffect();
     void flatSphere();
+    void shadedSphere();
 
     // Helpers
 private:

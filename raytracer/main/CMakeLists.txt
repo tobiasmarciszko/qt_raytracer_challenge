@@ -36,6 +36,10 @@ add_executable(raytracer
         sphere.h
         tuple.h
         vector.h
+        light.h
+        material.h
+        lighting.h
+
         color.cpp
         glwidget.cpp
         helper.cpp
@@ -49,7 +53,6 @@ add_executable(raytracer
         raytracer.cpp
         sphere.cpp
         tuple.cpp
-        vector.cpp
         )
 
 target_link_libraries(raytracer Qt5::Core)

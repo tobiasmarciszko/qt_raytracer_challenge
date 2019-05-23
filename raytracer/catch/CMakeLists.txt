@@ -20,7 +20,6 @@ add_executable(catchtests
         ../main/ray.cpp
         ../main/sphere.cpp
         ../main/tuple.cpp
-        ../main/vector.cpp
 
         main.cpp
         chapter1.cpp
