@@ -48,6 +48,11 @@ public:
         return m_transform;
     }
 
+    inline Vector normal_at(const Point& point) const {
+        const Vector v = point - Point(0, 0, 0);
+        return v.normalize();
+    }
+
 private:
     Matrix<4,4> m_transform = identity_matrix;
 };

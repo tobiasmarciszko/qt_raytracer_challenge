@@ -1,6 +1,8 @@
 #ifndef TUPLE_H
 #define TUPLE_H
 
+#include <iostream>
+
 #define EPSILON 0.00001
 bool equal(const double& a, const double& b);
 
@@ -25,6 +27,10 @@ public:
     inline double y() const { return m_y; }
     inline double z() const { return m_z; }
     inline double w() const { return m_w; }
+
+    friend std::ostream &operator<<(std::ostream &os, const Tuple& t) {
+        return os << (t.isVector() ? "Vector" : "Point") << "(" << t.x() << ", " << t.y() << ", " << t.z() << ")";
+    }
 
 protected:
     double m_x;
