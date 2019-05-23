@@ -150,19 +150,33 @@ void raytracer::shadedSphere()
 
     const auto ray_origin = Point(0, 0, -5);
     const auto wall_z = 10;
-    const auto wall_size = 7.0;
 
-    const auto canvas_pixels = 240; // (assuming 240 by 240)
-    const auto pixel_size = wall_size / canvas_pixels;
+    const auto wall_size_width = 13.3;
+    const auto wall_size_height = 10.0;
 
-    const auto half = wall_size / 2;
+    const auto canvas_pixels_width = 320;
+    const auto canvas_pixels_height = 240;
 
-    auto shape = Sphere();
+    const auto pixel_size_width = wall_size_width / canvas_pixels_width;
+    const auto pixel_size_height = wall_size_height / canvas_pixels_height;
+
+    const auto half_width = wall_size_width / 2;
+    const auto half_height = wall_size_height / 2;
+
+    auto shape1 = Sphere();
+    auto shape2 = Sphere();
 
     // 1. Add material to the sphere
-    auto material = shape.material();
+    auto material = shape1.material();
     material.color = Color(0.5, 0.8, 0.4);
-    shape.set_material(material);
+    shape1.set_material(material);
+
+    auto material2= shape2.material();
+    material2.color = Color(1, 0, 0);
+    material2.specular = 0.3;
+    material2.diffuse = 0.9;
+    material2.shininess = 20.0;
+    shape2.set_material(material2);
 
     // 2. Add a light source!
     const auto light_position = Point(-10, 10, -10);
@@ -170,17 +184,18 @@ void raytracer::shadedSphere()
     const auto light = PointLight(light_position, light_color);
 
     // it can be transformed any way we want :)
-    shape.set_transform(rotation_z(tick * M_PI/180) * shearing(0.2, 0, 0, 0, 0, 0));
+    shape1.set_transform(rotation_z(tick * M_PI/180) * translation(0.5, 0.5, 0) * scaling(0.5, 0.5, 0.5));
+    shape2.set_transform(rotation_z(tick * M_PI/180) * translation(-0.5, -0.5, 0) * scaling(0.5, 0.5, 0.5));
 
     // for every pixel row in the canvas
-    for(int y = 0; y < canvas_pixels -1; y++) {
+    for(int y = 0; y < canvas_pixels_height -1; y++) {
 
         // compute world y coordinate
-        const auto world_y = half - pixel_size * y;
+        const auto world_y = half_height - pixel_size_height * y;
 
         // for each pixel in the row!
-        for (int x = 0; x < canvas_pixels -1; x++) {
-            const auto world_x = - half + pixel_size * x;
+        for (int x = 0; x < canvas_pixels_width -1; x++) {
+            const auto world_x = - half_width + pixel_size_width * x;
 
             // the target point on the wall that the ray aim for
             const auto position = Point(world_x, world_y, wall_z);
@@ -191,8 +206,14 @@ void raytracer::shadedSphere()
             const auto r = Ray(ray_origin, ray_direction.normalize());
 
             // will the ray hit the sphere?
-            const auto xs = intersect(r, shape);
-            const auto i = hit(xs);
+            auto xs = intersect(r, shape1);
+            auto xs2 = intersect(r, shape2);
+
+            auto i = hit(xs);
+
+            if (!i.has_value()) {
+                i = hit(xs2);
+            }
 
             if (i.has_value()) {
 
@@ -214,12 +235,12 @@ void raytracer::writePixel(const int x, const int y, const Color& c) {
     // Since we are using the canvas to populate our final image, and possible changing colors
     // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
 
-    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
+    // m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
     QColor color;
 
-    qreal r = c.red() < 1.0 ? c.red() : 1.0;
-    qreal g = c.green() < 1.0 ? c.green() : 1.0;
-    qreal b = c.blue() < 1.0 ? c.blue() : 1.0;
+    const auto r = c.red() < 1.0 ? c.red() : 1.0;
+    const auto g = c.green() < 1.0 ? c.green() : 1.0;
+    const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
 
     color.setRgbF(r, g, b);
     framebuffer.setPixelColor(x, y, color);
