@@ -48,3 +48,22 @@ TEST_CASE("The normal is a normalized vector") {
 
     REQUIRE(n == n.normalize());
 }
+
+TEST_CASE("Computing the normal on a translated sphere") {
+    auto s = Sphere();
+
+    s.set_transform(translation(0, 1, 0));
+
+    const auto n = s.normal_at(Point(0, 1.70711, -0.70711));
+    REQUIRE(n == Vector(0, 0.70711, -0.70711));
+}
+
+TEST_CASE("Computing the normal on a transformed sphere") {
+    auto s = Sphere();
+
+    s.set_transform(scaling(1, 0.5, 1) * rotation_y(M_PI/5));
+
+    const auto n = s.normal_at(Point(0, M_SQRT2/2, -M_SQRT2/2));
+    REQUIRE(n == Vector(0, 0.97014, -0.24254));
+}
+

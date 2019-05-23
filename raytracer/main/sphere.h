@@ -48,9 +48,14 @@ public:
         return m_transform;
     }
 
-    inline Vector normal_at(const Point& point) const {
-        const Vector v = point - Point(0, 0, 0);
-        return v.normalize();
+    inline Vector normal_at(const Point& world_point) const {
+        const Point object_point = m_transform.inverse() * world_point;
+        const Vector object_normal = object_point - Point(0, 0, 0);
+        Vector world_normal = m_transform.inverse().transpose() * object_normal;
+
+        // Transpose messes with our w value. Hack it back to 0;
+        world_normal.resetWToZero();
+        return world_normal.normalize();
     }
 
 private:

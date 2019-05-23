@@ -28,6 +28,10 @@ public:
     inline double z() const { return m_z; }
     inline double w() const { return m_w; }
 
+    inline void resetWToZero() {
+        m_w = 0;
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Tuple& t) {
         return os << (t.isVector() ? "Vector" : "Point") << "(" << t.x() << ", " << t.y() << ", " << t.z() << ")";
     }
