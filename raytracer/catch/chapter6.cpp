@@ -67,3 +67,18 @@ TEST_CASE("Computing the normal on a transformed sphere") {
     REQUIRE(n == Vector(0, 0.97014, -0.24254));
 }
 
+TEST_CASE("Reflecting a vector approaching at 45°") {
+    const auto v = Vector(1, -1, 0);
+    const auto n = Vector(0, 1, 0);
+    const auto r = v.reflect(n);
+
+    REQUIRE(r == Vector(1, 1, 0));
+}
+
+TEST_CASE("Reflecting a vector off a slanted surface") {
+    const auto v = Vector(0, -1, 0);
+    const auto n = Vector(M_SQRT2/2, M_SQRT2/2, 0);
+    const auto r = v.reflect(n);
+
+    REQUIRE(r == Vector(1, 0, 0));
+}
