@@ -38,8 +38,8 @@ raytracer::raytracer() : m_canvas(Canvas<320,240>())
 
 void raytracer::update()
 {
-    // QElapsedTimer timer;
-    // timer.start();
+//     QElapsedTimer timer;
+//     timer.start();
     // qDebug() << "Start of effect";
 
 // Pick one effect plz ;)
@@ -50,7 +50,7 @@ void raytracer::update()
 #endif
     shadedSphere();
 
-    // qDebug() << "Time elapsed: " << timer.elapsed() << "ms";
+    //qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
 
 void raytracer::projectileEffect() {
@@ -179,9 +179,13 @@ void raytracer::shadedSphere()
     shape2.set_material(material2);
 
     // 2. Add a light source!
-    const auto light_position = Point(-10, 10, -10);
+    const auto light_position = Point(50 * std::sin(M_PI * tick / 180), 50 * std::cos(M_PI * tick / 180), -5);
     const auto light_color = Color(1, 1, 1);
     const auto light = PointLight(light_position, light_color);
+
+    const auto light_position2 = Point(50 * std::cos(M_PI * tick / 180), 50 * std::sin(M_PI * tick / 180), -5);
+    const auto light_color2 = Color(1, 1, 1);
+    const auto light2 = PointLight(light_position2, light_color2);
 
     // it can be transformed any way we want :)
     shape1.set_transform(rotation_z(tick * M_PI/180) * translation(0.5, 0.5, 0) * scaling(0.5, 0.5, 0.5));
@@ -222,8 +226,9 @@ void raytracer::shadedSphere()
                 const auto normal = sphere.normal_at(point);
                 const auto eye = -r.direction();
                 const auto color = lighting(sphere.material(), light, point, eye, normal);
+                const auto color2 = lighting(sphere.material(), light2, point, eye, normal);
 
-                writePixel(x, y, color);
+                writePixel(x, y, color + color2);
             }
         }
     }

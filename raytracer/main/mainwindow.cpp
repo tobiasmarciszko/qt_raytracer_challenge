@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    framebufferRate = 60; // FPS
+    framebufferRate = 30; // FPS
 
     // Framebuffer update ticks
     framebufferUpdater = new QTimer(this);
