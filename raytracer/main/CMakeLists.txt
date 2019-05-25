@@ -39,6 +39,8 @@ add_executable(raytracer
         light.h
         material.h
         lighting.h
+        world.h
+        computations.h
 
         color.cpp
         glwidget.cpp

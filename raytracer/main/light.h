@@ -20,6 +20,13 @@ public:
         return m_position;
     }
 
+    bool operator==(const Light& l) const {
+        if (!(l.position() == m_position)) return false;
+        if (!(l.intensity() == m_intensity)) return false;
+
+        return true;
+    }
+
 private:
     Point m_position = Point(0, 0, 0);
     Color m_intensity = Color(1, 1, 1);

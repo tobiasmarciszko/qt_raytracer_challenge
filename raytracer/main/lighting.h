@@ -8,7 +8,7 @@
 #include "vector.h"
 #include "point.h"
 
-Color lighting(
+inline Color lighting(
     const Material& material,
     const Light& light,
     const Point& point,

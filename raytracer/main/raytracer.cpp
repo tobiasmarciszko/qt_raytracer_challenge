@@ -38,8 +38,8 @@ raytracer::raytracer() : m_canvas(Canvas<320,240>())
 
 void raytracer::update()
 {
-//     QElapsedTimer timer;
-//     timer.start();
+     QElapsedTimer timer;
+     timer.start();
     // qDebug() << "Start of effect";
 
 // Pick one effect plz ;)
@@ -50,7 +50,7 @@ void raytracer::update()
 #endif
     shadedSphere();
 
-    //qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
+    qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
 
 void raytracer::projectileEffect() {
