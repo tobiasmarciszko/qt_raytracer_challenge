@@ -50,9 +50,10 @@ void raytracer::update()
     clockEffect();
     flatSphere();
     shadedSphere();
+    defaultWorld();
 #endif
 
-    defaultWorld();
+    threeBallsOnAFloor();
 
     qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
@@ -251,7 +252,71 @@ void raytracer::defaultWorld()
 
     render(camera, world);
 }
+void raytracer::threeBallsOnAFloor()
+{
+    tick++;
+    m_canvas.fill(Color(0, 0, 0));
+    framebuffer.fill(qRgb(0, 0, 0));
 
+    auto floor = Sphere();
+    floor.set_transform(scaling(10, 0.01, 10));
+    auto m = floor.material();
+    m.color = Color(1, 0.9, 0.9);
+    m.specular = 0;
+    floor.set_material(m);
+
+    auto left_wall = Sphere();
+    left_wall.set_transform(translation(0, 0, 5) * rotation_y(-M_PI_4) * rotation_x(M_PI_2) * scaling(10, 0.01, 10));
+    left_wall.set_material(m);
+
+    auto right_wall = Sphere();
+    right_wall.set_transform(translation(0, 0, 5) * rotation_y(M_PI_4) * rotation_x(M_PI_2) * scaling(10, 0.01, 10));
+    right_wall.set_material(m);
+
+    auto middle = Sphere();
+    middle.set_transform(translation(-0.5, 1, 0.5));
+    auto m2 = Material();
+    m2.color = Color(0.1, 1, 0.5);
+    m2.diffuse = 0.7;
+    m2.specular = 0.3;
+    middle.set_material(m2);
+
+    auto right = Sphere();
+    right.set_transform(translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5));
+    auto m3 = Material();
+    m3.color = Color(0.5, 1, 0.1);
+    m3.diffuse = 0.7;
+    m3.specular = 0.3;
+    right.set_material(m3);
+
+    auto left = Sphere();
+    left.set_transform(translation(-1.5, 0.33, -0.75) * scaling(0.33, 0.33, 0.33));
+    auto m4 = Material();
+    m4.color = Color(1, 0.8, 0.1);
+    m4.diffuse = 0.7;
+    m4.specular = 0.3;
+    left.set_material(m4);
+
+    auto world = World();
+
+    world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
+    auto camera = Camera(320, 240, M_PI / 3);
+    camera.transform = view_transform(Point(0, 1.5 + (tick / 10.0), -5 + (tick / 10.0)), Point(0, 1, 0), Vector(0, 1, 0));
+
+    world.shapes = {std::make_shared<Sphere>(floor),
+                    std::make_shared<Sphere>(left_wall),
+                    std::make_shared<Sphere>(right_wall),
+                    std::make_shared<Sphere>(middle),
+                    std::make_shared<Sphere>(right),
+                    std::make_shared<Sphere>(left)
+                    };
+
+    render(camera, world);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Helper functions
 void raytracer::render(const Camera& camera, const World& world) {
 
     for (unsigned int y = 0; y < camera.vsize - 1; y++) {

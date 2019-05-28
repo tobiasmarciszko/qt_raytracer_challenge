@@ -23,6 +23,7 @@ private:
     void flatSphere();
     void shadedSphere();
     void defaultWorld();
+    void threeBallsOnAFloor();
 
     // Helpers
 private:
