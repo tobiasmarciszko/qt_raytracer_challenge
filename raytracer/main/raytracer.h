@@ -5,6 +5,9 @@
 #include "effect.h"
 #include "canvas.h"
 
+class Camera;
+class World;
+
 class raytracer : public IEffect
 {
 public:
@@ -19,10 +22,12 @@ private:
     void clockEffect();
     void flatSphere();
     void shadedSphere();
+    void defaultWorld();
 
     // Helpers
 private:
-    void writePixel(int x, int y, const Color& color);
+        void render(const Camera& camera, const World& world);
+        void writePixel(int x, int y, const Color& color);
 
 private:
         Canvas<320,240> m_canvas;

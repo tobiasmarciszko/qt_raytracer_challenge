@@ -13,6 +13,7 @@
 #include "material.h"
 #include "world.h"
 #include "computations.h"
+#include "camera.h"
 
 TEST_CASE("Creating a world") {
     const auto w = World();
@@ -185,3 +186,60 @@ TEST_CASE("An arbitrary view transformation") {
 
     REQUIRE(t == expected);
 }
+
+TEST_CASE("Constructing a camera") {
+
+    const auto hsize = 160;
+    const auto vsize = 120;
+    const auto field_of_view = M_PI_2;
+
+    const auto c = Camera(hsize, vsize, field_of_view);
+
+    REQUIRE(c.hsize == 160);
+    REQUIRE(c.vsize == 120);
+    REQUIRE(c.field_of_view == M_PI_2);
+    REQUIRE(c.transform == identity_matrix);
+}
+
+TEST_CASE("The pixel size for a horizontal canvas") {
+
+    const auto c = Camera(200, 125, M_PI_2);
+
+    REQUIRE(equal(c.pixel_size, 0.01));
+}
+
+TEST_CASE("The pixel size for a vertical canvas") {
+
+    const auto c = Camera(125, 200, M_PI_2);
+
+    REQUIRE(equal(c.pixel_size, 0.01));
+}
+
+TEST_CASE("Constructing a ray through the center of the canvas") {
+
+    const auto c = Camera(201, 101, M_PI_2);
+    const auto r = ray_for_pixel(c, 100, 50);
+
+    REQUIRE(r.origin() == Point(0, 0, 0));
+    REQUIRE(r.direction() == Vector(0, 0, -1));
+}
+
+TEST_CASE("Constructing a ray through a corner of the canvas") {
+
+    const auto c = Camera(201, 101, M_PI_2);
+    const auto r = ray_for_pixel(c, 0, 0);
+
+    REQUIRE(r.origin() == Point(0, 0, 0));
+    REQUIRE(r.direction() == Vector(0.66519, 0.33259, -0.66851));
+}
+
+TEST_CASE("Constructing a ray when the camera is transformed") {
+
+    auto c = Camera(201, 101, M_PI_2);
+    c.transform = rotation_y(M_PI_4) * translation(0, -2, 5);
+    const auto r = ray_for_pixel(c, 100, 50);
+
+    REQUIRE(r.origin() == Point(0, 2, -5));
+    REQUIRE(r.direction() == Vector(M_SQRT2/2, 0, -M_SQRT2/2));
+}
+

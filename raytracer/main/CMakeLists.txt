@@ -52,7 +52,7 @@ add_executable(raytracer
         ray.cpp
         raytracer.cpp
         tuple.cpp
-        )
+        camera.h)
 
 target_link_libraries(raytracer Qt5::Core)
 target_link_libraries(raytracer Qt5::Widgets)

@@ -9,6 +9,8 @@
 #include "light.h"
 #include "lighting.h"
 #include "intersection.h"
+#include "camera.h"
+#include "world.h"
 
 #include <QRgb>
 #include <QDebug>
@@ -47,8 +49,10 @@ void raytracer::update()
     projectileEffect();
     clockEffect();
     flatSphere();
-#endif
     shadedSphere();
+#endif
+
+    defaultWorld();
 
     qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
@@ -234,6 +238,31 @@ void raytracer::shadedSphere()
     }
 }
 
+void raytracer::defaultWorld()
+{
+    auto camera = Camera(320, 240, M_PI_4);
+    auto world = default_world();
+
+    const auto from = Point(0, 0, -5.0);
+    const auto to = Point(0, 0, 0);
+    const auto up = Vector(0, 1, 0);
+
+    camera.transform = view_transform(from, to, up);
+
+    render(camera, world);
+}
+
+void raytracer::render(const Camera& camera, const World& world) {
+
+    for (unsigned int y = 0; y < camera.vsize - 1; y++) {
+        for (unsigned int x = 0; x < camera.hsize - 1; x++) {
+            const Ray ray = ray_for_pixel(camera, x, y);
+            const Color color = color_at(world, ray);
+
+            writePixel(x, y, color);
+        }
+    }
+}
 
 void raytracer::writePixel(const int x, const int y, const Color& c) {
 
