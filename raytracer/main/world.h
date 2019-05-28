@@ -92,4 +92,22 @@ inline Color color_at(const World& w, const Ray& r) {
     return color;
 }
 
+
+inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up) {
+
+    const auto forward = Vector(to - from).normalize();
+    const auto upn = up.normalize();
+    const auto left = forward.cross(upn);
+    const auto true_up = left.cross(forward);
+
+    const auto orientation = Matrix<4,4>{
+        left.x(),      left.y(),     left.z(),    0,
+        true_up.x(),   true_up.y(),  true_up.z(), 0,
+        -forward.x(), -forward.y(), -forward.z(), 0,
+        0,             0,            0,           1
+    };
+
+    return orientation * translation(-from.x(), -from.y(), -from.z());
+}
+
 #endif //WORLD_H

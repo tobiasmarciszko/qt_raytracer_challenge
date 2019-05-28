@@ -138,3 +138,50 @@ TEST_CASE("The color with an intersection behind the ray") {
 
     REQUIRE(c == inner->material().color);
 }
+
+TEST_CASE("The transformation matrix for the default orientation") {
+    const auto from = Point(0, 0, 0);
+    const auto to = Point(0, 0, -1);
+    const auto up = Vector(0, 1, 0);
+
+    const auto t = view_transform(from, to, up);
+
+    REQUIRE(t == identity_matrix);
+}
+
+TEST_CASE("A view transformation matrix looking in positive z direction") {
+    const auto from = Point(0, 0, 0);
+    const auto to = Point(0, 0, 1);
+    const auto up = Vector(0, 1, 0);
+
+    const auto t = view_transform(from, to, up);
+
+    REQUIRE(t == scaling(-1, 1, -1));
+}
+
+TEST_CASE("The view transformation moves the world") {
+    const auto from = Point(0, 0, 8);
+    const auto to = Point(0, 0, 0);
+    const auto up = Vector(0, 1, 0);
+
+    const auto t = view_transform(from, to, up);
+
+    REQUIRE(t == translation(0, 0, -8));
+}
+
+TEST_CASE("An arbitrary view transformation") {
+    const auto from = Point(1, 3, 2);
+    const auto to = Point(4, -2, 8);
+    const auto up = Vector(1, 1, 0);
+
+    const auto t = view_transform(from, to, up);
+
+    const auto expected = Matrix<4,4>{
+         -0.50709, 0.50709,  0.67612, -2.36643,
+          0.76772, 0.60609,  0.12122, -2.82843,
+         -0.35857, 0.59761, -0.71714,  0.00000,
+          0.00000, 0.00000,  0.00000,  1.00000
+    };
+
+    REQUIRE(t == expected);
+}
