@@ -29,7 +29,7 @@ add_executable(raytracer
         intersection.h
         mainwindow.h
         matrix.h
-        object.h
+        shape.h
         point.h
         ray.h
         raytracer.h
@@ -45,15 +45,12 @@ add_executable(raytracer
         color.cpp
         glwidget.cpp
         helper.cpp
-        intersection.cpp
         main.cpp
         mainwindow.cpp
         mainwindow.ui
-        object.cpp
         point.cpp
         ray.cpp
         raytracer.cpp
-        sphere.cpp
         tuple.cpp
         )
 

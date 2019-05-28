@@ -1,7 +1,7 @@
 #ifndef RAYTRACER_H
 #define RAYTRACER_H
 
-#include <QObject>
+// #include <QObject>
 #include "effect.h"
 #include "canvas.h"
 

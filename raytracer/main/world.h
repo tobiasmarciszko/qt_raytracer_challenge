@@ -11,8 +11,8 @@
 
 struct World
 {
-    std::vector<Light> lights{};
-    std::vector<Sphere> objects{};
+    std::vector<Light> lights;
+    std::vector<std::shared_ptr<Shape>> shapes;
 };
 
 World default_world()
@@ -24,18 +24,18 @@ World default_world()
     const auto light = PointLight(Point(-10, 10, -10), Color(1, 1, 1));
     world.lights = {light};
 
-    auto sphere1 = Sphere();
+    auto sphere1 = std::make_shared<Sphere>(Sphere());
     auto material = Material();
     material.color = Color(0.8, 1.0, 0.6);
     material.diffuse = 0.7;
     material.specular = 0.2;
-    sphere1.set_material(material);
+    sphere1->set_material(material);
 
-    auto sphere2 = Sphere();
+    auto sphere2 = std::make_shared<Sphere>(Sphere());
     auto transform = scaling(0.5, 0.5, 0.5);
-    sphere2.set_transform(transform);
+    sphere2->set_transform(transform);
 
-    world.objects = {sphere1, sphere2};
+    world.shapes = {sphere1, sphere2};
 
     return world;
 }
@@ -44,7 +44,7 @@ inline Intersections intersect_world(const World& w, const Ray& r)
 {
     Intersections is;
 
-    for (const auto &object: w.objects) {
+    for (auto& object: w.shapes) {
         const Intersections xs = intersect(r, object);
         is.insert(std::end(is), std::begin(xs), std::end(xs));
     }
@@ -64,7 +64,7 @@ inline Color shade_hit(const World& w, const Computations& comps) {
     Color c = Color(0, 0, 0);
     for (const auto& light: w.lights) {
         const auto color = lighting(
-            comps.object.material(),
+            comps.object->material(),
             light,
             comps.point,
             comps.eyev,

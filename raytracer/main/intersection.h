@@ -4,18 +4,21 @@
 #include <vector>
 #include <algorithm>
 #include <optional>
-#include "sphere.h"
+#include <variant>
+#include <memory>
 
+class Shape;
 class Intersection
 {
 public:
-    Intersection(double t, const Sphere& object) :
+
+    Intersection(double t, std::shared_ptr<Shape> s) :
         m_t(t),
-        m_object(object) {}
+        m_object_ptr(s) {}
 
     inline bool operator==(const Intersection& i1) const {
         if (i1.t() != m_t) return false;
-        if (!(i1.object() == m_object)) return false;
+        if (!(i1.object() == object())) return false;
 
         return true;
     }
@@ -24,25 +27,24 @@ public:
         return m_t;
     }
 
-    inline Sphere object() const {
-        return m_object;
+    inline std::shared_ptr<Shape> object() const {
+        return m_object_ptr;
     }
 
 private:
     double m_t;
-    Sphere m_object;
+    std::shared_ptr<Shape> m_object_ptr;
 };
 
 using Intersections = std::vector<Intersection>;
 
-
-inline Intersection intersection(double t, const Sphere& s) {
-    return {t,s};
+inline Intersection intersection(double t, std::shared_ptr<Shape> s) {
+    return {t, s};
 }
 
-inline std::vector<Intersection> intersect(const Ray& r, const Sphere& s) {
+inline std::vector<Intersection> intersect(const Ray& r, const std::shared_ptr<Shape>& s) {
 
-    const auto ray = r.transform(s.transform().inverse());
+    const auto ray = r.transform(s->transform().inverse());
 
     const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
     const double a = ray.direction().dot(ray.direction());

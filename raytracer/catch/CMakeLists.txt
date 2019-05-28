@@ -14,11 +14,8 @@ include_directories(../main)
 
 add_executable(catchtests
         ../main/color.cpp
-        ../main/intersection.cpp
-        ../main/object.cpp
         ../main/point.cpp
         ../main/ray.cpp
-        ../main/sphere.cpp
         ../main/tuple.cpp
 
         main.cpp

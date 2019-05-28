@@ -2,17 +2,19 @@
 #define OBJECT_H
 
 #include <cstdlib>
+#include <vector>
 #include "material.h"
 #include "point.h"
 #include "vector.h"
 #include "matrix.h"
+#include "ray.h"
 
-class Object
+class Intersection;
+class Shape
 {
 public:
-    Object() {
-        m_id = std::rand();
-    }
+
+    virtual ~Shape() = default;
 
     inline int id() const {
         return m_id;
@@ -26,7 +28,7 @@ public:
         m_material = m;
     }
 
-    bool operator==(const Object& object) const {
+    bool operator==(const Shape& object) const {
         return object.id() == m_id;
     }
 
@@ -39,12 +41,13 @@ public:
     }
 
     inline virtual Vector normal_at(const Point& world_point) const = 0;
+    inline virtual std::vector<Intersection> intersect(const Ray& r) const = 0;
 
 protected:
     Matrix<4,4> m_transform = identity_matrix;
 
 private:
-    int m_id;
+    int m_id = std::rand();
     Material m_material = Material();
 };
 

@@ -37,7 +37,7 @@ TEST_CASE("testRayIntersectsSphereAtTwoPoints")
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = intersect(r,s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), 4.0));
@@ -49,7 +49,7 @@ TEST_CASE("testRayIntersectsSphereAtTangent")
     const auto r = Ray(Point(0, 1, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), 5.0));
@@ -61,7 +61,7 @@ TEST_CASE("testRayMissesSphere")
     const auto r = Ray(Point(0, 2, -5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.empty());
 }
@@ -71,7 +71,7 @@ TEST_CASE("testRayOriginatesInsideSphere")
     const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), -1.0));
@@ -83,7 +83,7 @@ TEST_CASE("testRayIsInFrontOfSphere")
     const auto r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
     const auto s = Sphere();
 
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(equal(xs.at(0).t(), -6.0));
@@ -98,14 +98,14 @@ TEST_CASE("Spheres should have unique ids") {
 }
 
 TEST_CASE("An intersection encapsulates t and object") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
     const auto i = Intersection(3.5, s);
     REQUIRE(equal(i.t(), 3.5));
-    REQUIRE(s == i.object());
+    REQUIRE(s.get() == i.object().get());
 }
 
 TEST_CASE("Aggregating intersections") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
     const auto i1 = Intersection(1, s);
     const auto i2 = Intersection(2, s);
 
@@ -119,16 +119,16 @@ TEST_CASE("Aggregating intersections") {
 TEST_CASE("Intersect sets the object on the intersection") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     const auto s = Sphere();
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
 
-    REQUIRE(xs.at(0).object() == s);
-    REQUIRE(xs.at(1).object() == s);
+    REQUIRE(*xs.at(0).object().get() == s);
+    REQUIRE(*xs.at(1).object().get() == s);
 }
 
 TEST_CASE("The hit, when all intersections have positive t") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
     const auto i1 = intersection(1, s);
     const auto i2 = intersection(2, s);
 
@@ -139,7 +139,7 @@ TEST_CASE("The hit, when all intersections have positive t") {
 }
 
 TEST_CASE("The hit, when some intersections have negative t") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
     const auto i1 = intersection(-1, s);
     const auto i2 = intersection(1, s);
 
@@ -150,7 +150,7 @@ TEST_CASE("The hit, when some intersections have negative t") {
 }
 
 TEST_CASE("The hit, when all intersections have negative t") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
     const auto i1 = intersection(-2, s);
     const auto i2 = intersection(-1, s);
 
@@ -161,7 +161,7 @@ TEST_CASE("The hit, when all intersections have negative t") {
 }
 
 TEST_CASE("The hit is always the lowest non negative intersection") {
-    const auto s = Sphere();
+    const auto s = std::make_shared<Sphere>(Sphere());
 
     const auto i1 = intersection(5, s);
     const auto i2 = intersection(7, s);
@@ -210,7 +210,7 @@ TEST_CASE("Intersecting a scaled sphere with a ray") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     auto s = Sphere();
     s.set_transform(scaling(2, 2, 2));
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
     REQUIRE(xs.at(0).t() == 3);
@@ -221,7 +221,7 @@ TEST_CASE("Intersecting a translated sphere with a ray") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
     auto s = Sphere();
     s.set_transform(translation(5, 0, 0));
-    const auto xs = intersect(r, s);
+    const auto xs = s.intersect(r);
 
     REQUIRE(xs.empty());
 }

@@ -132,7 +132,7 @@ void raytracer::flatSphere()
             const auto r = Ray(ray_origin, ray_direction.normalize());
 
             // will the ray hit the sphere?
-            const auto xs = intersect(r, shape);
+            const auto xs = shape.intersect(r);
             const auto i = hit(xs);
 
             if (i.has_value()) {
@@ -163,8 +163,8 @@ void raytracer::shadedSphere()
     const auto half_width = wall_size_width / 2;
     const auto half_height = wall_size_height / 2;
 
-    auto shape1 = Sphere();
-    auto shape2 = Sphere();
+    Sphere shape1 = Sphere();
+    Sphere shape2 = Sphere();
 
     // 1. Add material to the sphere
     auto material = shape1.material();
@@ -210,8 +210,8 @@ void raytracer::shadedSphere()
             const auto r = Ray(ray_origin, ray_direction.normalize());
 
             // will the ray hit the sphere?
-            auto xs = intersect(r, shape1);
-            auto xs2 = intersect(r, shape2);
+            auto xs = shape1.intersect(r);
+            auto xs2 = shape2.intersect(r);
 
             auto i = hit(xs);
 
@@ -222,11 +222,11 @@ void raytracer::shadedSphere()
             if (i.has_value()) {
 
                 const auto point = r.position(i->t());
-                const Sphere sphere = i->object();
-                const auto normal = sphere.normal_at(point);
+                auto shape = i->object();
+                const auto normal = shape.get()->normal_at(point);
                 const auto eye = -r.direction();
-                const auto color = lighting(sphere.material(), light, point, eye, normal);
-                const auto color2 = lighting(sphere.material(), light2, point, eye, normal);
+                const auto color = lighting(shape.get()->material(), light, point, eye, normal);
+                const auto color2 = lighting(shape.get()->material(), light2, point, eye, normal);
 
                 writePixel(x, y, color + color2);
             }

@@ -6,13 +6,12 @@
 #include "vector.h"
 #include "intersection.h"
 #include "ray.h"
+#include <memory>
 
 struct Computations {
 
-    Computations() = default;
-
     double t = -1;
-    Sphere object = Sphere();
+    std::shared_ptr<Shape> object = std::make_shared<Sphere>(Sphere());
     Point point = Point(0,0,0);
     Vector eyev = Vector(0,0,0);
     Vector normalv = Vector(0,0,0);
@@ -24,10 +23,9 @@ Computations prepare_computations(const Intersection& i, const Ray& r) {
 
     comps.t = i.t();
     comps.object = i.object();
-
     comps.point = r.position(comps.t);
     comps.eyev = -r.direction();
-    comps.normalv = comps.object.normal_at(comps.point);
+    comps.normalv = comps.object->normal_at(comps.point);
 
     if (comps.normalv.dot(comps.eyev) < 0) {
        comps.inside = true;
