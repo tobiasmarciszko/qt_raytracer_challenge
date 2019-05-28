@@ -18,11 +18,17 @@ public:
 
 public:
     void paint(QPainter *painter);
+    void fromX(double arg) { effect->fromX = arg; }
+    void fromY(double arg) { effect->fromY = arg; }
+    void fromZ(double arg) { effect->fromZ = arg; }
+    void toX(double arg) { effect->toX = arg; }
+    void toY(double arg) { effect->toY = arg; }
+    void toZ(double arg) { effect->toZ = arg; }
 
 public slots:
     void tick();
 
-private:
+public:
     IEffect *effect;
 };
 

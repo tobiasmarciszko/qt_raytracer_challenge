@@ -51,10 +51,9 @@ void raytracer::update()
     flatSphere();
     shadedSphere();
     defaultWorld();
+
 #endif
-
     threeBallsOnAFloor();
-
     qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
 
@@ -254,9 +253,9 @@ void raytracer::defaultWorld()
 }
 void raytracer::threeBallsOnAFloor()
 {
-    tick++;
-    m_canvas.fill(Color(0, 0, 0));
-    framebuffer.fill(qRgb(0, 0, 0));
+//    tick++;
+//    m_canvas.fill(Color(0, 0, 0));
+//    framebuffer.fill(qRgb(0, 0, 0));
 
     auto floor = Sphere();
     floor.set_transform(scaling(10, 0.01, 10));
@@ -301,7 +300,7 @@ void raytracer::threeBallsOnAFloor()
 
     world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
     auto camera = Camera(320, 240, M_PI / 3);
-    camera.transform = view_transform(Point(0, 1.5 + (tick / 10.0), -5 + (tick / 10.0)), Point(0, 1, 0), Vector(0, 1, 0));
+    camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
 
     world.shapes = {std::make_shared<Sphere>(floor),
                     std::make_shared<Sphere>(left_wall),
@@ -327,6 +326,8 @@ void raytracer::render(const Camera& camera, const World& world) {
             writePixel(x, y, color);
         }
     }
+
+    emit rendererReady();
 }
 
 void raytracer::writePixel(const int x, const int y, const Color& c) {

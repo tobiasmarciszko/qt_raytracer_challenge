@@ -26,6 +26,18 @@ private slots:
     void on_pushButton_5_clicked();
     void on_horizontalSlider_2_actionTriggered(int action);
 
+    void on_doubleSpinBoxFromX_valueChanged(double arg1);
+
+    void on_doubleSpinBoxFromY_valueChanged(double arg1);
+
+    void on_doubleSpinBoxFromZ_valueChanged(double arg1);
+
+    void on_doubleSpinBoxToX_valueChanged(double arg1);
+
+    void on_doubleSpinBoxToY_valueChanged(double arg1);
+
+    void on_doubleSpinBoxToZ_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     QTimer *framebufferUpdater;

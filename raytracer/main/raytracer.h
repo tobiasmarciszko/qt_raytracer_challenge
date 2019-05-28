@@ -10,6 +10,8 @@ class World;
 
 class raytracer : public IEffect
 {
+    Q_OBJECT
+
 public:
     raytracer();
 
