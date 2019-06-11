@@ -32,18 +32,12 @@ static projectile p(Point(0,1,0), Vector(10,100,0).normalize());
 static environment e(Vector(0, -0.0098, 0), Vector(0.01, 0, 0));
 static int tick = 0;
 
-raytracer::raytracer() : m_canvas(Canvas<320,240>())
+Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
-    // Initialize framebuffer
-    framebuffer = QImage(320, 240, QImage::Format_RGB32);
 }
 
-void raytracer::update()
+void Raytracer::update()
 {
-     QElapsedTimer timer;
-     timer.start();
-    // qDebug() << "Start of effect";
-
 // Pick one effect plz ;)
 #if 0
     projectileEffect();
@@ -54,10 +48,9 @@ void raytracer::update()
 
 #endif
     threeBallsOnAFloor();
-    qDebug() << "Time elapsed:" << timer.elapsed() << "ms";
 }
 
-void raytracer::projectileEffect() {
+void Raytracer::projectileEffect() {
     if (p.position.y() > 0) {
         auto pos = p.position + p.velocity;
         auto vel = p.velocity + e.gravity + e.wind;
@@ -74,7 +67,7 @@ void raytracer::projectileEffect() {
     }
 }
 
-void raytracer::clockEffect() {
+void Raytracer::clockEffect() {
 
     // X and Z is in the 2D plane, Y is depth
 
@@ -97,7 +90,7 @@ void raytracer::clockEffect() {
 }
 
 // First step in casting rays!
-void raytracer::flatSphere()
+void Raytracer::flatSphere()
 {
     tick++;
     m_canvas.fill(Color(0, 0, 0));
@@ -146,7 +139,7 @@ void raytracer::flatSphere()
     }
 }
 
-void raytracer::shadedSphere()
+void Raytracer::shadedSphere()
 {
     tick++;
     m_canvas.fill(Color(0, 0, 0));
@@ -238,7 +231,7 @@ void raytracer::shadedSphere()
     }
 }
 
-void raytracer::defaultWorld()
+void Raytracer::defaultWorld()
 {
     auto camera = Camera(320, 240, M_PI_4);
     auto world = default_world();
@@ -251,7 +244,7 @@ void raytracer::defaultWorld()
 
     render(camera, world);
 }
-void raytracer::threeBallsOnAFloor()
+void Raytracer::threeBallsOnAFloor()
 {
 //    tick++;
 //    m_canvas.fill(Color(0, 0, 0));
@@ -316,7 +309,7 @@ void raytracer::threeBallsOnAFloor()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Helper functions
-void raytracer::render(const Camera& camera, const World& world) {
+void Raytracer::render(const Camera& camera, const World& world) {
 
     for (unsigned int y = 0; y < camera.vsize - 1; y++) {
         for (unsigned int x = 0; x < camera.hsize - 1; x++) {
@@ -327,10 +320,10 @@ void raytracer::render(const Camera& camera, const World& world) {
         }
     }
 
-    emit rendererReady();
+    emit rendererReady(framebuffer);
 }
 
-void raytracer::writePixel(const int x, const int y, const Color& c) {
+void Raytracer::writePixel(const int x, const int y, const Color& c) {
 
     // Since we are using the canvas to populate our final image, and possible changing colors
     // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
