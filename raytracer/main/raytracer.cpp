@@ -15,6 +15,8 @@
 #include <QRgb>
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QtCore/QFutureSynchronizer>
+#include <QtConcurrent>
 
 struct projectile {
     projectile(Point pos, Vector v) : position(pos), velocity(v) {}
@@ -311,30 +313,96 @@ void Raytracer::threeBallsOnAFloor()
 // Helper functions
 void Raytracer::render(const Camera& camera, const World& world) {
 
-    for (unsigned int y = 0; y < camera.vsize - 1; y++) {
-        for (unsigned int x = 0; x < camera.hsize - 1; x++) {
-            const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray);
+    // Split the image into four chunks and utilize the four cores to speed up rendering.
+    QFutureSynchronizer<void> synchronizer;
+    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderTopL, camera, world));
+    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderTopR, camera, world));
+    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderBottomL, camera, world));
+    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderBottomR, camera, world));
 
-            writePixel(x, y, color);
+    synchronizer.waitForFinished();
+
+    // Copy pixels from the canves to the QImage. Not very efficient... :)
+
+    for (unsigned int y = 0; y < camera.vsize -1;  y++) {
+        for (unsigned int x = 0; x < camera.hsize -1;  x++) {
+
+            Color c = m_canvas.pixel_at(x, y);
+            QColor color;
+            const auto r = c.red() < 1.0 ? c.red() : 1.0;
+            const auto g = c.green() < 1.0 ? c.green() : 1.0;
+            const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
+
+            color.setRgbF(r, g, b);
+            framebuffer.setPixelColor(x, y, color);
         }
     }
 
     emit rendererReady(framebuffer);
 }
 
+void Raytracer::renderTopL(const Camera& camera, const World& world) {
+
+    for (unsigned int y = 0; y < (camera.vsize - 1) / 2; y++) {
+        for (unsigned int x = 0; x < (camera.hsize - 1) / 2; x++) {
+            const Ray ray = ray_for_pixel(camera, x, y);
+            const Color color = color_at(world, ray);
+
+            writePixel(x, y, color);
+        }
+    }
+}
+
+void Raytracer::renderTopR(const Camera& camera, const World& world) {
+
+    for (unsigned int y = 0; y < (camera.vsize - 1) / 2; y++) {
+        for (unsigned int x = (camera.hsize - 1) / 2; x < camera.hsize - 1; x++) {
+            const Ray ray = ray_for_pixel(camera, x, y);
+            const Color color = color_at(world, ray);
+
+            writePixel(x, y, color);
+        }
+    }
+}
+
+void Raytracer::renderBottomL(const Camera& camera, const World& world) {
+
+    for (unsigned int y = (camera.vsize - 1) / 2; y < camera.vsize - 1; y++) {
+        for (unsigned int x = 0; x < (camera.hsize - 1) / 2; x++) {
+            const Ray ray = ray_for_pixel(camera, x, y);
+            const Color color = color_at(world, ray);
+
+            writePixel(x, y, color);
+        }
+    }
+}
+
+void Raytracer::renderBottomR(const Camera& camera, const World& world) {
+
+    for (unsigned int y = (camera.vsize - 1) / 2; y < camera.vsize - 1; y++) {
+        for (unsigned int x = (camera.hsize - 1) / 2; x < camera.hsize - 1; x++) {
+            const Ray ray = ray_for_pixel(camera, x, y);
+            const Color color = color_at(world, ray);
+
+            writePixel(x, y, color);
+        }
+    }
+}
+
+
 void Raytracer::writePixel(const int x, const int y, const Color& c) {
 
     // Since we are using the canvas to populate our final image, and possible changing colors
     // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
 
-    // m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
-    QColor color;
+    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
 
-    const auto r = c.red() < 1.0 ? c.red() : 1.0;
-    const auto g = c.green() < 1.0 ? c.green() : 1.0;
-    const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
-
-    color.setRgbF(r, g, b);
-    framebuffer.setPixelColor(x, y, color);
+//    QColor color;
+//
+//    const auto r = c.red() < 1.0 ? c.red() : 1.0;
+//    const auto g = c.green() < 1.0 ? c.green() : 1.0;
+//    const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
+//
+//    color.setRgbF(r, g, b);
+//    framebuffer.setPixelColor(x, y, color);
 }

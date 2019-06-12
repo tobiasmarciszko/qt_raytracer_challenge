@@ -18,7 +18,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(Qt5 COMPONENTS Core Quick Concurrent REQUIRED)
 
 add_executable(raytracer
         qml.qrc
@@ -53,3 +53,4 @@ target_compile_definitions(raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:Rel
 
 target_link_libraries(raytracer Qt5::Core)
 target_link_libraries(raytracer Qt5::Quick)
+target_link_libraries(raytracer Qt5::Concurrent)

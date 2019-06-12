@@ -22,6 +22,8 @@ public slots:
     void fromXChanged(double val) { fromX = val; update(); }
     void fromYChanged(double val) { fromY = val; update(); }
 
+    void fromXYChanged(double x, double y) { fromX += x; fromY += y; update(); }
+
 signals:
     void rendererReady(const QImage& image);
 
@@ -49,6 +51,12 @@ private:
     // Helpers
 private:
         void render(const Camera& camera, const World& world);
+
+        void renderTopL(const Camera& camera, const World& world);
+        void renderTopR(const Camera& camera, const World& world);
+        void renderBottomL(const Camera& camera, const World& world);
+        void renderBottomR(const Camera& camera, const World& world);
+
         void writePixel(int x, int y, const Color& color);
 
 private:

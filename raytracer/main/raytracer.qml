@@ -28,20 +28,46 @@ Window {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
-        ImageItem {
-            id: liveImageItem
-            fillColor: "#000000"
-            clip: true
-            enabled: false
-            smooth: false
-            antialiasing: false
+        MouseArea {
+            id: mouseArea
             anchors.fill: parent
-        }
-    }
 
-    Connections {
-        target: raytracer
-        onRendererReady: liveImageItem.setImage(image)
+            property var initialPositionX: 0
+            property var initialPositionY: 0
+
+            onPressed: {
+                initialPositionX = mouse.x
+                initialPositionY = mouse.y
+            }
+
+            onPositionChanged: {
+                let deltaX = (initialPositionX - mouse.x) / 500;
+                let deltaY = (initialPositionY - mouse.y) / 500;
+
+                raytracer.fromXYChanged(deltaX, deltaY)
+            }
+
+            ImageItem {
+                id: liveImageItem
+                x: 0
+                y: 0
+                fillColor: "#000000"
+                clip: true
+                enabled: false
+                smooth: false
+                antialiasing: false
+                anchors.fill: parent
+
+                Component.onCompleted: {
+                    raytracer.update()
+                }
+
+                Connections {
+                    target: raytracer
+                    onRendererReady: liveImageItem.setImage(image)
+                }
+            }
+        }
     }
 
     Slider {
@@ -76,6 +102,7 @@ Window {
             raytracer.fromYChanged(slider1.value)
         }
     }
+
 }
 
 
@@ -102,7 +129,22 @@ Window {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*##^## Designer {
-    D{i:2;anchors_height:240;anchors_width:320}
+    D{i:2;anchors_height:240;anchors_width:320;anchors_x:0;anchors_y:0}
 }
  ##^##*/

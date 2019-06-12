@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("raytracer", &raytracer);
     engine.load(url);
 
-    raytracer.update();
+    // raytracer.update();
 
     return app.exec();
 }

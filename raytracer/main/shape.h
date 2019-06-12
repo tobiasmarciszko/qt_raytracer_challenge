@@ -40,8 +40,8 @@ public:
         return m_transform;
     }
 
-    inline virtual Vector normal_at(const Point& world_point) const = 0;
-    inline virtual std::vector<Intersection> intersect(const Ray& r) const = 0;
+    virtual Vector normal_at(const Point& world_point) const = 0;
+    virtual std::vector<Intersection> intersect(const Ray& r) const = 0;
 
 protected:
     Matrix<4,4> m_transform = identity_matrix;
