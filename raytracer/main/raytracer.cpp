@@ -36,6 +36,7 @@ static int tick = 0;
 
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
+    threeBallsOnAFloor();
 }
 
 void Raytracer::update()
@@ -47,9 +48,10 @@ void Raytracer::update()
     flatSphere();
     shadedSphere();
     defaultWorld();
-
-#endif
     threeBallsOnAFloor();
+#endif
+
+    render(m_camera, m_world);
 }
 
 void Raytracer::projectileEffect() {
@@ -246,6 +248,7 @@ void Raytracer::defaultWorld()
 
     render(camera, world);
 }
+
 void Raytracer::threeBallsOnAFloor()
 {
 //    tick++;
@@ -305,7 +308,8 @@ void Raytracer::threeBallsOnAFloor()
                     std::make_shared<Sphere>(left)
                     };
 
-    render(camera, world);
+    m_camera = camera;
+    m_world = world;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -323,9 +327,8 @@ void Raytracer::render(const Camera& camera, const World& world) {
     synchronizer.waitForFinished();
 
     // Copy pixels from the canves to the QImage. Not very efficient... :)
-
-    for (unsigned int y = 0; y < camera.vsize -1;  y++) {
-        for (unsigned int x = 0; x < camera.hsize -1;  x++) {
+    for (unsigned int y = 0; y < camera.vsize;  y++) {
+        for (unsigned int x = 0; x < camera.hsize;  x++) {
 
             Color c = m_canvas.pixel_at(x, y);
             QColor color;
@@ -341,61 +344,46 @@ void Raytracer::render(const Camera& camera, const World& world) {
     emit rendererReady(framebuffer);
 }
 
-void Raytracer::renderTopL(const Camera& camera, const World& world) {
+void Raytracer::render(
+    const Camera& camera,
+    const World& world,
+    unsigned int fromX,
+    unsigned int toX,
+    unsigned int fromY,
+    unsigned int toY) {
 
-    for (unsigned int y = 0; y < (camera.vsize - 1) / 2; y++) {
-        for (unsigned int x = 0; x < (camera.hsize - 1) / 2; x++) {
+    for (unsigned int y = fromY; y < toY; y++) {
+        for (unsigned int x = fromX; x < toX; x++) {
             const Ray ray = ray_for_pixel(camera, x, y);
             const Color color = color_at(world, ray);
 
             writePixel(x, y, color);
         }
     }
+}
+
+void Raytracer::renderTopL(const Camera& camera, const World& world) {
+    render(camera, world, 0, camera.hsize / 2, 0, camera.vsize / 2);
 }
 
 void Raytracer::renderTopR(const Camera& camera, const World& world) {
-
-    for (unsigned int y = 0; y < (camera.vsize - 1) / 2; y++) {
-        for (unsigned int x = (camera.hsize - 1) / 2; x < camera.hsize - 1; x++) {
-            const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray);
-
-            writePixel(x, y, color);
-        }
-    }
+    render(camera, world, camera.hsize / 2, camera.hsize, 0, camera.vsize/ 2);
 }
 
 void Raytracer::renderBottomL(const Camera& camera, const World& world) {
-
-    for (unsigned int y = (camera.vsize - 1) / 2; y < camera.vsize - 1; y++) {
-        for (unsigned int x = 0; x < (camera.hsize - 1) / 2; x++) {
-            const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray);
-
-            writePixel(x, y, color);
-        }
-    }
+    render(camera, world, 0, camera.hsize / 2, camera.vsize  / 2, camera.vsize);
 }
 
 void Raytracer::renderBottomR(const Camera& camera, const World& world) {
-
-    for (unsigned int y = (camera.vsize - 1) / 2; y < camera.vsize - 1; y++) {
-        for (unsigned int x = (camera.hsize - 1) / 2; x < camera.hsize - 1; x++) {
-            const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray);
-
-            writePixel(x, y, color);
-        }
-    }
+    render(camera, world, camera.hsize / 2, camera.hsize, camera.vsize / 2, camera.vsize);
 }
 
-
-void Raytracer::writePixel(const int x, const int y, const Color& c) {
+void Raytracer::writePixel(unsigned int x, unsigned int y, const Color& c) {
 
     // Since we are using the canvas to populate our final image, and possible changing colors
     // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
 
-    m_canvas.write_pixel(static_cast<unsigned int>(x), static_cast<unsigned int>(y), c);
+    m_canvas.write_pixel(x, y, c);
 
 //    QColor color;
 //

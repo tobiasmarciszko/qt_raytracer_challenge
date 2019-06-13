@@ -60,6 +60,7 @@ inline std::vector<Intersection> intersect(const Ray& r, const std::shared_ptr<S
     // or one on the tanget
     const double t1 = (-b - std::sqrt(discriminant)) / ( 2.0 * a);
     const double t2 = (-b + std::sqrt(discriminant)) / ( 2.0 * a);
+
     return {intersection(t1, s), intersection(t2, s)};
 }
 

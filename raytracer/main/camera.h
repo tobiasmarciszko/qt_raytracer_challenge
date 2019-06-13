@@ -9,8 +9,8 @@ struct Camera {
     Camera() = delete;
 
     Camera(
-        double hsize_,
-        double vsize_,
+        unsigned int hsize_,
+        unsigned int vsize_,
         double field_of_view_) :
         hsize(hsize_),
         vsize(vsize_),
@@ -30,8 +30,8 @@ struct Camera {
         pixel_size = (half_width * 2) / hsize;
     }
 
-    double hsize; // In pixels
-    double vsize;
+    unsigned int hsize; // In pixels
+    unsigned int vsize;
 
     double field_of_view;
 

@@ -18,7 +18,7 @@ struct Computations {
     bool inside = false;
 };
 
-Computations prepare_computations(const Intersection& i, const Ray& r) {
+inline Computations prepare_computations(const Intersection& i, const Ray& r) {
     Computations comps;
 
     comps.t = i.t();

@@ -4,9 +4,8 @@
 #include <QObject>
 #include <QImage>
 #include "canvas.h"
-
-class Camera;
-class World;
+#include "camera.h"
+#include "world.h"
 
 using FrameBuffer = QImage;
 
@@ -19,10 +18,25 @@ public:
 
 public slots:
     void update();
-    void fromXChanged(double val) { fromX = val; update(); }
-    void fromYChanged(double val) { fromY = val; update(); }
 
-    void fromXYChanged(double x, double y) { fromX += x; fromY += y; update(); }
+    void fromXChanged(double val) {
+        fromX = val;
+        m_camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
+        update();
+    }
+
+    void fromYChanged(double val) {
+        fromY = val;
+        m_camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
+        update();
+    }
+
+    void fromXYChanged(double x, double y) {
+        fromX += x;
+        fromY += y;
+        m_camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
+        update();
+    }
 
 signals:
     void rendererReady(const QImage& image);
@@ -50,17 +64,20 @@ private:
 
     // Helpers
 private:
-        void render(const Camera& camera, const World& world);
+    void render(const Camera& camera, const World& world);
+    void render(const Camera& camera, const World& world, unsigned int fromX, unsigned int toX, unsigned int fromY, unsigned int toY);
 
-        void renderTopL(const Camera& camera, const World& world);
-        void renderTopR(const Camera& camera, const World& world);
-        void renderBottomL(const Camera& camera, const World& world);
-        void renderBottomR(const Camera& camera, const World& world);
+    void renderTopL(const Camera& camera, const World& world);
+    void renderTopR(const Camera& camera, const World& world);
+    void renderBottomL(const Camera& camera, const World& world);
+    void renderBottomR(const Camera& camera, const World& world);
 
-        void writePixel(int x, int y, const Color& color);
+    void writePixel(unsigned int x, unsigned int y, const Color& color);
 
 private:
-        Canvas<320,240> m_canvas = Canvas<320,240>();
+    Canvas<320,240> m_canvas = Canvas<320,240>();
+    Camera m_camera = Camera(320, 240, M_PI / 3);;
+    World m_world = default_world();
 };
 
 #endif // RAYTRACER_H

@@ -15,7 +15,7 @@ struct World
     std::vector<std::shared_ptr<Shape>> shapes;
 };
 
-World default_world()
+inline World default_world()
 {
 
     World world;
