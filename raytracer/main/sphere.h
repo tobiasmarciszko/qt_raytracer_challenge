@@ -41,7 +41,8 @@ public:
         // or one on the tanget
         const double t1 = (-b - std::sqrt(discriminant)) / ( 2.0 * a);
         const double t2 = (-b + std::sqrt(discriminant)) / ( 2.0 * a);
-        return {intersection(t1, std::make_shared<Sphere>(*this)), intersection(t2, std::make_shared<Sphere>(*this))};
+        const auto sphere_ptr = std::make_shared<Sphere>(*this);
+        return {intersection(t1, sphere_ptr), intersection(t2, sphere_ptr)};
     }
 
 };

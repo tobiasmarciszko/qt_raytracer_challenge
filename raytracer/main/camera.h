@@ -17,7 +17,7 @@ struct Camera {
         field_of_view(field_of_view_) {
 
         const double half_view = std::tan(field_of_view_ / 2.0);
-        const double aspect = hsize_ / vsize_;
+        const double aspect = static_cast<double>(hsize_) / static_cast<double>(vsize_);
 
         if (aspect >= 1) {
             half_width = half_view;
@@ -27,7 +27,7 @@ struct Camera {
             half_height = half_view;
         }
 
-        pixel_size = (half_width * 2) / hsize;
+        pixel_size = (half_width * 2.0) / hsize;
     }
 
     unsigned int hsize; // In pixels
