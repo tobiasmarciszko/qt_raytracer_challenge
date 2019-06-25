@@ -231,10 +231,10 @@ template<>
 inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
     double result[4];
     for (unsigned int i = 0; i < 4; i++) {
-            result[i] = get(i, 0) * tuple.x() +
-                        get(i, 1) * tuple.y() +
-                        get(i, 2) * tuple.z() +
-                        get(i, 3) * tuple.w();
+            result[i] = get(i, 0) * tuple.x +
+                        get(i, 1) * tuple.y +
+                        get(i, 2) * tuple.z +
+                        get(i, 3) * tuple.w;
         }
 
     return {result[0], result[1], result[2], result[3]};

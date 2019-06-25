@@ -1,55 +1,54 @@
 #include "color.h"
 
 Color::Color(double red, double green, double blue):
-    m_red(red),
-    m_green(green),
-    m_blue(blue)
+    red(red),
+    green(green),
+    blue(blue)
 {
 }
 
-
 Color Color::operator+(const Color& color) const {
-    double r = m_red + color.m_red;
-    double g = m_green + color.m_green;
-    double b = m_blue + color.m_blue;
+    const double r = red + color.red;
+    const double g = green + color.green;
+    const double b = blue + color.blue;
 
     return {r, g, b};
 }
 
 Color Color::operator-(const Color& color) const {
-    double r = m_red - color.m_red;
-    double g = m_green - color.m_green;
-    double b = m_blue - color.m_blue;
+    const double r = red - color.red;
+    const double g = green - color.green;
+    const double b = blue - color.blue;
     return {r, g, b};
 }
 
 Color Color::operator*(const double& multiplier) const {
-    double r = m_red * multiplier;
-    double g = m_green * multiplier;
-    double b = m_blue * multiplier;
+    const double r = red * multiplier;
+    const double g = green * multiplier;
+    const double b = blue * multiplier;
     return {r, g, b};
 }
 
 Color Color::operator/(const double& divider) const {
-    double r = m_red / divider;
-    double g = m_green / divider;
-    double b = m_blue / divider;
+    const double r = red / divider;
+    const double g = green / divider;
+    const double b = blue / divider;
     return {r, g, b};
 }
 
 // Hadamard product (Schur product)
 Color Color::operator *(const Color& color) const {
-    double r = m_red * color.m_red;
-    double g = m_green * color.m_green;
-    double b = m_blue * color.m_blue;
+    const double r = red * color.red;
+    const double g = green * color.green;
+    const double b = blue * color.blue;
 
     return {r, g, b};
 }
 
 bool Color::operator ==(const Color& color) const {
-    if (!equal(m_red, color.red())) return false;
-    if (!equal(m_green, color.green())) return false;
-    if (!equal(m_blue, color.blue())) return false;
+    if (!equal(red, color.red)) return false;
+    if (!equal(green, color.green)) return false;
+    if (!equal(blue, color.blue)) return false;
 
     return true;
 }

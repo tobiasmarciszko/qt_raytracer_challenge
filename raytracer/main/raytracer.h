@@ -38,6 +38,8 @@ public slots:
         update();
     }
 
+    void switchChanged();
+
 signals:
     void rendererReady(const QImage& image);
 
@@ -76,8 +78,10 @@ private:
 
 private:
     Canvas<320,240> m_canvas = Canvas<320,240>();
-    Camera m_camera = Camera(320, 240, M_PI / 3);;
+    Camera m_camera = Camera(320, 240, M_PI / 3);
     World m_world = default_world();
+    LightingModel m_lighting = LightingModel::Phong;
+
 };
 
 #endif // RAYTRACER_H

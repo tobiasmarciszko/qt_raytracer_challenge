@@ -55,16 +55,16 @@ void Raytracer::update()
 }
 
 void Raytracer::projectileEffect() {
-    if (p.position.y() > 0) {
+    if (p.position.y > 0) {
         auto pos = p.position + p.velocity;
         auto vel = p.velocity + e.gravity + e.wind;
 
         p = projectile(pos, vel);
-        int x = static_cast<int>(p.position.x());
+        int x = static_cast<int>(p.position.x);
         x = x % 319;
         if (x < 0) x = 0;
 
-        int y = 240 - static_cast<int>(p.position.y());
+        int y = 240 - static_cast<int>(p.position.y);
         y = y % 239;
         if (y < 0) y = 0;
         writePixel(x, y, Color(1.0, 0.5, 1.0));
@@ -87,8 +87,8 @@ void Raytracer::clockEffect() {
         point = point * 80.0;
         point = point + Point(160, 0, 120);
 
-        const auto x = point.x();
-        const auto y = point.z();
+        const auto x = point.x;
+        const auto y = point.z;
         writePixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
     }
 }
@@ -332,9 +332,9 @@ void Raytracer::render(const Camera& camera, const World& world) {
 
             Color c = m_canvas.pixel_at(x, y);
             QColor color;
-            const auto r = c.red() < 1.0 ? c.red() : 1.0;
-            const auto g = c.green() < 1.0 ? c.green() : 1.0;
-            const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
+            const auto r = c.red < 1.0 ? c.red : 1.0;
+            const auto g = c.green < 1.0 ? c.green : 1.0;
+            const auto b = c.blue < 1.0 ? c.blue : 1.0;
 
             color.setRgbF(r, g, b);
             framebuffer.setPixelColor(x, y, color);
@@ -355,7 +355,7 @@ void Raytracer::render(
     for (unsigned int y = fromY; y < toY; y++) {
         for (unsigned int x = fromX; x < toX; x++) {
             const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray);
+            const Color color = color_at(world, ray, m_lighting);
 
             writePixel(x, y, color);
         }
@@ -393,4 +393,15 @@ void Raytracer::writePixel(unsigned int x, unsigned int y, const Color& c) {
 //
 //    color.setRgbF(r, g, b);
 //    framebuffer.setPixelColor(x, y, color);
+}
+
+void Raytracer::switchChanged() {
+    if (m_lighting == LightingModel::Phong) {
+        m_lighting = LightingModel::BlinnPhong;
+
+    } else if (m_lighting == LightingModel::BlinnPhong) {
+        m_lighting = LightingModel::Phong;
+    }
+
+    update();
 }

@@ -9,69 +9,57 @@ bool equal(const double& a, const double& b) {
     return std::abs(a - b) < EPSILON;
 }
 
-Tuple::Tuple(qreal x, qreal y, qreal z, qreal w) :
-    m_x(x),
-    m_y(y),
-    m_z(z),
-    m_w(w)
+Tuple::Tuple(double x_, double y_, double z_, double w_) :
+    x(x_),
+    y(y_),
+    z(z_),
+    w(w_)
 {
     // qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
 }
 
 bool Tuple::isPoint() const {
-    return equal(m_w, 1.0);
+    return equal(w, 1.0);
 }
 
 bool Tuple::isVector() const {
-    return equal(m_w, 0.0);
+    return equal(w, 0.0);
 }
 
 Tuple Tuple::operator-() const {
-    return {-m_x, -m_y, -m_z, -m_w};
+    return {-x, -y, -z, -w};
 }
 
 Tuple Tuple::operator+(const Tuple& tuple) const {
-    double x = m_x + tuple.m_x;
-    double y = m_y + tuple.m_y;
-    double z = m_z + tuple.m_z;
-    double w = m_w + tuple.m_w;
+    const double newx = x + tuple.x;
+    const double newy = y + tuple.y;
+    const double newz = z + tuple.z;
+    const double neww = w + tuple.w;
 
-    if (equal(w, 0)) {
-        return Vector(x, y, z);
-    } 
-        return Point(x, y, z);
-    
+    if (equal(neww, 0)) {
+        return Vector(newx, newy, newz);
+    }
+
+    return Point(newx, newy, newz);
 }
 
-Tuple Tuple::operator-(const Tuple& tuple) const {
-    double x = m_x - tuple.m_x;
-    double y = m_y - tuple.m_y;
-    double z = m_z - tuple.m_z;
-    double w = m_w - tuple.m_w;
-    return {x, y, z, w};
+Tuple Tuple::operator-(const Tuple& t) const {
+    return {x - t.x, y - t.y, z - t.z, w -  t.w};
 }
 
-Tuple Tuple::operator*(const double& multiplier) const {
-    double x = m_x * multiplier;
-    double y = m_y * multiplier;
-    double z = m_z * multiplier;
-    double w = m_w * multiplier;
-    return {x, y, z, w};
+Tuple Tuple::operator*(const double& m) const {
+    return {x * m, y * m, z * m, w * m};
 }
 
-Tuple Tuple::operator/(const double& divider) const {
-    double x = m_x / divider;
-    double y = m_y / divider;
-    double z = m_z / divider;
-    double w = m_w / divider;
-    return {x, y, z, w};
+Tuple Tuple::operator/(const double& d) const {
+    return {x / d, y / d, z / d, w / d};
 }
 
 bool Tuple::operator==(const Tuple& tuple) const {
-    if (!equal(m_x, tuple.x())) return false;
-    if (!equal(m_y, tuple.y())) return false;
-    if (!equal(m_z, tuple.z())) return false;
-    if (!equal(m_w, tuple.w())) return false;
+    if (!equal(x, tuple.x)) return false;
+    if (!equal(y, tuple.y)) return false;
+    if (!equal(z, tuple.z)) return false;
+    if (!equal(w, tuple.w)) return false;
 
     return true;
 }

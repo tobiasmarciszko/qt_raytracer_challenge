@@ -103,34 +103,45 @@ Window {
         }
     }
 
+    Text {
+        id: element1
+        x: 7
+        y: 447
+        text: qsTr("Phong")
+        font.pointSize: 11
+        anchors.right: element.left
+        anchors.rightMargin: 0
+        anchors.verticalCenterOffset: 0
+        anchors.verticalCenter: element.verticalCenter
+    }
+
+    Switch {
+        id: element
+        x: 51
+        y: 436
+        anchors.verticalCenter: element1.verticalCenter
+        display: AbstractButton.IconOnly
+
+        onCheckedChanged: {
+            raytracer.switchChanged()
+        }
+    }
+
+    Text {
+        id: element2
+        x: 131
+        y: 447
+        text: qsTr("Blinn-Phong")
+        anchors.left: element.right
+        anchors.leftMargin: 0
+        anchors.right: element.left
+        anchors.verticalCenter: element.verticalCenter
+        font.pointSize: 11
+        anchors.rightMargin: 6
+        anchors.verticalCenterOffset: 0
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

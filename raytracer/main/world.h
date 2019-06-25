@@ -59,7 +59,7 @@ inline Intersections intersect_world(const World& w, const Ray& r)
     return is;
 }
 
-inline Color shade_hit(const World& w, const Computations& comps) {
+inline Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong) {
 
     Color c = Color(0, 0, 0);
     for (const auto& light: w.lights) {
@@ -68,7 +68,8 @@ inline Color shade_hit(const World& w, const Computations& comps) {
             light,
             comps.point,
             comps.eyev,
-            comps.normalv);
+            comps.normalv,
+            lightingModel);
 
         c = c + color;
     }
@@ -76,7 +77,7 @@ inline Color shade_hit(const World& w, const Computations& comps) {
     return c;
 }
 
-inline Color color_at(const World& w, const Ray& r) {
+inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong) {
 
     const auto black = Color(0, 0, 0);
 
@@ -87,7 +88,7 @@ inline Color color_at(const World& w, const Ray& r) {
     }
 
     const auto comps = prepare_computations(h.value(), r);
-    const auto color = shade_hit(w, comps);
+    const auto color = shade_hit(w, comps, lightingModel);
 
     return color;
 }
@@ -101,13 +102,13 @@ inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vect
     const auto true_up = left.cross(forward);
 
     const auto orientation = Matrix<4,4>{
-        left.x(),      left.y(),     left.z(),    0,
-        true_up.x(),   true_up.y(),  true_up.z(), 0,
-        -forward.x(), -forward.y(), -forward.z(), 0,
+        left.x,      left.y,     left.z,    0,
+        true_up.x,   true_up.y,  true_up.z, 0,
+        -forward.x, -forward.y, -forward.z, 0,
         0,             0,            0,           1
     };
 
-    return orientation * translation(-from.x(), -from.y(), -from.z());
+    return orientation * translation(-from.x, -from.y, -from.z);
 }
 
 #endif //WORLD_H

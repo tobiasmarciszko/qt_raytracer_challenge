@@ -8,10 +8,10 @@
 TEST_CASE("Test Tuple") {
     Tuple tuple(1.0, 2.0, 3.0, 4.0);
 
-    REQUIRE(equal(1.0, tuple.x()));
-    REQUIRE(equal(2.0, tuple.y()));
-    REQUIRE(equal(3.0, tuple.z()));
-    REQUIRE(equal(4.0, tuple.w()));
+    REQUIRE(equal(1.0, tuple.x));
+    REQUIRE(equal(2.0, tuple.y));
+    REQUIRE(equal(3.0, tuple.z));
+    REQUIRE(equal(4.0, tuple.w));
 }
 
 TEST_CASE("testPoint")
@@ -20,7 +20,7 @@ TEST_CASE("testPoint")
     REQUIRE(point.isPoint());
 
     Tuple tuple = point;
-    REQUIRE(equal(1, tuple.w()));
+    REQUIRE(equal(1, tuple.w));
 }
 
 TEST_CASE("testVector")
@@ -29,7 +29,7 @@ TEST_CASE("testVector")
     REQUIRE(vector.isVector());
 
     Tuple tuple = vector;
-    REQUIRE(equal(0, tuple.w()));
+    REQUIRE(equal(0, tuple.w));
 }
 
 TEST_CASE("testAdd")
@@ -39,10 +39,10 @@ TEST_CASE("testAdd")
 
     Tuple a3 = a1 + a2;
 
-    REQUIRE(equal(1, a3.x()));
-    REQUIRE(equal(1, a3.y()));
-    REQUIRE(equal(6, a3.z()));
-    REQUIRE(equal(1, a3.w()));
+    REQUIRE(equal(1, a3.x));
+    REQUIRE(equal(1, a3.y));
+    REQUIRE(equal(6, a3.z));
+    REQUIRE(equal(1, a3.w));
 }
 
 TEST_CASE("testSubtractPoints")
@@ -53,9 +53,9 @@ TEST_CASE("testSubtractPoints")
     Vector v1 = p1 - p2;
 
     REQUIRE(v1.isVector());
-    REQUIRE(equal(-2, v1.x()));
-    REQUIRE(equal(-4, v1.y()));
-    REQUIRE(equal(-6, v1.z()));
+    REQUIRE(equal(-2, v1.x));
+    REQUIRE(equal(-4, v1.y));
+    REQUIRE(equal(-6, v1.z));
 }
 
 TEST_CASE("testSubtractVectorFromPoint")
@@ -66,9 +66,9 @@ TEST_CASE("testSubtractVectorFromPoint")
     Point p1 = p - v;
 
     REQUIRE(p1.isPoint());
-    REQUIRE(equal(-2, p1.x()));
-    REQUIRE(equal(-4, p1.y()));
-    REQUIRE(equal(-6, p1.z()));
+    REQUIRE(equal(-2, p1.x));
+    REQUIRE(equal(-4, p1.y));
+    REQUIRE(equal(-6, p1.z));
 }
 
 TEST_CASE("testSubtractVectors")
@@ -79,19 +79,19 @@ TEST_CASE("testSubtractVectors")
     Vector v3 = v1 - v2;
 
     REQUIRE(v3.isVector());
-    REQUIRE(equal(-2, v3.x()));
-    REQUIRE(equal(-4, v3.y()));
-    REQUIRE(equal(-6, v3.z()));
+    REQUIRE(equal(-2, v3.x));
+    REQUIRE(equal(-4, v3.y));
+    REQUIRE(equal(-6, v3.z));
 }
 
 TEST_CASE("testNegate")
 {
     Tuple tuple = -Tuple(1, -2, 3, -4);
 
-    REQUIRE(equal(-1, tuple.x()));
-    REQUIRE(equal(2, tuple.y()));
-    REQUIRE(equal(-3, tuple.z()));
-    REQUIRE(equal(4, tuple.w()));
+    REQUIRE(equal(-1, tuple.x));
+    REQUIRE(equal(2, tuple.y));
+    REQUIRE(equal(-3, tuple.z));
+    REQUIRE(equal(4, tuple.w));
 }
 
 TEST_CASE("testScalarMultiply")
@@ -99,10 +99,10 @@ TEST_CASE("testScalarMultiply")
     Tuple a = Tuple(1, -2, 3, -4);
     Tuple tuple = a * 3.5;
 
-    REQUIRE(equal(3.5, tuple.x()));
-    REQUIRE(equal(-7, tuple.y()));
-    REQUIRE(equal(10.5, tuple.z()));
-    REQUIRE(equal(-14, tuple.w()));
+    REQUIRE(equal(3.5, tuple.x));
+    REQUIRE(equal(-7, tuple.y));
+    REQUIRE(equal(10.5, tuple.z));
+    REQUIRE(equal(-14, tuple.w));
 }
 
 TEST_CASE("testFractionMultiply")
@@ -110,10 +110,10 @@ TEST_CASE("testFractionMultiply")
     Tuple a = Tuple(1, -2, 3, -4);
     Tuple tuple = a * 0.5;
 
-    REQUIRE(equal(0.5, tuple.x()));
-    REQUIRE(equal(-1, tuple.y()));
-    REQUIRE(equal(1.5, tuple.z()));
-    REQUIRE(equal(-2, tuple.w()));
+    REQUIRE(equal(0.5, tuple.x));
+    REQUIRE(equal(-1, tuple.y));
+    REQUIRE(equal(1.5, tuple.z));
+    REQUIRE(equal(-2, tuple.w));
 }
 
 TEST_CASE("testScalarDivision")
@@ -121,10 +121,10 @@ TEST_CASE("testScalarDivision")
     Tuple a = Tuple(1, -2, 3, -4);
     Tuple tuple = a / 2;
 
-    REQUIRE(equal(0.5, tuple.x()));
-    REQUIRE(equal(-1, tuple.y()));
-    REQUIRE(equal(1.5, tuple.z()));
-    REQUIRE(equal(-2, tuple.w()));
+    REQUIRE(equal(0.5, tuple.x));
+    REQUIRE(equal(-1, tuple.y));
+    REQUIRE(equal(1.5, tuple.z));
+    REQUIRE(equal(-2, tuple.w));
 }
 
 TEST_CASE("testMagnitude")
@@ -150,14 +150,14 @@ TEST_CASE("testNormalize")
     Vector v1 = Vector(4,0,0);
     Vector v2 = v1.normalize();
 
-    REQUIRE(equal(1, v2.x()));
+    REQUIRE(equal(1, v2.x));
 
     Vector v3 = Vector(1,2,3);
     Vector v4 = v3.normalize();
 
-    REQUIRE(equal(1 / sqrt(14), v4.x()));
-    REQUIRE(equal(2 / sqrt(14), v4.y()));
-    REQUIRE(equal(3 / sqrt(14), v4.z()));
+    REQUIRE(equal(1 / sqrt(14), v4.x));
+    REQUIRE(equal(2 / sqrt(14), v4.y));
+    REQUIRE(equal(3 / sqrt(14), v4.z));
 }
 
 TEST_CASE("testDot")
@@ -176,13 +176,13 @@ TEST_CASE("testCross")
     Vector b = Vector(2,3,4);
 
     Vector cross1 = a.cross(b);
-    REQUIRE(equal(-1, cross1.x()));
-    REQUIRE(equal(2, cross1.y()));
-    REQUIRE(equal(-1, cross1.z()));
+    REQUIRE(equal(-1, cross1.x));
+    REQUIRE(equal(2, cross1.y));
+    REQUIRE(equal(-1, cross1.z));
 
     Vector cross2 = b.cross(a);
-    REQUIRE(equal(1, cross2.x()));
-    REQUIRE(equal(-2, cross2.y()));
-    REQUIRE(equal(1, cross2.z()));
+    REQUIRE(equal(1, cross2.x));
+    REQUIRE(equal(-2, cross2.y));
+    REQUIRE(equal(1, cross2.z));
 
 }

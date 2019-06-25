@@ -19,7 +19,7 @@ public:
         Vector world_normal = m_transform.inverse().transpose() * object_normal;
 
         // Transpose messes with our w value. Hack it back to 0;
-        world_normal.resetWToZero();
+        world_normal.w = 0;
         return world_normal.normalize();
     }
 

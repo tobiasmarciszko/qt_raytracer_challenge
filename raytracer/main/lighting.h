@@ -8,12 +8,19 @@
 #include "vector.h"
 #include "point.h"
 
+enum class LightingModel {
+    Phong,
+    BlinnPhong
+};
+
 inline Color lighting(
     const Material& material,
     const Light& light,
     const Point& point,
     const Vector& eyev,
-    const Vector& normalv) {
+    const Vector& normalv,
+    const LightingModel& lightingModel = LightingModel::Phong
+    ) {
 
     const auto black = Color(0, 0, 0);
     Color ambient;
@@ -51,7 +58,20 @@ inline Color lighting(
             specular = black;
         } else {
             // compute the specular contribution
-            const auto factor = std::pow(reflect_dot_eye, material.shininess);
+
+            double factor;
+
+            if (lightingModel == LightingModel::Phong) {
+                factor = std::pow(reflect_dot_eye, material.shininess);
+            }
+
+            if (lightingModel == LightingModel::BlinnPhong) {
+                const auto halfway = Vector(lightv + eyev).normalize();
+                const auto halfway_dot = normalv.dot(halfway);
+
+                factor = std::pow(halfway_dot, material.shininess);
+            }
+
             specular = light.intensity() * material.specular * factor;
         }
     }

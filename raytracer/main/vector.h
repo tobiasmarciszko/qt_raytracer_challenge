@@ -20,29 +20,30 @@ public:
     {
         // aka length
         // Pythagoras to the rescue!
-        return std::sqrt( (m_x*m_x) + (m_y*m_y) + (m_z*m_z));
+        return std::sqrt( (x*x) + (y*y) + (z*z));
     }
 
     inline Vector normalize() const
     {
         double magnitude = this->magnitude();
-        return {m_x / magnitude,
-                m_y / magnitude,
-                m_z / magnitude};
+        return {x / magnitude,
+                y / magnitude,
+                z / magnitude};
     }
 
     inline double dot(const Vector& b) const
     {
-        return (m_x * b.x() +
-            m_y * b.y() +
-            m_z * b.z());
+        return (
+            x * b.x +
+            y * b.y +
+            z * b.z);
     }
 
     inline Vector cross(const Vector& b) const
     {
-        return {m_y * b.z() - m_z * b.y(),
-                m_z * b.x() - m_x * b.z(),
-                m_x * b.y() - m_y * b.x()};
+        return {y * b.z - z * b.y,
+                z * b.x - x * b.z,
+                x * b.y - y * b.x};
     }
 
     inline Vector reflect(const Vector& normal) const {
