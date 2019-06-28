@@ -19,6 +19,7 @@ inline Color lighting(
     const Point& point,
     const Vector& eyev,
     const Vector& normalv,
+    const bool in_shadow = false,
     const LightingModel& lightingModel = LightingModel::Phong
     ) {
 
@@ -41,7 +42,7 @@ inline Color lighting(
     // light is on the other side of the surface.
     const auto light_dot_normal = lightv.dot(normalv);
 
-    if (light_dot_normal < 0) {
+    if (light_dot_normal < 0 || in_shadow) {
         diffuse = black;
         specular = black;
     } else {
@@ -77,8 +78,7 @@ inline Color lighting(
     }
 
     // Add the three contributions together to get the final shading
-    const auto result = ambient + diffuse + specular;
-    return result;
+    return ambient + diffuse + specular;
 }
 
 #endif //LIGHTING_H

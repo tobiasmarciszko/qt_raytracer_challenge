@@ -251,10 +251,6 @@ void Raytracer::defaultWorld()
 
 void Raytracer::threeBallsOnAFloor()
 {
-//    tick++;
-//    m_canvas.fill(Color(0, 0, 0));
-//    framebuffer.fill(qRgb(0, 0, 0));
-
     auto floor = Sphere();
     floor.set_transform(scaling(10, 0.01, 10));
     auto m = floor.material();
@@ -297,6 +293,9 @@ void Raytracer::threeBallsOnAFloor()
     auto world = World();
 
     world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
+    // world.lights.emplace_back(PointLight(Point(2, 2, -10), Color(0, 1, 0)));
+    // world.lights.emplace_back(PointLight(Point(0, 2000, 0), Color(0.8, 0.8, 0.8)));
+
     auto camera = Camera(320, 240, M_PI / 3);
     camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
 
@@ -316,6 +315,8 @@ void Raytracer::threeBallsOnAFloor()
 
 // Helper functions
 void Raytracer::render(const Camera& camera, const World& world) {
+    QElapsedTimer timer;
+    timer.start();
 
     // Split the image into four chunks and utilize the four cores to speed up rendering.
     QFutureSynchronizer<void> synchronizer;
@@ -340,6 +341,8 @@ void Raytracer::render(const Camera& camera, const World& world) {
             framebuffer.setPixelColor(x, y, color);
         }
     }
+
+    qDebug() << "Last frame rendered in" << timer.elapsed() << "ms";
 
     emit rendererReady(framebuffer);
 }

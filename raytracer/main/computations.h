@@ -9,12 +9,12 @@
 #include <memory>
 
 struct Computations {
-
     double t = -1;
     std::shared_ptr<Shape> object = std::make_shared<Sphere>(Sphere());
     Point point = Point(0,0,0);
     Vector eyev = Vector(0,0,0);
     Vector normalv = Vector(0,0,0);
+    Point over_point = point + normalv * EPSILON;
     bool inside = false;
 };
 
@@ -28,11 +28,13 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r) {
     comps.normalv = comps.object->normal_at(comps.point);
 
     if (comps.normalv.dot(comps.eyev) < 0) {
-       comps.inside = true;
-       comps.normalv = -comps.normalv;
+        comps.inside = true;
+        comps.normalv = -comps.normalv;
     } else {
         comps.inside = false;
     }
+
+    comps.over_point = comps.point + comps.normalv * EPSILON;
 
     return comps;
 }

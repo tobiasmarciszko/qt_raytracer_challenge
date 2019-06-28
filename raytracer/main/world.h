@@ -59,16 +59,41 @@ inline Intersections intersect_world(const World& w, const Ray& r)
     return is;
 }
 
+inline bool is_shadowed(const World& world, const Point& point, const Light& light) {
+
+        const Vector v = light.position() - point;
+        const auto distance = v.magnitude();
+        const auto direction = v.normalize();
+
+        const Ray r = Ray(point, direction);
+
+        const auto intersections = intersect_world(world, r);
+        const auto h = hit(intersections);
+
+        if (h.has_value() && (h->t() < distance)) {
+            return true;
+        } else {
+            return false;
+        }
+}
+
+inline bool is_shadowed(const World& world, const Point& point) {
+    return is_shadowed(world, point, world.lights.front());
+}
+
 inline Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong) {
 
     Color c = Color(0, 0, 0);
     for (const auto& light: w.lights) {
+        const auto in_shadow = is_shadowed(w, comps.over_point, light);
+
         const auto color = lighting(
             comps.object->material(),
             light,
             comps.point,
             comps.eyev,
             comps.normalv,
+            in_shadow,
             lightingModel);
 
         c = c + color;
