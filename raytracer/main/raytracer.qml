@@ -11,22 +11,24 @@ Window {
     height: 480
     color: "#3f5d80"
     title: "Freeside Raytracer"
-    x: Screen.width / 2 - width / 2
-    y: Screen.height / 2 - height / 2
+    // x: Screen.width / 2 - width / 2
+    // y: Screen.height / 2 - height / 2
 
     Rectangle {
         id: rectangle
-        x: 134
-        y: 78
-        width: 320
-        height: 240
-        color: "#00000000"
+        color: "white"
         radius: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 160
+        anchors.left: parent.left
+        anchors.leftMargin: 160
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 120
+        anchors.top: parent.top
+        anchors.topMargin: 120
         border.color: "#00000000"
         border.width: 0
         clip: true
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
 
         MouseArea {
             id: mouseArea
@@ -49,9 +51,7 @@ Window {
 
             ImageItem {
                 id: liveImageItem
-                x: 0
-                y: 0
-                fillColor: "#000000"
+                fillColor: "#FFFFFF"
                 clip: true
                 enabled: false
                 smooth: false
@@ -59,7 +59,7 @@ Window {
                 anchors.fill: parent
 
                 Component.onCompleted: {
-                    raytracer.update()
+                    raytracer.render(rectangle.width, rectangle.height)
                 }
 
                 Connections {
@@ -67,15 +67,38 @@ Window {
                     onRendererReady: liveImageItem.setImage(image)
                 }
             }
+
+            BusyIndicator {
+                id: busyIndicator
+                x: 130
+                y: 90
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                running: raytracer.rendering
+
+                Text {
+                    id: element4
+                    color: "#ffffff"
+                    visible: raytracer.rendering
+                    text: raytracer.progress + "%"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 12
+                }
+            }
         }
     }
 
     Slider {
         id: slider
-        x: 147
         y: 371
-        width: 347
         height: 40
+        anchors.left: parent.left
+        anchors.leftMargin: 147
+        anchors.right: parent.right
+        anchors.rightMargin: 147
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 69
         stepSize: 0.1
         to: 10
         from: -10
@@ -89,9 +112,13 @@ Window {
     Slider {
         id: slider1
         x: 486
-        y: 120
         width: 57
-        height: 240
+        anchors.top: parent.top
+        anchors.topMargin: 120
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 120
+        anchors.right: parent.right
+        anchors.rightMargin: 97
         orientation: Qt.Vertical
         stepSize: 0.1
         to: 10
@@ -105,21 +132,22 @@ Window {
 
     Text {
         id: element1
-        x: 7
         y: 447
         text: qsTr("Phong")
+        anchors.left: parent.left
+        anchors.leftMargin: 7
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 16
         font.pointSize: 11
-        anchors.right: element.left
-        anchors.rightMargin: 0
-        anchors.verticalCenterOffset: 0
-        anchors.verticalCenter: element.verticalCenter
     }
 
     Switch {
         id: element
-        x: 51
         y: 436
-        anchors.verticalCenter: element1.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 51
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 4
         display: AbstractButton.IconOnly
 
         onCheckedChanged: {
@@ -129,18 +157,41 @@ Window {
 
     Text {
         id: element2
-        x: 131
         y: 447
         text: qsTr("Blinn-Phong")
-        anchors.left: element.right
-        anchors.leftMargin: 0
-        anchors.right: element.left
-        anchors.verticalCenter: element.verticalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 16
+        anchors.left: parent.left
+        anchors.leftMargin: 131
         font.pointSize: 11
-        anchors.rightMargin: 6
-        anchors.verticalCenterOffset: 0
     }
 
+    RoundButton {
+        id: button
+        x: 270
+        y: 424
+        width: 80
+        text: qsTr("Render")
+        radius: 8
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 16
+        antialiasing: true
+        enabled: !raytracer.rendering
+        onClicked: {
+            raytracer.render(rectangle.width, rectangle.height)
+        }
+    }
+
+    Text {
+        id: element3
+        x: 295
+        text: rectangle.width + "x" + rectangle.height
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 99
+        font.pixelSize: 12
+    }
 }
 
 
@@ -155,7 +206,31 @@ Window {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*##^## Designer {
-    D{i:2;anchors_height:240;anchors_width:320;anchors_x:0;anchors_y:0}
+    D{i:6;anchors_x:376}D{i:5;anchors_x:130;anchors_y:90}D{i:13;anchors_y:99}
 }
  ##^##*/

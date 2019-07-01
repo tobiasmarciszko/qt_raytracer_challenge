@@ -24,6 +24,9 @@ public:
     double red;
     double green;
     double blue;
+
+    int x;
+    int y;
 };
 
 #endif // COLOR_H

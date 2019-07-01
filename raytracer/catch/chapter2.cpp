@@ -63,7 +63,7 @@ TEST_CASE("testColorHadamard") {
 }
 
 TEST_CASE("testCanvas") {
-    Canvas<10,20> c;
+    Canvas c = Canvas(10,20);
     Color red = Color(1, 0, 0);
 
     c.write_pixel(0, 0, red);

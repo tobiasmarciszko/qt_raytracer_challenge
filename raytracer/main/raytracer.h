@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QImage>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtCore/QFutureSynchronizer>
+#include <QtConcurrent>
 #include "canvas.h"
 #include "camera.h"
 #include "world.h"
@@ -14,10 +18,30 @@ class Raytracer : public QObject
     Q_OBJECT
 
 public:
+
+    Q_PROPERTY(int progress READ getProgress NOTIFY progressChanged)
+    int getProgress() {
+        return m_futureWatcher.progressValue() * 100 / m_canvas.m_pixels.size();
+    }
+
+    Q_PROPERTY(bool rendering READ getRendering WRITE setRendering NOTIFY renderingChanged)
+    bool getRendering() {
+        return m_rendering;
+    }
+
+    void setRendering(bool rendering) {
+        m_rendering = rendering;
+        emit renderingChanged();
+    }
+
+public:
     explicit Raytracer(QObject *parent = nullptr);
 
 public slots:
     void update();
+    void render(int width, int height);
+    void renderFinished();
+    void progressValueChanged(int value);
 
     void fromXChanged(double val) {
         fromX = val;
@@ -39,9 +63,10 @@ public slots:
     }
 
     void switchChanged();
-
 signals:
     void rendererReady(const QImage& image);
+    void renderingChanged();
+    void progressChanged();
 
 public:
     FrameBuffer framebuffer = QImage(320, 240, QImage::Format_RGB32);
@@ -66,22 +91,17 @@ private:
 
     // Helpers
 private:
-    void render(const Camera& camera, const World& world);
-    void render(const Camera& camera, const World& world, unsigned int fromX, unsigned int toX, unsigned int fromY, unsigned int toY);
-
-    void renderTopL(const Camera& camera, const World& world);
-    void renderTopR(const Camera& camera, const World& world);
-    void renderBottomL(const Camera& camera, const World& world);
-    void renderBottomR(const Camera& camera, const World& world);
-
-    void writePixel(unsigned int x, unsigned int y, const Color& color);
+    void render();
 
 private:
-    Canvas<320,240> m_canvas = Canvas<320,240>();
+    Canvas m_canvas = Canvas(320, 240);
     Camera m_camera = Camera(320, 240, M_PI / 3);
     World m_world = default_world();
     LightingModel m_lighting = LightingModel::Phong;
+    bool m_rendering = false;
 
+    QFutureWatcher<void> m_futureWatcher;
+    QElapsedTimer m_timer;
 };
 
 #endif // RAYTRACER_H

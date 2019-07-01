@@ -15,8 +15,7 @@
 #include <QRgb>
 #include <QDebug>
 #include <QElapsedTimer>
-#include <QtCore/QFutureSynchronizer>
-#include <QtConcurrent>
+
 
 struct projectile {
     projectile(Point pos, Vector v) : position(pos), velocity(v) {}
@@ -36,7 +35,15 @@ static int tick = 0;
 
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
+    connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
+    connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
+
     threeBallsOnAFloor();
+}
+
+void Raytracer::progressValueChanged(int value)
+{
+    emit progressChanged();
 }
 
 void Raytracer::update()
@@ -51,7 +58,8 @@ void Raytracer::update()
     threeBallsOnAFloor();
 #endif
 
-    render(m_camera, m_world);
+    m_futureWatcher.cancel();
+    render();
 }
 
 void Raytracer::projectileEffect() {
@@ -67,7 +75,7 @@ void Raytracer::projectileEffect() {
         int y = 240 - static_cast<int>(p.position.y);
         y = y % 239;
         if (y < 0) y = 0;
-        writePixel(x, y, Color(1.0, 0.5, 1.0));
+        // writePixel(x, y, Color(1.0, 0.5, 1.0));
     }
 }
 
@@ -89,7 +97,7 @@ void Raytracer::clockEffect() {
 
         const auto x = point.x;
         const auto y = point.z;
-        writePixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
+        // writePixel(static_cast<int>(x), static_cast<int>(y), Color(1.0, 1.0, 1.0));
     }
 }
 
@@ -137,7 +145,7 @@ void Raytracer::flatSphere()
             const auto i = hit(xs);
 
             if (i.has_value()) {
-                writePixel(x, y, Color(1, 0, 0));
+                // writePixel(x, y, Color(1, 0, 0));
             }
         }
     }
@@ -229,7 +237,7 @@ void Raytracer::shadedSphere()
                 const auto color = lighting(shape.get()->material(), light, point, eye, normal);
                 const auto color2 = lighting(shape.get()->material(), light2, point, eye, normal);
 
-                writePixel(x, y, color + color2);
+                // writePixel(x, y, color + color2);
             }
         }
     }
@@ -246,7 +254,7 @@ void Raytracer::defaultWorld()
 
     camera.transform = view_transform(from, to, up);
 
-    render(camera, world);
+    // render(camera, world);
 }
 
 void Raytracer::threeBallsOnAFloor()
@@ -313,23 +321,49 @@ void Raytracer::threeBallsOnAFloor()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Raytracer::render(int width, int height) {
+
+    if (width < 0 || height < 0) return;
+
+    m_camera = Camera(width, height, M_PI / 3);
+    m_camera.transform = view_transform(Point(fromX, fromY, fromZ), Point(toX, toY, toZ), Vector(0, 1, 0));
+    framebuffer = QImage(width, height, QImage::Format_RGB32);
+    m_canvas = Canvas(width, height);
+
+    render();
+}
+
 // Helper functions
-void Raytracer::render(const Camera& camera, const World& world) {
-    QElapsedTimer timer;
-    timer.start();
+void Raytracer::render() {
 
-    // Split the image into four chunks and utilize the four cores to speed up rendering.
-    QFutureSynchronizer<void> synchronizer;
-    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderTopL, camera, world));
-    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderTopR, camera, world));
-    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderBottomL, camera, world));
-    synchronizer.addFuture(QtConcurrent::run(this, &Raytracer::renderBottomR, camera, world));
+    auto camera = m_camera;
+    auto world = m_world;
 
-    synchronizer.waitForFinished();
+    setRendering(true);
 
-    // Copy pixels from the canves to the QImage. Not very efficient... :)
-    for (unsigned int y = 0; y < camera.vsize;  y++) {
-        for (unsigned int x = 0; x < camera.hsize;  x++) {
+    framebuffer.fill(qRgb(0, 0, 0));
+    m_canvas.fill(Color(1,1,1));
+
+    emit rendererReady(framebuffer);
+
+    qDebug() << "Rendering (" << camera.hsize << "x" << camera.vsize << ")" << QThread::idealThreadCount() << "threads";
+
+    m_timer.start();
+
+    std::function<void(Color&)> renderPixel = [&](Color &color) {
+        const Ray ray = ray_for_pixel(m_camera, color.x, color.y);
+        color = color_at(m_world, ray, m_lighting);
+    };
+
+    m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.m_pixels, renderPixel));
+}
+
+void Raytracer::renderFinished() {
+    qDebug() << "Frame rendered in" << m_timer.elapsed() << "ms";
+
+    m_timer.start();
+    for (unsigned int y = 0; y < m_camera.vsize;  y++) {
+        for (unsigned int x = 0; x < m_camera.hsize;  x++) {
 
             Color c = m_canvas.pixel_at(x, y);
             QColor color;
@@ -338,64 +372,16 @@ void Raytracer::render(const Camera& camera, const World& world) {
             const auto b = c.blue < 1.0 ? c.blue : 1.0;
 
             color.setRgbF(r, g, b);
-            framebuffer.setPixelColor(x, y, color);
+            QRgb *pixel = (QRgb *)framebuffer.scanLine(y); // select row
+            pixel += x; // select column
+            *pixel = qRgb(color.red(),color.green(), color.blue());
         }
     }
 
-    qDebug() << "Last frame rendered in" << timer.elapsed() << "ms";
+    qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
 
     emit rendererReady(framebuffer);
-}
-
-void Raytracer::render(
-    const Camera& camera,
-    const World& world,
-    unsigned int fromX,
-    unsigned int toX,
-    unsigned int fromY,
-    unsigned int toY) {
-
-    for (unsigned int y = fromY; y < toY; y++) {
-        for (unsigned int x = fromX; x < toX; x++) {
-            const Ray ray = ray_for_pixel(camera, x, y);
-            const Color color = color_at(world, ray, m_lighting);
-
-            writePixel(x, y, color);
-        }
-    }
-}
-
-void Raytracer::renderTopL(const Camera& camera, const World& world) {
-    render(camera, world, 0, camera.hsize / 2, 0, camera.vsize / 2);
-}
-
-void Raytracer::renderTopR(const Camera& camera, const World& world) {
-    render(camera, world, camera.hsize / 2, camera.hsize, 0, camera.vsize/ 2);
-}
-
-void Raytracer::renderBottomL(const Camera& camera, const World& world) {
-    render(camera, world, 0, camera.hsize / 2, camera.vsize  / 2, camera.vsize);
-}
-
-void Raytracer::renderBottomR(const Camera& camera, const World& world) {
-    render(camera, world, camera.hsize / 2, camera.hsize, camera.vsize / 2, camera.vsize);
-}
-
-void Raytracer::writePixel(unsigned int x, unsigned int y, const Color& c) {
-
-    // Since we are using the canvas to populate our final image, and possible changing colors
-    // We use it as a backing field, but the drawing itself on screen takes place in the framebuffer.
-
-    m_canvas.write_pixel(x, y, c);
-
-//    QColor color;
-//
-//    const auto r = c.red() < 1.0 ? c.red() : 1.0;
-//    const auto g = c.green() < 1.0 ? c.green() : 1.0;
-//    const auto b = c.blue() < 1.0 ? c.blue() : 1.0;
-//
-//    color.setRgbF(r, g, b);
-//    framebuffer.setPixelColor(x, y, color);
+    setRendering(false);
 }
 
 void Raytracer::switchChanged() {

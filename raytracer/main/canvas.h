@@ -1,38 +1,48 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include <cstdlib>
+#include <QVector>
 #include "color.h"
 
-template<size_t width, size_t height>
 class Canvas
 {
 public:
+    Canvas(unsigned int width, unsigned int height) : m_width(width), m_height(height) {
+        m_pixels.resize(width * height);
+    }
+
     Canvas() {
         fill(Color(0.2,0.2,0.2));
     }
 
-    void write_pixel(unsigned int x, unsigned int y, const Color& color) {
-        m_pixels[x][y] = color;
+    void write_pixel(unsigned int x, unsigned int y, Color color) {
+        m_pixels[m_width * y + x] = color;
     }
 
     Color pixel_at(unsigned int x, unsigned int y) const {
-        return m_pixels[x][y];
+
+        auto index = m_width * y + x;
+        auto size = m_pixels.size();
+
+        return m_pixels[m_width * y + x];
     }
 
-    void fill(const Color& color) {
-        for (unsigned int i = 0; i < m_width; ++i) {
-            for (unsigned int j = 0; j < m_height; ++j) {
-                 m_pixels[i][j] = color;
+    void fill(Color color) {
+        for (unsigned int x = 0; x < m_width; ++x) {
+            for (unsigned int y = 0; y < m_height; ++y) {
+                color.x = x;
+                color.y = y;
+                 m_pixels[m_width * y + x] = color;
             }
         }
     }
 
-private:
-    size_t m_width = width;
-    size_t m_height = height;
+    QVector<Color> m_pixels{};
 
-    Color m_pixels[width][height];
+private:
+    unsigned int m_width;
+    unsigned int m_height;
+
 };
 
 #endif // CANVAS_H
