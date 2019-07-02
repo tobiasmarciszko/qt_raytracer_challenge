@@ -90,6 +90,7 @@ void Raytracer::renderFinished() {
     m_rendering = false;
     emit renderingChanged();
     emit imageReady(m_framebuffer);
+    m_framebuffer.save("render", "PNG", 100);
 }
 
 void Raytracer::switchChanged() {
