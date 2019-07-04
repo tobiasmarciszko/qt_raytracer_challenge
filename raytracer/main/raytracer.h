@@ -31,6 +31,16 @@ public slots:
     void progressValueChanged(int value);
     void switchChanged();
 
+    int objectIdFromCoordinates(int x, int y) {
+        const Ray ray = ray_for_pixel(m_camera, x, y);
+        const auto is = intersect_world(m_world, ray);
+        const auto h = hit(is);
+        if (!h.has_value()) {
+            return -1;
+        }
+        return h->object().get()->id();
+    }
+
 signals:
     void imageReady(const QImage& image);
     void renderingChanged();

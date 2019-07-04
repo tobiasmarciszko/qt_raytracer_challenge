@@ -69,6 +69,15 @@ Window {
                     font.pixelSize: 12
                 }
             }
+
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+
+                onClicked: {
+                    print("Object selected: " + raytracer.objectIdFromCoordinates(mouseX, mouseY))
+                }
+            }
         }
 
     DropShadow {
@@ -273,3 +282,8 @@ Window {
 
 
 
+
+/*##^## Designer {
+    D{i:6;anchors_height:100;anchors_width:100}
+}
+ ##^##*/

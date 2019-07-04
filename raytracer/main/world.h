@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <vector>
+#include <typeinfo>
 #include "light.h"
 #include "sphere.h"
 #include "material.h"
@@ -17,7 +18,6 @@ struct World
 
 inline World default_world()
 {
-
     World world;
 
     // Default world:
@@ -44,8 +44,8 @@ inline Intersections intersect_world(const World& w, const Ray& r)
 {
     Intersections is;
 
-    for (auto& object: w.shapes) {
-        const Intersections xs = intersect(r, object);
+    for (const auto& object: w.shapes) {
+        const Intersections xs = object->intersect(r);
         is.insert(std::end(is), std::begin(xs), std::end(xs));
     }
 

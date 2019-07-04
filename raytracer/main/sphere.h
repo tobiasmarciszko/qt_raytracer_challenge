@@ -10,22 +10,13 @@
 #include "matrix.h"
 #include "intersection.h"
 
-class Sphere : public Shape
+struct Sphere : public Shape
 {
-public:
-    inline Vector normal_at(const Point& world_point) const override {
-        const Point object_point = m_transform.inverse() * world_point;
-        const Vector object_normal = object_point - Point(0, 0, 0);
-        Vector world_normal = m_transform.inverse().transpose() * object_normal;
-
-        // Transpose messes with our w value. Hack it back to 0;
-        world_normal.w = 0;
-        return world_normal.normalize();
+    inline Vector local_normal_at(const Point& local_point) const override {
+        return local_point - Point(0, 0, 0);
     }
 
-    inline std::vector<Intersection> intersect(const Ray& r) const override {
-
-        const auto ray = r.transform(m_transform.inverse());
+    inline std::vector<Intersection> local_intersect(const Ray& ray) const override {
 
         const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
         const double a = ray.direction().dot(ray.direction());
@@ -44,7 +35,6 @@ public:
         const auto sphere_ptr = std::make_shared<Sphere>(*this);
         return {intersection(t1, sphere_ptr), intersection(t2, sphere_ptr)};
     }
-
 };
 
 #endif // SPHERE_H

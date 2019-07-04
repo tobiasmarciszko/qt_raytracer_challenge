@@ -27,6 +27,7 @@ add_executable(catchtests
         chapter6.cpp
         chapter7.cpp
         chapter8.cpp
+        chapter9.cpp
         )
 
 target_link_libraries(catchtests Qt5::Core)

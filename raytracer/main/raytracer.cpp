@@ -11,24 +11,25 @@
 #include "intersection.h"
 #include "camera.h"
 #include "world.h"
+#include "plane.h"
 
 #include <QRgb>
 #include <QDebug>
 #include <QElapsedTimer>
 
-World threeBallsOnAFloor();
+World threeBallsOnAPlane();
 
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
 
-    m_world = threeBallsOnAFloor();
+    m_world = threeBallsOnAPlane();
 }
 
 void Raytracer::progressValueChanged(int value)
 {
-    m_progress = value * 100 / m_canvas.m_pixels.size();
+    m_progress = value * 100 / m_canvas.pixels.size();
     emit progressChanged();
 }
 
@@ -56,13 +57,13 @@ void Raytracer::render() {
 
     qDebug() << "Rendering (" << m_camera.hsize << "x" << m_camera.vsize << ")" << QThread::idealThreadCount() << "threads";
 
-    std::function<void(Color&)> renderPixel = [&](Color &color) {
-        const Ray ray = ray_for_pixel(m_camera, color.x, color.y);
-        color = color_at(m_world, ray, m_lighting);
+    std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
+        const Ray ray = ray_for_pixel(m_camera, pixel.x, pixel.y);
+        pixel.color = color_at(m_world, ray, m_lighting);
     };
 
     m_timer.start();
-    m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.m_pixels, renderPixel));
+    m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.pixels, renderPixel));
 }
 
 void Raytracer::renderFinished() {
@@ -72,7 +73,7 @@ void Raytracer::renderFinished() {
     for (unsigned int y = 0; y < m_camera.vsize;  y++) {
         for (unsigned int x = 0; x < m_camera.hsize;  x++) {
 
-            Color c = m_canvas.pixel_at(x, y);
+            Color c = m_canvas.pixel_at(x, y).color;
             QColor color;
             const auto r = c.red < 1.0 ? c.red : 1.0;
             const auto g = c.green < 1.0 ? c.green : 1.0;
@@ -102,22 +103,12 @@ void Raytracer::switchChanged() {
     }
 }
 
-inline World threeBallsOnAFloor()
+inline World threeBallsOnAPlane()
 {
-    auto floor = Sphere();
-    floor.set_transform(scaling(10, 0.01, 10));
+    auto floor = Plane();
     auto m = floor.material();
-    m.color = Color(1, 0.9, 0.9);
-    m.specular = 0;
+    m.color = Color(1, 0.2, 0.2);
     floor.set_material(m);
-
-    auto left_wall = Sphere();
-    left_wall.set_transform(translation(0, 0, 5) * rotation_y(-M_PI_4) * rotation_x(M_PI_2) * scaling(10, 0.01, 10));
-    left_wall.set_material(m);
-
-    auto right_wall = Sphere();
-    right_wall.set_transform(translation(0, 0, 5) * rotation_y(M_PI_4) * rotation_x(M_PI_2) * scaling(10, 0.01, 10));
-    right_wall.set_material(m);
 
     auto middle = Sphere();
     middle.set_transform(translation(-0.5, 1, 0.5));
@@ -149,9 +140,7 @@ inline World threeBallsOnAFloor()
     world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
     world.lights.emplace_back(PointLight(Point(0, 2000, 0), Color(0.2, 0.2, 0.2)));
 
-    world.shapes = {std::make_shared<Sphere>(floor),
-                    std::make_shared<Sphere>(left_wall),
-                    std::make_shared<Sphere>(right_wall),
+    world.shapes = {std::make_shared<Plane>(floor),
                     std::make_shared<Sphere>(middle),
                     std::make_shared<Sphere>(right),
                     std::make_shared<Sphere>(left)

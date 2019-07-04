@@ -39,6 +39,7 @@ add_executable(raytracer
         world.h
         computations.h
         imageitem.h
+        plane.h
 
         color.cpp
         main.cpp

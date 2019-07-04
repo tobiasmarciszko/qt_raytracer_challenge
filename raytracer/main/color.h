@@ -6,7 +6,6 @@
 
 struct Color
 {
-public:
     Color() : red{0}, green{0}, blue{0} {}
     Color(double red, double green, double blue);
 
@@ -24,7 +23,11 @@ public:
     double red;
     double green;
     double blue;
+};
 
+struct Pixel
+{
+    Color color;
     int x;
     int y;
 };

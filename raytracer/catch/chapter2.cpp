@@ -67,8 +67,12 @@ TEST_CASE("testCanvas") {
     Color red = Color(1, 0, 0);
 
     c.write_pixel(0, 0, red);
-    REQUIRE(equal(1, c.pixel_at(0, 0).red));
+    REQUIRE(equal(1, c.pixel_at(0, 0).color.red));
+    REQUIRE(equal(0, c.pixel_at(0, 0).x));
+    REQUIRE(equal(0, c.pixel_at(0, 0).y));
 
     c.write_pixel(10 - 1, 20 - 1, red);
-    REQUIRE(equal(1, c.pixel_at(10 - 1, 20 - 1).red));
+    REQUIRE(equal(1, c.pixel_at(10 - 1, 20 - 1).color.red));
+    REQUIRE(equal(10 - 1, c.pixel_at(10 -1, 20 -1).x));
+    REQUIRE(equal(20 - 1, c.pixel_at(10 -1, 20 -1).y));
 }
