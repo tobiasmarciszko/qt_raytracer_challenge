@@ -57,7 +57,7 @@ public:
     virtual Vector local_normal_at(const Point& world_point) const = 0;
 
     std::vector<Intersection> intersect(const Ray& r) const {
-        const auto local_ray = r.transform(m_transform.inverse());
+        const auto local_ray = r.transform(m_inverse_transform);
         return local_intersect(local_ray);
     }
 

@@ -4,7 +4,6 @@
 #include <vector>
 #include <algorithm>
 #include <optional>
-#include <variant>
 #include <memory>
 
 class Shape;
