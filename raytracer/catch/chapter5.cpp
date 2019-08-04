@@ -40,8 +40,8 @@ TEST_CASE("testRayIntersectsSphereAtTwoPoints")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0).t(), 4.0));
-    REQUIRE(equal(xs.at(1).t(), 6.0));
+    REQUIRE(equal(xs.at(0).t, 4.0));
+    REQUIRE(equal(xs.at(1).t, 6.0));
 }
 
 TEST_CASE("testRayIntersectsSphereAtTangent")
@@ -52,8 +52,8 @@ TEST_CASE("testRayIntersectsSphereAtTangent")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0).t(), 5.0));
-    REQUIRE(equal(xs.at(1).t(), 5.0));
+    REQUIRE(equal(xs.at(0).t, 5.0));
+    REQUIRE(equal(xs.at(1).t, 5.0));
 }
 
 TEST_CASE("testRayMissesSphere")
@@ -74,8 +74,8 @@ TEST_CASE("testRayOriginatesInsideSphere")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0).t(), -1.0));
-    REQUIRE(equal(xs.at(1).t(), 1.0));
+    REQUIRE(equal(xs.at(0).t, -1.0));
+    REQUIRE(equal(xs.at(1).t, 1.0));
 }
 
 TEST_CASE("testRayIsInFrontOfSphere")
@@ -86,8 +86,8 @@ TEST_CASE("testRayIsInFrontOfSphere")
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0).t(), -6.0));
-    REQUIRE(equal(xs.at(1).t(), -4.0));
+    REQUIRE(equal(xs.at(0).t, -6.0));
+    REQUIRE(equal(xs.at(1).t, -4.0));
 }
 
 TEST_CASE("Spheres should have unique ids") {
@@ -100,8 +100,8 @@ TEST_CASE("Spheres should have unique ids") {
 TEST_CASE("An intersection encapsulates t and object") {
     const auto s = std::make_shared<Sphere>(Sphere());
     const auto i = Intersection(3.5, s);
-    REQUIRE(equal(i.t(), 3.5));
-    REQUIRE(s.get() == i.object().get());
+    REQUIRE(equal(i.t, 3.5));
+    REQUIRE(s.get() == i.object.get());
 }
 
 TEST_CASE("Aggregating intersections") {
@@ -112,8 +112,8 @@ TEST_CASE("Aggregating intersections") {
     const auto xs = Intersections({i1, i2});
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(equal(xs.at(0).t(), 1));
-    REQUIRE(equal(xs.at(1).t(), 2));
+    REQUIRE(equal(xs.at(0).t, 1));
+    REQUIRE(equal(xs.at(1).t, 2));
 }
 
 TEST_CASE("Intersect sets the object on the intersection") {
@@ -123,8 +123,8 @@ TEST_CASE("Intersect sets the object on the intersection") {
 
     REQUIRE(xs.size() == 2);
 
-    REQUIRE(*xs.at(0).object().get() == s);
-    REQUIRE(*xs.at(1).object().get() == s);
+    REQUIRE(*xs.at(0).object.get() == s);
+    REQUIRE(*xs.at(1).object.get() == s);
 }
 
 TEST_CASE("The hit, when all intersections have positive t") {
@@ -213,8 +213,8 @@ TEST_CASE("Intersecting a scaled sphere with a ray") {
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(xs.at(0).t() == 3);
-    REQUIRE(xs.at(1).t() == 7);
+    REQUIRE(xs.at(0).t == 3);
+    REQUIRE(xs.at(1).t == 7);
 }
 
 TEST_CASE("Intersecting a translated sphere with a ray") {

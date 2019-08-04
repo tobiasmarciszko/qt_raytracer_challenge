@@ -17,7 +17,7 @@ class Shape
 public:
     virtual ~Shape() = default;
 
-    inline int id() const {
+    inline unsigned int id() const {
         return m_id;
     }
 
@@ -70,6 +70,5 @@ private:
     unsigned int m_id = shape_count++;
     Material m_material = Material();
 };
-
 
 #endif // OBJECT_H

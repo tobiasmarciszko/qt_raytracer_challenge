@@ -38,7 +38,7 @@ public slots:
         if (!h.has_value()) {
             return -1;
         }
-        return h->object().get()->id();
+        return h->object.get()->id();
     }
 
 signals:

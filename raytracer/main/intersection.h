@@ -6,38 +6,30 @@
 #include <optional>
 #include <memory>
 
-class Shape;
+struct Shape;
 class Intersection
 {
 public:
 
-    Intersection(double t, std::shared_ptr<Shape> s) :
-        m_t(t),
-        m_object_ptr(s) {}
+    Intersection() = delete;
+    Intersection(double _t, std::shared_ptr<const Shape> _object) :
+        t(_t),
+        object(_object) {}
 
     inline bool operator==(const Intersection& i1) const {
-        if (i1.t() != m_t) return false;
-        if (!(i1.object() == object())) return false;
+        if (i1.t != t) return false;
+        if (!(i1.object == object)) return false;
 
         return true;
     }
 
-    inline double t() const {
-        return m_t;
-    }
-
-    inline std::shared_ptr<Shape> object() const {
-        return m_object_ptr;
-    }
-
-private:
-    double m_t;
-    std::shared_ptr<Shape> m_object_ptr;
+    double t;
+    std::shared_ptr<const Shape> object;
 };
 
 using Intersections = std::vector<Intersection>;
 
-inline Intersection intersection(double t, std::shared_ptr<Shape> s) {
+inline Intersection intersection(double t, std::shared_ptr<const Shape> s) {
     return {t, s};
 }
 
@@ -51,11 +43,11 @@ inline std::optional<Intersection> hit(Intersections intersections) {
     std::sort(intersections.begin(), intersections.end(), [](
         const Intersection& i1,
         const Intersection& i2) -> bool {
-            return i1.t() < i2.t();
+            return i1.t < i2.t;
     });
 
     for (const Intersection& intersection: intersections) {
-        if (intersection.t() >= 0) {
+        if (intersection.t >= 0) {
             return {intersection};
         }
     }

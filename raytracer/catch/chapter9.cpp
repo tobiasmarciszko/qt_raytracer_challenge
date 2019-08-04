@@ -43,8 +43,8 @@ TEST_CASE("A ray intersecting a plane from above")
     const auto xs = p.local_intersect(r);
 
     REQUIRE(xs.size() == 1);
-    REQUIRE(xs.at(0).t() == 1);
-    REQUIRE(xs.at(0).object().get()->id() == p.id());
+    REQUIRE(equal(xs.at(0).t, 1));
+    REQUIRE(xs.at(0).object.get()->id() == p.id());
 }
 
 
@@ -56,6 +56,6 @@ TEST_CASE("A ray intersecting a plane from below")
     const auto xs = p.local_intersect(r);
 
     REQUIRE(xs.size() == 1);
-    REQUIRE(xs.at(0).t() == 1);
-    REQUIRE(xs.at(0).object().get()->id() == p.id());
+    REQUIRE(equal(xs.at(0).t, 1));
+    REQUIRE(xs.at(0).object.get()->id() == p.id());
 }

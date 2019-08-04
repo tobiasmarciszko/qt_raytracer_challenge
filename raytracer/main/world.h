@@ -53,7 +53,7 @@ inline Intersections intersect_world(const World& w, const Ray& r)
         const Intersection &i1,
         const Intersection &i2) -> bool
     {
-        return i1.t() < i2.t();
+        return i1.t < i2.t;
     });
 
     return is;
@@ -70,7 +70,7 @@ inline bool is_shadowed(const World& world, const Point& point, const Light& lig
         const auto intersections = intersect_world(world, r);
         const auto h = hit(intersections);
 
-        if (h.has_value() && (h->t() < distance)) {
+        if (h.has_value() && (h->t < distance)) {
             return true;
         } else {
             return false;
@@ -83,7 +83,7 @@ inline bool is_shadowed(const World& world, const Point& point) {
 
 inline Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong) {
 
-    Color c = Color(0, 0, 0);
+    Color c{0, 0, 0};
     for (const auto& light: w.lights) {
         const auto in_shadow = is_shadowed(w, comps.over_point, light);
 
@@ -104,7 +104,7 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
 
 inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong) {
 
-    const auto black = Color(0, 0, 0);
+    const Color black{0, 0, 0};
 
     const auto is = intersect_world(w, r);
     const auto h = hit(is);

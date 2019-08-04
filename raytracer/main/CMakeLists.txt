@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(raytracer)
+project(freeside-raytracer)
 
 # Sanitizers
 #message(WARNING "Sanitizer(s) enabled!")
@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Core Quick Concurrent REQUIRED)
 
-add_executable(raytracer
+add_executable(freeside-raytracer
         qml.qrc
         canvas.h
         color.h
@@ -50,8 +50,8 @@ add_executable(raytracer
         imageitem.cpp
         camera.h)
 
-target_compile_definitions(raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(raytracer Qt5::Core)
-target_link_libraries(raytracer Qt5::Quick)
-target_link_libraries(raytracer Qt5::Concurrent)
+target_link_libraries(freeside-raytracer Qt5::Core)
+target_link_libraries(freeside-raytracer Qt5::Quick)
+target_link_libraries(freeside-raytracer Qt5::Concurrent)

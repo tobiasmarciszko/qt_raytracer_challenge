@@ -20,6 +20,27 @@ Window {
         y = Screen.height / 2 - height / 2
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        x: 674
+        y: 528
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 14
+        anchors.right: parent.right
+        anchors.rightMargin: 13
+        running: raytracer.rendering
+
+        Text {
+            id: element4
+            color: "#ffffff"
+            visible: raytracer.rendering
+            text: raytracer.progress + "%"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.pixelSize: 12
+        }
+    }
+
     Rectangle {
         id: rectangle
         color: "white"
@@ -32,53 +53,34 @@ Window {
         anchors.top: parent.top
         anchors.topMargin: 20
         clip: true
-            ImageItem {
-                id: liveImageItem
-                fillColor: "#FFFFFF"
-                clip: true
-                enabled: false
-                anchors.fill: parent
+        ImageItem {
+            id: liveImageItem
+            fillColor: "#FFFFFF"
+            clip: true
+            enabled: false
+            anchors.fill: parent
 
-                Component.onCompleted: {
-                    if (rectangle.width > 0 && rectangle.height > 0) {
-                        raytracer.setViewportSize(rectangle.width, rectangle.height)
-                    }
-                }
-
-                Connections {
-                    target: raytracer
-                    onImageReady: liveImageItem.setImage(image)
+            Component.onCompleted: {
+                if (rectangle.width > 0 && rectangle.height > 0) {
+                    raytracer.setViewportSize(rectangle.width, rectangle.height)
                 }
             }
 
-            BusyIndicator {
-                id: busyIndicator
-                x: 130
-                y: 90
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                running: raytracer.rendering
-
-                Text {
-                    id: element4
-                    color: "#ffffff"
-                    visible: raytracer.rendering
-                    text: raytracer.progress + "%"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 12
-                }
-            }
-
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-
-                onClicked: {
-                    print("Object selected: " + raytracer.objectIdFromCoordinates(mouseX, mouseY))
-                }
+            Connections {
+                target: raytracer
+                onImageReady: liveImageItem.setImage(image)
             }
         }
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+
+            onClicked: {
+                print("Object selected: " + raytracer.objectIdFromCoordinates(mouseX, mouseY))
+            }
+        }
+    }
 
     DropShadow {
         anchors.fill: rectangle
@@ -193,7 +195,12 @@ Window {
         anchors.verticalCenter: slider1.verticalCenter
         font.pixelSize: 12
     }
+
 }
+
+
+
+
 
 
 

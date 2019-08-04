@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cmath>
+#include <memory>
 #include "ray.h"
 #include "point.h"
 #include "vector.h"
@@ -13,6 +14,7 @@
 struct Plane : public Shape
 {
     inline Vector local_normal_at(const Point& local_point) const override {
+        (void)local_point;
         return {0, 1, 0};
     }
 
@@ -24,7 +26,7 @@ struct Plane : public Shape
         }
 
         const double t = -ray.origin().y / ray.direction().y;
-        const auto plane_ptr = std::make_shared<Plane>(*this);
+        const auto plane_ptr = std::make_shared<const Plane>(*this);
         return {intersection(t, plane_ptr)};
 
     }

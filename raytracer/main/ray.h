@@ -50,10 +50,10 @@ inline Ray ray_for_pixel(const Camera& camera, unsigned int px, unsigned int py)
     // and then compute the ray's direction vector.
     // (remember that the canvas is at z=-1)
 
-    const auto c_transform_inverse = camera.transform.inverse();
+    // const auto c_transform_inverse = camera.inverse_transform;
 
-    const auto pixel = c_transform_inverse * Point(world_x, world_y, -1);
-    const auto origin = c_transform_inverse * Point(0, 0, 0);
+    const auto pixel = camera.inverse_transform * Point(world_x, world_y, -1);
+    const auto origin = camera.inverse_transform * Point(0, 0, 0);
     const auto direction = Vector(pixel - origin).normalize();
 
     return {origin, direction};

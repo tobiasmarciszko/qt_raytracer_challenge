@@ -42,6 +42,7 @@ void Raytracer::setViewportSize(int width, int height) {
 
     m_camera = Camera(m_width, m_height, M_PI / 3);
     m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
+    m_camera.inverse_transform = m_camera.transform.inverse();
     m_framebuffer = QImage(m_width, m_height, QImage::Format_RGB32);
     m_canvas = Canvas(m_width, m_height);
 }
@@ -51,9 +52,6 @@ void Raytracer::render() {
     m_futureWatcher.cancel();
     m_rendering = true;
     emit renderingChanged();
-
-    m_framebuffer.fill(qRgb(0, 0, 0));
-    emit imageReady(m_framebuffer);
 
     qDebug() << "Rendering (" << m_camera.hsize << "x" << m_camera.vsize << ")" << QThread::idealThreadCount() << "threads";
 

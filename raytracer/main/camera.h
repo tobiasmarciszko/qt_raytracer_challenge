@@ -36,6 +36,7 @@ struct Camera {
     double field_of_view;
 
     Matrix<4,4> transform = identity_matrix;
+    Matrix<4,4> inverse_transform = identity_matrix.inverse();
 
     double half_width;
     double half_height;

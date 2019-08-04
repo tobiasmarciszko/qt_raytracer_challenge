@@ -38,10 +38,10 @@ TEST_CASE("Intersect a world with a ray") {
     const auto xs = intersect_world(w, r);
 
     REQUIRE(xs.size() == 4);
-    REQUIRE(xs.at(0).t() == 4);
-    REQUIRE(xs.at(1).t() == 4.5);
-    REQUIRE(xs.at(2).t() == 5.5);
-    REQUIRE(xs.at(3).t() == 6);
+    REQUIRE(xs.at(0).t == 4);
+    REQUIRE(xs.at(1).t == 4.5);
+    REQUIRE(xs.at(2).t == 5.5);
+    REQUIRE(xs.at(3).t == 6);
 }
 
 TEST_CASE("Precomputing the state of an intersection") {
@@ -50,8 +50,8 @@ TEST_CASE("Precomputing the state of an intersection") {
     const auto i = intersection(4, shape);
     const auto comps = prepare_computations(i, r);
 
-    REQUIRE(equal(comps.t, i.t()));
-    REQUIRE(comps.object == i.object());
+    REQUIRE(equal(comps.t, i.t));
+    REQUIRE(comps.object == i.object);
     REQUIRE(comps.point == Point(0, 0, -1));
     REQUIRE(comps.eyev == Vector(0, 0, -1));
     REQUIRE(comps.normalv == Vector(0, 0, -1));
