@@ -7,10 +7,8 @@
 #include <memory>
 
 struct Shape;
-class Intersection
+struct Intersection
 {
-public:
-
     Intersection() = delete;
     Intersection(double _t, std::shared_ptr<const Shape> _object) :
         t(_t),
@@ -35,16 +33,12 @@ inline Intersection intersection(double t, std::shared_ptr<const Shape> s) {
 
 inline std::optional<Intersection> hit(Intersections intersections) {
 
-    // sort the list of intersections and return the first intersection
+    // parameter intersections should be a sorted list of Intersection objects
+
+    // return the first intersection
     // with a non negative t value
     //
     // if no such value exists, return an empty Intersection
-
-    std::sort(intersections.begin(), intersections.end(), [](
-        const Intersection& i1,
-        const Intersection& i2) -> bool {
-            return i1.t < i2.t;
-    });
 
     for (const Intersection& intersection: intersections) {
         if (intersection.t >= 0) {
