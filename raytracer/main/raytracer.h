@@ -71,8 +71,11 @@ private:
 
     QFutureWatcher<void> m_futureWatcher;
     QElapsedTimer m_timer;
+    QTimer m_ticker;
 
     QImage m_framebuffer = QImage(320, 240, QImage::Format_RGB32);
+
+    void drawLine(int x1, int y1, int x2, int y2);
 };
 
 #endif // RAYTRACER_H

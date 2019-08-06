@@ -19,10 +19,15 @@
 
 World threeBallsOnAPlane();
 
+static double elapsed = 0;
+
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
+
+    connect(&m_ticker, SIGNAL(timeout()), this, SLOT(render()));
+    m_ticker.start(16);
 
     m_world = threeBallsOnAPlane();
 }
@@ -48,6 +53,11 @@ void Raytracer::setViewportSize(int width, int height) {
 }
 
 void Raytracer::render() {
+
+    elapsed += (M_PI / 180);
+
+    m_camera.transform = view_transform(Point(10*sin(elapsed), cos(elapsed), m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
+    m_camera.inverse_transform = m_camera.transform.inverse();
 
     m_futureWatcher.cancel();
     m_rendering = true;
@@ -87,15 +97,15 @@ void Raytracer::renderFinished() {
 
     m_framebuffer.fill(QColor(0, 0, 0));
 
-    auto p1 = m_camera.transform * Point(-0.1, 0.1, 0.1);
-    auto p2 = m_camera.transform * Point(0.1, 0.1, 0.1);
-    auto p3 = m_camera.transform * Point(-0.1, -0.1, 0.1);
-    auto p4 = m_camera.transform * Point(-0.1, -0.1, -0.1);
+    auto p1 = m_camera.transform * Point(-0.2, 0.2, 0.2);
+    auto p2 = m_camera.transform * Point(0.2, 0.2, 0.2);
+    auto p3 = m_camera.transform * Point(-0.2, -0.2, 0.2);
+    auto p4 = m_camera.transform * Point(-0.2, -0.2, -0.2);
 
-    auto p5 = m_camera.transform * Point(-0.1, 0.1, -0.1);
-    auto p6 = m_camera.transform * Point(0.1, 0.1, -0.1);
-    auto p7 = m_camera.transform * Point(0.1, -0.1, 0.1);
-    auto p8 = m_camera.transform * Point(0.1, -0.1, -0.1);
+    auto p5 = m_camera.transform * Point(-0.2, 0.2, -0.2);
+    auto p6 = m_camera.transform * Point(0.2, 0.2, -0.2);
+    auto p7 = m_camera.transform * Point(0.2, -0.2, 0.2);
+    auto p8 = m_camera.transform * Point(0.2, -0.2, -0.2);
 
     auto p1xoffset = m_camera.half_width - p1.x;
     auto p1yoffset = m_camera.half_height - p1.y;
@@ -140,45 +150,18 @@ void Raytracer::renderFinished() {
     qDebug() << p1x << p1y;
     // qDebug() << p2x << p2y;
 
-    m_framebuffer.setPixel(p1x, p1y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p1x+1, p1y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p1x+1, p1y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p1x, p1y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p2x, p2y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p2x+1, p2y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p2x+1, p2y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p2x, p2y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p3x, p3y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p3x+1, p3y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p3x+1, p3y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p3x, p3y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p4x, p4y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p4x+1, p4y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p4x+1, p4y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p4x, p4y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p5x, p5y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p5x+1, p5y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p5x+1, p5y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p5x, p5y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p6x, p6y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p6x+1, p6y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p6x+1, p6y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p6x, p6y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p7x, p7y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p7x+1, p7y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p7x+1, p7y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p7x, p7y+1, qRgb(255, 255, 255));
-
-    m_framebuffer.setPixel(p8x, p8y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p8x+1, p8y, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p8x+1, p8y+1, qRgb(255, 255, 255));
-    m_framebuffer.setPixel(p8x, p8y+1, qRgb(255, 255, 255));
+    drawLine(p1x, p1y, p2x, p2y);
+    drawLine(p1x, p1y, p3x, p3y);
+    drawLine(p1x, p1y, p5x, p5y);
+    drawLine(p2x, p2y, p6x, p6y);
+    drawLine(p2x, p2y, p7x, p7y);
+    drawLine(p3x, p3y, p4x, p4y);
+    drawLine(p3x, p3y, p7x, p7y);
+    drawLine(p4x, p4y, p5x, p5y);
+    drawLine(p4x, p4y, p8x, p8y);
+    drawLine(p5x, p5y, p6x, p6y);
+    drawLine(p6x, p6y, p8x, p8y);
+    drawLine(p7x, p7y, p8x, p8y);
 
     qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
 
@@ -186,6 +169,24 @@ void Raytracer::renderFinished() {
     emit renderingChanged();
     emit imageReady(m_framebuffer);
     // m_framebuffer.save("render", "PNG", 100);
+}
+
+void Raytracer::drawLine(int x0, int y0, int x1, int y1) {
+
+       auto dx = abs(x1 - x0);
+       auto dy = abs(y1 - y0);
+       auto sx = (x0 < x1) ? 1 : -1;
+       auto sy = (y0 < y1) ? 1 : -1;
+       auto err = dx - dy;
+
+       while (true) {
+           m_framebuffer.setPixel(x0, y0,  qRgb(255, 255, 255));
+
+           if ((x0 == x1) && (y0 == y1)) break;
+           auto e2 = 2 * err;
+           if (e2 > -dy) { err -= dy; x0 += sx; }
+           if (e2 < dx) { err += dx; y0 += sy; }
+       }
 }
 
 void Raytracer::switchChanged() {

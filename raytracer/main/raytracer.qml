@@ -63,6 +63,7 @@ Window {
             Component.onCompleted: {
                 if (rectangle.width > 0 && rectangle.height > 0) {
                     raytracer.setViewportSize(rectangle.width, rectangle.height)
+                    raytracer.render()
                 }
             }
 
