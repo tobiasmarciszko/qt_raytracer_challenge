@@ -51,11 +51,11 @@ signals:
 private:
     // Camera
     double m_fromX = 0;
-    double m_fromY = 1.5;
+    double m_fromY = 0;
     double m_fromZ = -5;
 
     double m_toX = 0;
-    double m_toY = 1;
+    double m_toY = 0;
     double m_toZ = 0;
 
     // Viewport

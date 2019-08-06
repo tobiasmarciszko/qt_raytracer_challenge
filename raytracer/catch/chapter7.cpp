@@ -237,6 +237,7 @@ TEST_CASE("Constructing a ray when the camera is transformed") {
 
     auto c = Camera(201, 101, M_PI_2);
     c.transform = rotation_y(M_PI_4) * translation(0, -2, 5);
+    c.inverse_transform = c.transform.inverse();
     const auto r = ray_for_pixel(c, 100, 50);
 
     REQUIRE(r.origin() == Point(0, 2, -5));

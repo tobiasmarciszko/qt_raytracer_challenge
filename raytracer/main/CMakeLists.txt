@@ -40,6 +40,7 @@ add_executable(freeside-raytracer
         computations.h
         imageitem.h
         plane.h
+        pattern.h
 
         color.cpp
         main.cpp
