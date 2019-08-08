@@ -26,6 +26,7 @@ public:
 
 public slots:
     void render();
+    void wireframe();
     void setViewportSize(int width, int height);
     void renderFinished();
     void progressValueChanged(int value);
@@ -51,11 +52,11 @@ signals:
 private:
     // Camera
     double m_fromX = 0;
-    double m_fromY = 0;
-    double m_fromZ = -5;
+    double m_fromY = 1.5;
+    double m_fromZ = -4;
 
     double m_toX = 0;
-    double m_toY = 0;
+    double m_toY = 1;
     double m_toZ = 0;
 
     // Viewport
@@ -63,7 +64,7 @@ private:
     int m_height = 240;
 
     Canvas m_canvas = Canvas(320, 240);
-    Camera m_camera = Camera(320, 240, M_PI / 3);
+    Camera m_camera = Camera(320, 240, M_PI / 3.0);
     World m_world;
     LightingModel m_lighting = LightingModel::Phong;
     bool m_rendering = false;
@@ -71,11 +72,12 @@ private:
 
     QFutureWatcher<void> m_futureWatcher;
     QElapsedTimer m_timer;
-    QTimer m_ticker;
 
     QImage m_framebuffer = QImage(320, 240, QImage::Format_RGB32);
 
-    void drawLine(int x1, int y1, int x2, int y2);
+    void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
+    void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
+    Point drawWorldPoint(const Point& point, uint color = qRgb(255, 255, 255));
 };
 
 #endif // RAYTRACER_H

@@ -9,17 +9,17 @@ struct Camera {
     Camera() = delete;
 
     Camera(
-        unsigned int hsize_,
-        unsigned int vsize_,
+        double hsize_,
+        double vsize_,
         double field_of_view_) :
         hsize(hsize_),
         vsize(vsize_),
         field_of_view(field_of_view_) {
 
         const double half_view = std::tan(field_of_view_ / 2.0);
-        const double aspect = static_cast<double>(hsize_) / static_cast<double>(vsize_);
+        const double aspect = hsize_ / vsize_;
 
-        if (aspect >= 1) {
+        if (aspect >= 1.0) {
             half_width = half_view;
             half_height = half_view / aspect;
         } else {
@@ -30,8 +30,8 @@ struct Camera {
         pixel_size = (half_width * 2.0) / hsize;
     }
 
-    unsigned int hsize; // In pixels
-    unsigned int vsize;
+    double hsize; // In pixels
+    double vsize;
 
     double field_of_view;
 

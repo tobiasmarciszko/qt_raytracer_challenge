@@ -12,8 +12,6 @@ Window {
     height: 602
     color: "#3f5d80"
     title: "Freeside Raytracer"
-    // x: Screen.width / 2 - width / 2
-    // y: Screen.height / 2 - height / 2
 
     Component.onCompleted: {
         x = Screen.width / 2 - width / 2
@@ -104,12 +102,12 @@ Window {
         stepSize: 0.1
         to: 10
         from: -10
-        value: 0
+        value: raytracer.fromX
 
         onMoved: {
             raytracer.fromX = slider.value
             raytracer.setViewportSize(rectangle.width, rectangle.height)
-            raytracer.render()
+            raytracer.wireframe()
         }
     }
 
@@ -124,13 +122,13 @@ Window {
         orientation: Qt.Vertical
         stepSize: 0.1
         to: 10
-        value: 1.5
+        value: raytracer.fromY
         from: -10
 
         onMoved: {
             raytracer.fromY = slider1.value
             raytracer.setViewportSize(rectangle.width, rectangle.height)
-            raytracer.render()
+            raytracer.wireframe()
         }
     }
 
@@ -201,7 +199,38 @@ Window {
         font.pixelSize: 12
     }
 
+    RoundButton {
+        id: wireframeButton
+        x: 480
+        y: 542
+        width: 94
+        height: 40
+        radius: 8
+        text: qsTr("Wireframe")
+        anchors.right: parent.right
+        anchors.rightMargin: 173
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
+        antialiasing: true
+        enabled: !raytracer.rendering
+
+        onClicked: {
+            raytracer.setViewportSize(rectangle.width, rectangle.height)
+            raytracer.wireframe()
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

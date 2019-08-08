@@ -19,15 +19,10 @@
 
 World threeBallsOnAPlane();
 
-static double elapsed = 0;
-
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
-
-    connect(&m_ticker, SIGNAL(timeout()), this, SLOT(render()));
-    m_ticker.start(16);
 
     m_world = threeBallsOnAPlane();
 }
@@ -45,7 +40,7 @@ void Raytracer::setViewportSize(int width, int height) {
     m_width = width;
     m_height = height;
 
-    m_camera = Camera(m_width, m_height, M_PI / 3);
+    m_camera = Camera(m_width, m_height, M_PI / 3.0);
     m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
     m_camera.inverse_transform = m_camera.transform.inverse();
     m_framebuffer = QImage(m_width, m_height, QImage::Format_RGB32);
@@ -53,11 +48,6 @@ void Raytracer::setViewportSize(int width, int height) {
 }
 
 void Raytracer::render() {
-
-    elapsed += (M_PI / 180);
-
-    m_camera.transform = view_transform(Point(10*sin(elapsed), cos(elapsed), m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
-    m_camera.inverse_transform = m_camera.transform.inverse();
 
     m_futureWatcher.cancel();
     m_rendering = true;
@@ -71,122 +61,123 @@ void Raytracer::render() {
     };
 
     m_timer.start();
-    // m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.pixels, renderPixel));
-    renderFinished();
+    m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.pixels, renderPixel));
+}
+
+void Raytracer::wireframe() {
+    m_framebuffer.fill(QColor(0, 0, 0));
+
+    for (auto& shape: m_world.shapes) {
+        auto m = shape->transform();
+        auto c = shape->material().color;
+
+        // TODO: Refactoring into a color conversion method
+        QColor qc;
+        const auto r = c.red < 1.0 ? c.red : 1.0;
+        const auto g = c.green < 1.0 ? c.green : 1.0;
+        const auto b = c.blue < 1.0 ? c.blue : 1.0;
+        qc.setRgbF(r, g, b);
+        uint color = qRgb(qc.red(), qc.green(), qc.blue());
+
+        auto centerPoint = m * Point(0, 0, 0);
+
+        auto x = m.get(0,0);
+        auto y = m.get(1,1);
+        auto z = m.get(2,2);
+
+        auto x1 = drawWorldPoint(Point(centerPoint.x+x, centerPoint.y, centerPoint.z));
+        auto x2 = drawWorldPoint(Point(centerPoint.x-x, centerPoint.y, centerPoint.z));
+
+        auto y1 = drawWorldPoint(Point(centerPoint.x, centerPoint.y+y,centerPoint.z));
+        auto y2 = drawWorldPoint(Point(centerPoint.x, centerPoint.y-y,centerPoint.z));
+
+        auto z1 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z+z));
+        auto z2 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z-z));
+
+        drawLine(x1, x2, color);
+        drawLine(y1, y2, color);
+        drawLine(z1, z2, color);
+    }
+
+    emit imageReady(m_framebuffer);
 }
 
 void Raytracer::renderFinished() {
     qDebug() << "Frame rendered in" << m_timer.elapsed() << "ms";
 
     m_timer.start();
-//    for (unsigned int y = 0; y < m_camera.vsize;  y++) {
-//        for (unsigned int x = 0; x < m_camera.hsize;  x++) {
+    for (unsigned int y = 0; y < m_camera.vsize;  y++) {
+        for (unsigned int x = 0; x < m_camera.hsize;  x++) {
 
-//            Color c = m_canvas.pixel_at(x, y).color;
-//            QColor color;
-//            const auto r = c.red < 1.0 ? c.red : 1.0;
-//            const auto g = c.green < 1.0 ? c.green : 1.0;
-//            const auto b = c.blue < 1.0 ? c.blue : 1.0;
+            Color c = m_canvas.pixel_at(x, y).color;
+            QColor color;
+            const auto r = c.red < 1.0 ? c.red : 1.0;
+            const auto g = c.green < 1.0 ? c.green : 1.0;
+            const auto b = c.blue < 1.0 ? c.blue : 1.0;
 
-//            color.setRgbF(r, g, b);
-//            QRgb *pixel = (QRgb *)m_framebuffer.scanLine(y); // select row
-//            pixel += x; // select column
-//            *pixel = qRgb(color.red(),color.green(), color.blue());
-//        }
-//    }
-
-    m_framebuffer.fill(QColor(0, 0, 0));
-
-    auto p1 = m_camera.transform * Point(-0.2, 0.2, 0.2);
-    auto p2 = m_camera.transform * Point(0.2, 0.2, 0.2);
-    auto p3 = m_camera.transform * Point(-0.2, -0.2, 0.2);
-    auto p4 = m_camera.transform * Point(-0.2, -0.2, -0.2);
-
-    auto p5 = m_camera.transform * Point(-0.2, 0.2, -0.2);
-    auto p6 = m_camera.transform * Point(0.2, 0.2, -0.2);
-    auto p7 = m_camera.transform * Point(0.2, -0.2, 0.2);
-    auto p8 = m_camera.transform * Point(0.2, -0.2, -0.2);
-
-    auto p1xoffset = m_camera.half_width - p1.x;
-    auto p1yoffset = m_camera.half_height - p1.y;
-    auto p1x = ((p1xoffset / m_camera.pixel_size) - 0.5);
-    auto p1y = ((p1yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p2xoffset = m_camera.half_width - p2.x;
-    auto p2yoffset = m_camera.half_height - p2.y;
-    auto p2x = ((p2xoffset / m_camera.pixel_size) - 0.5);
-    auto p2y = ((p2yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p3xoffset = m_camera.half_width - p3.x;
-    auto p3yoffset = m_camera.half_height - p3.y;
-    auto p3x = ((p3xoffset / m_camera.pixel_size) - 0.5);
-    auto p3y = ((p3yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p4xoffset = m_camera.half_width - p4.x;
-    auto p4yoffset = m_camera.half_height - p4.y;
-    auto p4x = ((p4xoffset / m_camera.pixel_size) - 0.5);
-    auto p4y = ((p4yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p5xoffset = m_camera.half_width - p5.x;
-    auto p5yoffset = m_camera.half_height - p5.y;
-    auto p5x = ((p5xoffset / m_camera.pixel_size) - 0.5);
-    auto p5y = ((p5yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p6xoffset = m_camera.half_width - p6.x;
-    auto p6yoffset = m_camera.half_height - p6.y;
-    auto p6x = ((p6xoffset / m_camera.pixel_size) - 0.5);
-    auto p6y = ((p6yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p7xoffset = m_camera.half_width - p7.x;
-    auto p7yoffset = m_camera.half_height - p7.y;
-    auto p7x = ((p7xoffset / m_camera.pixel_size) - 0.5);
-    auto p7y = ((p7yoffset / m_camera.pixel_size) - 0.5);
-
-    auto p8xoffset = m_camera.half_width - p8.x;
-    auto p8yoffset = m_camera.half_height - p8.y;
-    auto p8x = ((p8xoffset / m_camera.pixel_size) - 0.5);
-    auto p8y = ((p8yoffset / m_camera.pixel_size) - 0.5);
-
-    qDebug() << p1x << p1y;
-    // qDebug() << p2x << p2y;
-
-    drawLine(p1x, p1y, p2x, p2y);
-    drawLine(p1x, p1y, p3x, p3y);
-    drawLine(p1x, p1y, p5x, p5y);
-    drawLine(p2x, p2y, p6x, p6y);
-    drawLine(p2x, p2y, p7x, p7y);
-    drawLine(p3x, p3y, p4x, p4y);
-    drawLine(p3x, p3y, p7x, p7y);
-    drawLine(p4x, p4y, p5x, p5y);
-    drawLine(p4x, p4y, p8x, p8y);
-    drawLine(p5x, p5y, p6x, p6y);
-    drawLine(p6x, p6y, p8x, p8y);
-    drawLine(p7x, p7y, p8x, p8y);
+            color.setRgbF(r, g, b);
+            QRgb *pixel = (QRgb *)m_framebuffer.scanLine(y); // select row
+            pixel += x; // select column
+            *pixel = qRgb(color.red(),color.green(), color.blue());
+        }
+    }
 
     qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
 
     m_rendering = false;
     emit renderingChanged();
     emit imageReady(m_framebuffer);
-    // m_framebuffer.save("render", "PNG", 100);
+    m_framebuffer.save("render", "PNG", 100);
 }
 
-void Raytracer::drawLine(int x0, int y0, int x1, int y1) {
+// Convert world coordinate to screen space
+// Returns the screen coordinates as a Point (ignore z)
+Point Raytracer::drawWorldPoint(const Point& point, uint color) {
+    auto pCamera = m_camera.transform * point;
 
-       auto dx = abs(x1 - x0);
-       auto dy = abs(y1 - y0);
-       auto sx = (x0 < x1) ? 1 : -1;
-       auto sy = (y0 < y1) ? 1 : -1;
-       auto err = dx - dy;
+    auto pScreenx = pCamera.x / -(pCamera.z);
+    auto pScreeny = pCamera.y / -(pCamera.z);
 
-       while (true) {
-           m_framebuffer.setPixel(x0, y0,  qRgb(255, 255, 255));
+    auto p1xoffset = m_camera.half_width - pScreenx;
+    auto p1yoffset = m_camera.half_height - pScreeny;
+    auto pRasterx = ((p1xoffset / m_camera.pixel_size) - 0.5);
+    auto pRastery = ((p1yoffset / m_camera.pixel_size) - 0.5);
 
-           if ((x0 == x1) && (y0 == y1)) break;
-           auto e2 = 2 * err;
-           if (e2 > -dy) { err -= dy; x0 += sx; }
-           if (e2 < dx) { err += dx; y0 += sy; }
+    // Clip before draw to avoid plotting outside the screen
+    if (pRasterx >=0 &&
+        pRastery >=0 &&
+        pRasterx < m_camera.hsize &&
+        pRastery < m_camera.vsize) {
+        m_framebuffer.setPixel(pRasterx, pRastery, color);
+    }
+
+    return Point(pRasterx, pRastery, 0);
+}
+
+void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
+    drawLine(p1.x, p1.y, p2.x, p2.y, color);
+}
+
+void Raytracer::drawLine(int x0, int y0, int x1, int y1, uint color) {
+    auto dx = abs(x1 - x0);
+    auto dy = abs(y1 - y0);
+    auto sx = (x0 < x1) ? 1 : -1;
+    auto sy = (y0 < y1) ? 1 : -1;
+    auto err = dx - dy;
+
+    while (true) {
+       if (x0 >= 0 &&
+           y0 >= 0 &&
+           x0 < m_camera.hsize &&
+           y0 < m_camera.vsize) {
+            m_framebuffer.setPixel(x0, y0, color);
        }
+
+       if ((x0 == x1) && (y0 == y1)) break;
+       auto e2 = 2 * err;
+       if (e2 > -dy) { err -= dy; x0 += sx; }
+       if (e2 < dx) { err += dx; y0 += sy; }
+    }
 }
 
 void Raytracer::switchChanged() {
@@ -198,15 +189,14 @@ void Raytracer::switchChanged() {
     }
 }
 
-inline World threeBallsOnAPlane()
-{
+inline World threeBallsOnAPlane() {
     auto floor = Plane();
     auto m = floor.material();
     m.color = Color(1, 0.2, 0.2);
     floor.set_material(m);
 
     auto middle = Sphere();
-    middle.set_transform(translation(0, 0, 0));
+    middle.set_transform(translation(0, 1, 0));
     auto m2 = Material();
     m2.color = Color(0.1, 1, 0.5);
     m2.diffuse = 0.7;
@@ -232,15 +222,14 @@ inline World threeBallsOnAPlane()
     auto world = World();
 
     world.lights.emplace_back(PointLight(Point(-20, 20, -20), Color(0.7, 0.7, 0.7)));
-//    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
-//    world.lights.emplace_back(PointLight(Point(0, 2000, 0), Color(0.2, 0.2, 0.2)));
+    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
+    world.lights.emplace_back(PointLight(Point(0, 2000, 0), Color(0.2, 0.2, 0.2)));
 
     world.shapes = {
                     std::make_shared<Sphere>(middle),
                     std::make_shared<Sphere>(right),
                     std::make_shared<Sphere>(left),
                     std::make_shared<Plane>(floor)
-
     };
 
     return world;
