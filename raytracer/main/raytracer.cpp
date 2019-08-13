@@ -116,9 +116,7 @@ void Raytracer::renderFinished() {
             const auto b = c.blue < 1.0 ? c.blue : 1.0;
 
             color.setRgbF(r, g, b);
-            QRgb *pixel = (QRgb *)m_framebuffer.scanLine(y); // select row
-            pixel += x; // select column
-            *pixel = qRgb(color.red(),color.green(), color.blue());
+            setPixel(x, y, qRgb(color.red(),color.green(), color.blue()));
         }
     }
 
@@ -127,18 +125,25 @@ void Raytracer::renderFinished() {
     m_rendering = false;
     emit renderingChanged();
     emit imageReady(m_framebuffer);
-    m_framebuffer.save("render", "PNG", 100);
+    m_framebuffer.save("render.png", "PNG", 100);
 }
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
 Point Raytracer::drawWorldPoint(const Point& point, uint color) {
+
+    // Transform point in world coordinate to camera
     auto pCamera = m_camera.transform * point;
 
-    auto pScreenx = pCamera.x / -(pCamera.z);
+    // Ignore points behind the camera
+    if (pCamera.z > 0) return {-1, -1, -1};
+
+    // Perspective divide
+    auto pScreenx = pCamera.x / (pCamera.z);
     auto pScreeny = pCamera.y / -(pCamera.z);
 
-    auto p1xoffset = m_camera.half_width - pScreenx;
+    // Scale and offset acordingly according to the screen size
+    auto p1xoffset = m_camera.half_width + pScreenx;
     auto p1yoffset = m_camera.half_height - pScreeny;
     auto pRasterx = ((p1xoffset / m_camera.pixel_size) - 0.5);
     auto pRastery = ((p1yoffset / m_camera.pixel_size) - 0.5);
@@ -148,16 +153,25 @@ Point Raytracer::drawWorldPoint(const Point& point, uint color) {
         pRastery >=0 &&
         pRasterx < m_camera.hsize &&
         pRastery < m_camera.vsize) {
-        m_framebuffer.setPixel(pRasterx, pRastery, color);
+        setPixel(pRasterx, pRastery, color);
     }
 
+    // Return the pixel coordinates on the canvas/screen
     return Point(pRasterx, pRastery, 0);
+}
+
+void Raytracer::setPixel(int x, int y, uint color) {
+    QRgb *pixel = (QRgb *)m_framebuffer.scanLine(y); // select row
+    pixel += x; // select column
+    *pixel = color;
 }
 
 void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
     drawLine(p1.x, p1.y, p2.x, p2.y, color);
 }
 
+// Bresenham's line algorithm
+// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 void Raytracer::drawLine(int x0, int y0, int x1, int y1, uint color) {
     auto dx = abs(x1 - x0);
     auto dy = abs(y1 - y0);
@@ -223,7 +237,7 @@ inline World threeBallsOnAPlane() {
 
     world.lights.emplace_back(PointLight(Point(-20, 20, -20), Color(0.7, 0.7, 0.7)));
     world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
-    world.lights.emplace_back(PointLight(Point(0, 2000, 0), Color(0.2, 0.2, 0.2)));
+    world.lights.emplace_back(PointLight(Point(0, 200, 0), Color(0.2, 0.2, 0.2)));
 
     world.shapes = {
                     std::make_shared<Sphere>(middle),

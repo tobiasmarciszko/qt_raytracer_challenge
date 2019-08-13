@@ -78,6 +78,7 @@ private:
     void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
     void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
     Point drawWorldPoint(const Point& point, uint color = qRgb(255, 255, 255));
+    void setPixel(int x, int y, uint color = qRgb(255, 255, 255));
 };
 
 #endif // RAYTRACER_H
