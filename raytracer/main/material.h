@@ -1,8 +1,9 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <iostream>
+#include <optional>
 #include "color.h"
+#include "pattern.h"
 
 struct Material {
     Color color = Color(1, 1, 1);
@@ -10,6 +11,7 @@ struct Material {
     double diffuse   = 0.9;
     double specular  = 0.9;
     double shininess = 200.0;
+    std::optional<Pattern> pattern;
 
     bool operator ==(const Material& m) const {
         if (!(color == m.color)) return false;

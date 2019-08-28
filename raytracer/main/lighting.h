@@ -7,6 +7,7 @@
 #include "light.h"
 #include "vector.h"
 #include "point.h"
+#include "pattern.h"
 
 enum class LightingModel {
     Phong,
@@ -28,8 +29,17 @@ inline Color lighting(
     Color diffuse;
     Color specular;
 
+    Color materialColor;
+
+    // Check if the material has a pattern first
+    if (material.pattern.has_value()) {
+        materialColor = material.pattern->stripe_at(point);
+    } else {
+        materialColor = material.color;
+    }
+
     // combine the surface color with the light's color/intensity
-    const Color effective_color = material.color * light.intensity();
+    const Color effective_color = materialColor * light.intensity();
 
     // find the direction to the light source
     const Vector lightv = Vector(light.position() - point).normalize();

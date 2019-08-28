@@ -207,6 +207,7 @@ inline World threeBallsOnAPlane() {
     auto floor = Plane();
     auto m = floor.material();
     m.color = Color(1, 0.2, 0.2);
+    m.pattern = stripe_pattern(black, white);
     floor.set_material(m);
 
     auto middle = Sphere();
