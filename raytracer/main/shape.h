@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <memory>
 #include "material.h"
 #include "point.h"
 #include "vector.h"
@@ -68,7 +69,14 @@ public:
 
 private:
     unsigned int m_id = shape_count++;
-    Material m_material = Material();
+    Material m_material;
 };
+
+inline Color stripe_at_object(const Pattern& pattern, const std::shared_ptr<const Shape> object, const Point& world_point) {
+    const auto object_point = object->inverse_transform() * world_point;
+    const auto pattern_point = pattern.inverse_transform * object_point;
+
+    return pattern.stripe_at(pattern_point);
+}
 
 #endif // OBJECT_H

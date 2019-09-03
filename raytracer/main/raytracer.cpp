@@ -17,6 +17,8 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
+static int counter = 0;
+
 World threeBallsOnAPlane();
 
 Raytracer::Raytracer(QObject *parent) : QObject(parent)
@@ -65,6 +67,8 @@ void Raytracer::render() {
 }
 
 void Raytracer::wireframe() {
+    m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
+    m_camera.inverse_transform = m_camera.transform.inverse();
     m_framebuffer.fill(QColor(0, 0, 0));
 
     for (auto& shape: m_world.shapes) {
@@ -125,7 +129,14 @@ void Raytracer::renderFinished() {
     m_rendering = false;
     emit renderingChanged();
     emit imageReady(m_framebuffer);
-    m_framebuffer.save("render.png", "PNG", 100);
+    QString filename = "render" + QString::number(counter) + ".png";
+    m_framebuffer.save(filename, "PNG", 100);
+
+    if (counter < 100) {
+        counter++;
+        doFire();
+        render();
+    }
 }
 
 // Convert world coordinate to screen space
@@ -207,7 +218,8 @@ inline World threeBallsOnAPlane() {
     auto floor = Plane();
     auto m = floor.material();
     m.color = Color(1, 0.2, 0.2);
-    m.pattern = stripe_pattern(black, white);
+//    m.pattern = stripe_pattern(black, white);
+//    m.pattern->set_transform(scaling(0.1,0.1,0.1));
     floor.set_material(m);
 
     auto middle = Sphere();
@@ -216,6 +228,8 @@ inline World threeBallsOnAPlane() {
     m2.color = Color(0.1, 1, 0.5);
     m2.diffuse = 0.7;
     m2.specular = 0.3;
+    m2.pattern = stripe_pattern(black, white);
+    m2.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     middle.set_material(m2);
 
     auto right = Sphere();
@@ -224,6 +238,8 @@ inline World threeBallsOnAPlane() {
     m3.color = Color(0.5, 1, 0.1);
     m3.diffuse = 0.7;
     m3.specular = 0.3;
+    m3.pattern = stripe_pattern(black, white);
+    m3.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     right.set_material(m3);
 
     auto left = Sphere();
@@ -232,13 +248,15 @@ inline World threeBallsOnAPlane() {
     m4.color = Color(1, 0.8, 0.1);
     m4.diffuse = 0.7;
     m4.specular = 0.3;
+    m4.pattern = stripe_pattern(black, white);
+    m4.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     left.set_material(m4);
 
     auto world = World();
 
-    world.lights.emplace_back(PointLight(Point(-20, 20, -20), Color(0.7, 0.7, 0.7)));
-    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
-    world.lights.emplace_back(PointLight(Point(0, 200, 0), Color(0.2, 0.2, 0.2)));
+    world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
+//    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
+//    world.lights.emplace_back(PointLight(Point(0, 200, 0), Color(0.2, 0.2, 0.2)));
 
     world.shapes = {
                     std::make_shared<Sphere>(middle),

@@ -3,6 +3,8 @@
 #include "material.h"
 #include "vector.h"
 #include "lighting.h"
+#include "sphere.h"
+#include "shape.h"
 
 TEST_CASE("Creating a stripe pattering")
 {
@@ -53,9 +55,48 @@ TEST_CASE("Lighting with a pattern applied")
     auto eyev = Vector(0,0,-1);
     auto normalv = Vector(0,0,-1);
     auto light = PointLight(Point(0,0,-10), Color(1,1,1));
-    auto c1 = lighting(m, light, Point(0.9,0,0), eyev, normalv, false);
-    auto c2 = lighting(m, light, Point(1.1,0,0), eyev, normalv, false);
+
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+
+    auto c1 = lighting(m, object, light, Point(0.9,0,0), eyev, normalv, false);
+    auto c2 = lighting(m, object, light, Point(1.1,0,0), eyev, normalv, false);
 
     REQUIRE(c1 == Color(1,1,1));
     REQUIRE(c2 == Color(0,0,0));
+}
+
+TEST_CASE("Stripes with an object transformation")
+{
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+    object->set_transform(scaling(2, 2, 2));
+
+    auto pattern = stripe_pattern(white, black);
+    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+
+    REQUIRE(c == white);
+}
+
+TEST_CASE("Stripes with a pattern transformation")
+{
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+    object->set_transform(scaling(2, 2, 2));
+
+    auto pattern = stripe_pattern(white, black);
+    pattern.set_transform(scaling(2, 2, 2));
+    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+
+    REQUIRE(c == white);
+
+}
+
+TEST_CASE("Stripes with both an object and a pattern transformation")
+{
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+    object->set_transform(scaling(2, 2, 2));
+
+    auto pattern = stripe_pattern(white, black);
+    pattern.set_transform(scaling(2, 2, 2));
+    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+
+    REQUIRE(c == white);
 }

@@ -18,7 +18,9 @@ TEST_CASE("Lighting with the surface in shadow")
     const auto light = PointLight(Point(0, 0, -10), Color(1, 1, 1));
     const auto in_shadow = true;
 
-    const auto result = lighting(m, light, position, eyev, normalv, in_shadow);
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+
+    const auto result = lighting(m, object, light, position, eyev, normalv, in_shadow);
 
     REQUIRE(result == Color(0.1, 0.1, 0.1));
 }

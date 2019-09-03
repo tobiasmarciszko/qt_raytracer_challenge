@@ -2,12 +2,14 @@
 #define LIGHTING_H
 
 #include <cmath>
+#include <memory>
 #include "color.h"
 #include "material.h"
 #include "light.h"
 #include "vector.h"
 #include "point.h"
 #include "pattern.h"
+#include "shape.h"
 
 enum class LightingModel {
     Phong,
@@ -16,6 +18,7 @@ enum class LightingModel {
 
 inline Color lighting(
     const Material& material,
+    const std::shared_ptr<const Shape> object,
     const Light& light,
     const Point& point,
     const Vector& eyev,
@@ -33,7 +36,7 @@ inline Color lighting(
 
     // Check if the material has a pattern first
     if (material.pattern.has_value()) {
-        materialColor = material.pattern->stripe_at(point);
+        materialColor = stripe_at_object(material.pattern.value(), object, point);
     } else {
         materialColor = material.color;
     }

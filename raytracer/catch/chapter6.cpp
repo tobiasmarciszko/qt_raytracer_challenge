@@ -126,6 +126,7 @@ SCENARIO("Lighting") {
 
     const auto m = Material();
     const auto position = Point(0, 0, 0);
+    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
 
     GIVEN("Lighting with the eye between the light and the surface")
     {
@@ -133,7 +134,7 @@ SCENARIO("Lighting") {
         const auto normalv = Vector(0, 0, -1);
         const auto light = PointLight(Point(0, 0, -10), Color(1, 1, 1));
 
-        const auto result = lighting(m, light, position, eyev, normalv);
+        const auto result = lighting(m, object, light, position, eyev, normalv);
 
         REQUIRE(result == Color(1.9, 1.9, 1.9));
     }
@@ -144,7 +145,7 @@ SCENARIO("Lighting") {
         const auto normalv = Vector(0, 0, -1);
         const auto light = PointLight(Point(0, 0, -10), Color(1, 1, 1));
 
-        const auto result = lighting(m, light, position, eyev, normalv);
+        const auto result = lighting(m, object, light, position, eyev, normalv);
 
         REQUIRE(result == Color(1.0, 1.0, 1.0));
     }
@@ -155,7 +156,7 @@ SCENARIO("Lighting") {
         const auto normalv = Vector(0, 0, -1);
         const auto light = PointLight(Point(0, 10, -10), Color(1, 1, 1));
 
-        const auto result = lighting(m, light, position, eyev, normalv);
+        const auto result = lighting(m, object, light, position, eyev, normalv);
 
         REQUIRE(result == Color(0.7364, 0.7364, 0.7364));
     }
@@ -166,7 +167,7 @@ SCENARIO("Lighting") {
         const auto normalv = Vector(0, 0, -1);
         const auto light = PointLight(Point(0, 10, -10), Color(1, 1, 1));
 
-        const auto result = lighting(m, light, position, eyev, normalv);
+        const auto result = lighting(m, object, light, position, eyev, normalv);
 
         REQUIRE(result == Color(1.6364, 1.6364, 1.6364));
     }
@@ -177,7 +178,7 @@ SCENARIO("Lighting") {
         const auto normalv = Vector(0, 0, -1);
         const auto light = PointLight(Point(0, 0, 10), Color(1, 1, 1));
 
-        const auto result = lighting(m, light, position, eyev, normalv);
+        const auto result = lighting(m, object, light, position, eyev, normalv);
 
         REQUIRE(result == Color(0.1, 0.1, 0.1));
     }

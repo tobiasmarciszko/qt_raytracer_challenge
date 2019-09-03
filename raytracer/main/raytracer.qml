@@ -106,7 +106,6 @@ Window {
 
         onMoved: {
             raytracer.fromX = slider.value
-            raytracer.setViewportSize(rectangle.width, rectangle.height)
             raytracer.wireframe()
         }
     }
@@ -127,7 +126,6 @@ Window {
 
         onMoved: {
             raytracer.fromY = slider1.value
-            raytracer.setViewportSize(rectangle.width, rectangle.height)
             raytracer.wireframe()
         }
     }

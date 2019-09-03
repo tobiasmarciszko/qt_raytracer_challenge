@@ -89,6 +89,7 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
 
         const auto color = lighting(
             comps.object->material(),
+            comps.object,
             light,
             comps.point,
             comps.eyev,
