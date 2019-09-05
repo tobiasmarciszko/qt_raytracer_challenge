@@ -107,8 +107,7 @@ void Raytracer::wireframe() {
 }
 
 void Raytracer::renderFinished() {
-    qDebug() << "Frame rendered in" << m_timer.elapsed() << "ms";
-
+    m_lastRenderTime = static_cast<int>(m_timer.elapsed());
     m_timer.start();
 
     // Pointer to first pixel

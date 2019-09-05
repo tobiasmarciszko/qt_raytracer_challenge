@@ -22,7 +22,8 @@ public:
     Q_PROPERTY(int progress MEMBER m_progress NOTIFY progressChanged)
     Q_PROPERTY(bool rendering MEMBER m_rendering NOTIFY renderingChanged)
     Q_PROPERTY(double fromX MEMBER m_fromX NOTIFY fromXChanged)
-    Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)
+    Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)    
+    Q_PROPERTY(double lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
 
 public slots:
     void render();
@@ -63,17 +64,18 @@ private:
     int m_width = 320;
     int m_height = 240;
 
-    Canvas m_canvas = Canvas(320, 240);
-    Camera m_camera = Camera(320, 240, M_PI / 3.0);
+    Canvas m_canvas = Canvas(640, 480);
+    Camera m_camera = Camera(640, 480, M_PI / 3.0);
     World m_world;
     LightingModel m_lighting = LightingModel::Phong;
     bool m_rendering = false;
     int m_progress;
+    int m_lastRenderTime;
 
     QFutureWatcher<void> m_futureWatcher;
     QElapsedTimer m_timer;
 
-    QImage m_framebuffer = QImage(320, 240, QImage::Format_RGB32);
+    QImage m_framebuffer = QImage(640, 480, QImage::Format_RGB32);
 
     void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
     void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));

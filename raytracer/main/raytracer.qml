@@ -16,6 +16,9 @@ Window {
     Component.onCompleted: {
         x = Screen.width / 2 - width / 2
         y = Screen.height / 2 - height / 2
+
+        raytracer.setViewportSize(640, 480)
+        raytracer.wireframe()
     }
 
     BusyIndicator {
@@ -58,13 +61,6 @@ Window {
             enabled: false
             anchors.fill: parent
 
-            Component.onCompleted: {
-                if (rectangle.width > 0 && rectangle.height > 0) {
-                    raytracer.setViewportSize(rectangle.width, rectangle.height)
-                    raytracer.render()
-                }
-            }
-
             Connections {
                 target: raytracer
                 onImageReady: liveImageItem.setImage(image)
@@ -79,9 +75,17 @@ Window {
                 print("Object selected: " + raytracer.objectIdFromCoordinates(mouseX, mouseY))
             }
         }
+
+        ColorOverlay {
+                anchors.fill: liveImageItem
+                source: liveImageItem
+                color: "#80800000"
+                visible: raytracer.rendering
+            }
     }
 
     DropShadow {
+        id: shadow
         anchors.fill: rectangle
         horizontalOffset: 3
         verticalOffset: 3
@@ -89,6 +93,7 @@ Window {
         samples: 17
         color: "#80000000"
         source: rectangle
+        visible: !raytracer.rendering
     }
 
     Slider {
@@ -218,7 +223,60 @@ Window {
         }
     }
 
+    Text {
+        id: element7
+        x: -9
+        y: -8
+        text: "Last frame rendered in " + raytracer.lastRenderTime + "ms"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.horizontalCenter: rectangle.horizontalCenter
+        font.pixelSize: 14
+    }
+
+    ProgressBar {
+        id: progressBar
+        x: -35
+        y: 49
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
+        anchors.left: wireframeButton.left
+        anchors.right: button.right
+        to: 100
+        value: raytracer.progress
+        visible: raytracer.rendering
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
