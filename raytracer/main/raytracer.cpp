@@ -55,7 +55,7 @@ void Raytracer::render() {
     m_rendering = true;
     emit renderingChanged();
 
-    qDebug() << "Rendering (" << m_camera.hsize << "x" << m_camera.vsize << ")" << QThread::idealThreadCount() << "threads";
+    qDebug() << "Rendering" << m_camera.hsize << "x" << m_camera.vsize << "using" << QThread::idealThreadCount() << "threads";
 
     std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
         const Ray ray = ray_for_pixel(m_camera, pixel.x, pixel.y);
@@ -110,18 +110,24 @@ void Raytracer::renderFinished() {
     qDebug() << "Frame rendered in" << m_timer.elapsed() << "ms";
 
     m_timer.start();
-    for (unsigned int y = 0; y < m_camera.vsize;  y++) {
-        for (unsigned int x = 0; x < m_camera.hsize;  x++) {
 
-            Color c = m_canvas.pixel_at(x, y).color;
-            QColor color;
-            const auto r = c.red < 1.0 ? c.red : 1.0;
-            const auto g = c.green < 1.0 ? c.green : 1.0;
-            const auto b = c.blue < 1.0 ? c.blue : 1.0;
+    // Pointer to first pixel
+    QRgb *data = reinterpret_cast<QRgb *>(m_framebuffer.bits());
+    QColor color;
 
-            color.setRgbF(r, g, b);
-            setPixel(x, y, qRgb(color.red(),color.green(), color.blue()));
-        }
+    for (const Pixel& pixel: m_canvas.pixels) {
+        const auto& red = pixel.color.red;
+        const auto& green = pixel.color.green;
+        const auto& blue = pixel.color.blue;
+
+        const auto& r = red < 1.0 ? red : 1.0;
+        const auto& g = green < 1.0 ? green : 1.0;
+        const auto& b = blue < 1.0 ? blue : 1.0;
+
+        color.setRgbF(r, g, b);
+
+        *data = color.rgb();
+        data++;
     }
 
     qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
@@ -132,11 +138,13 @@ void Raytracer::renderFinished() {
     QString filename = "render" + QString::number(counter) + ".png";
     m_framebuffer.save(filename, "PNG", 100);
 
-    if (counter < 100) {
-        counter++;
-        doFire();
-        render();
-    }
+//    if (counter < 100) {
+//        counter++;
+//        doFire();
+//        render();
+//    }
+    qDebug() << "Done";
+    qDebug() << "";
 }
 
 // Convert world coordinate to screen space
@@ -172,7 +180,7 @@ Point Raytracer::drawWorldPoint(const Point& point, uint color) {
 }
 
 void Raytracer::setPixel(int x, int y, uint color) {
-    QRgb *pixel = (QRgb *)m_framebuffer.scanLine(y); // select row
+    QRgb *pixel = reinterpret_cast<QRgb *>(m_framebuffer.scanLine(y)); // select row
     pixel += x; // select column
     *pixel = color;
 }
@@ -183,11 +191,11 @@ void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
 
 // Bresenham's line algorithm
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-void Raytracer::drawLine(int x0, int y0, int x1, int y1, uint color) {
-    auto dx = abs(x1 - x0);
-    auto dy = abs(y1 - y0);
-    auto sx = (x0 < x1) ? 1 : -1;
-    auto sy = (y0 < y1) ? 1 : -1;
+void Raytracer::drawLine(int x0, int y0, const int x1, const int y1, const uint color) {
+    const auto dx = abs(x1 - x0);
+    const auto dy = abs(y1 - y0);
+    const auto sx = (x0 < x1) ? 1 : -1;
+    const auto sy = (y0 < y1) ? 1 : -1;
     auto err = dx - dy;
 
     while (true) {
@@ -199,7 +207,7 @@ void Raytracer::drawLine(int x0, int y0, int x1, int y1, uint color) {
        }
 
        if ((x0 == x1) && (y0 == y1)) break;
-       auto e2 = 2 * err;
+       const auto e2 = 2 * err;
        if (e2 > -dy) { err -= dy; x0 += sx; }
        if (e2 < dx) { err += dx; y0 += sy; }
     }
@@ -255,8 +263,8 @@ inline World threeBallsOnAPlane() {
     auto world = World();
 
     world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
-//    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
-//    world.lights.emplace_back(PointLight(Point(0, 200, 0), Color(0.2, 0.2, 0.2)));
+    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
+    world.lights.emplace_back(PointLight(Point(0, 200, 0), Color(0.2, 0.2, 0.2)));
 
     world.shapes = {
                     std::make_shared<Sphere>(middle),
