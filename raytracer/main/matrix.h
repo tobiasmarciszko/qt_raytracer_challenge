@@ -12,10 +12,10 @@ public:
 
     // 2x2
     Matrix(
-            const double m00,
-            const double m01,
-            const double m10,
-            const double m11
+            const float m00,
+            const float m01,
+            const float m10,
+            const float m11
           )
     {
         set(0, 0, m00);
@@ -26,15 +26,15 @@ public:
 
     // 3x3
     Matrix(
-            const double m00,
-            const double m01,
-            const double m02,
-            const double m10,
-            const double m11,
-            const double m12,
-            const double m20,
-            const double m21,
-            const double m22
+            const float m00,
+            const float m01,
+            const float m02,
+            const float m10,
+            const float m11,
+            const float m12,
+            const float m20,
+            const float m21,
+            const float m22
           )
     {
         set(0, 0, m00);
@@ -50,22 +50,22 @@ public:
 
     // 4x4
     Matrix(
-            const double m00,
-            const double m01,
-            const double m02,
-            const double m03,
-            const double m10,
-            const double m11,
-            const double m12,
-            const double m13,
-            const double m20,
-            const double m21,
-            const double m22,
-            const double m23,
-            const double m30,
-            const double m31,
-            const double m32,
-            const double m33
+            const float m00,
+            const float m01,
+            const float m02,
+            const float m03,
+            const float m10,
+            const float m11,
+            const float m12,
+            const float m13,
+            const float m20,
+            const float m21,
+            const float m22,
+            const float m23,
+            const float m30,
+            const float m31,
+            const float m32,
+            const float m33
           )
     {
         set(0, 0, m00);
@@ -88,8 +88,8 @@ public:
 
     Matrix<rows,cols>() = default;
 
-    inline void set(const int row, const int col, const double value) { m_data[cols * row + col] = value; }
-    constexpr inline double get(const unsigned int row, const unsigned int col) const { return m_data[cols * row + col]; }
+    inline void set(const int row, const int col, const float value) { m_data[cols * row + col] = value; }
+    constexpr inline float get(const unsigned int row, const unsigned int col) const { return m_data[cols * row + col]; }
     inline size_t getRowCount() const { return m_rows; }
     inline size_t getColCount() const { return m_cols; }
 
@@ -129,8 +129,8 @@ public:
         return result;
     }
 
-    inline double determinant() const {
-        double det = 0;
+    inline float determinant() const {
+        float det = 0;
         for (size_t i = 0; i < cols; i++) {
             const int col = static_cast<int>(i);
             det += get(0, col) * cofactor(0, col);
@@ -165,12 +165,12 @@ public:
     }
 
     #undef minor
-    inline double minor(const unsigned int row, const unsigned int column) const {
+    inline float minor(const unsigned int row, const unsigned int column) const {
         const auto sub = submatrix(row, column);
         return sub.determinant();
     }
 
-    inline double cofactor(const unsigned int row, const unsigned int column) const {
+    inline float cofactor(const unsigned int row, const unsigned int column) const {
         auto minorValue = minor(row, column);
 
         // Cofactor is the same as the minor expected:
@@ -201,18 +201,18 @@ public:
         return result;
     }
 
-private:
+public:
 
     size_t m_rows = rows;
     size_t m_cols = cols;
 
-    double m_data[rows * cols]{0.0};
+    float m_data[rows * cols]{0.0};
 
 };
 
 // 2x2 specializations
 template<>
-inline double Matrix<2, 2>::determinant() const {
+inline float Matrix<2, 2>::determinant() const {
     // [a b]
     // [c d]
     //
@@ -229,7 +229,7 @@ inline double Matrix<2, 2>::determinant() const {
 // 4x4 specializations
 template<>
 inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
-    double result[4];
+    float result[4];
     for (unsigned int i = 0; i < 4; i++) {
             result[i] = get(i, 0) * tuple.x +
                         get(i, 1) * tuple.y +
@@ -263,9 +263,9 @@ const auto identity_matrix = Matrix<4,4>(
                                         0,0,0,1);
 
 // Transformation matrices
-inline Matrix<4,4> translation(const double x,
-                               const double y,
-                               const double z) {
+inline Matrix<4,4> translation(const float x,
+                               const float y,
+                               const float z) {
     return {
             1,0,0,x,
             0,1,0,y,
@@ -275,9 +275,9 @@ inline Matrix<4,4> translation(const double x,
 
 }
 
-inline Matrix<4,4> scaling(const double x,
-                           const double y,
-                           const double z) {
+inline Matrix<4,4> scaling(const float x,
+                           const float y,
+                           const float z) {
     return {
             x,0,0,0,
             0,y,0,0,
@@ -286,7 +286,7 @@ inline Matrix<4,4> scaling(const double x,
     };
 }
 
-inline Matrix<4,4> rotation_x(const double r) {
+inline Matrix<4,4> rotation_x(const float r) {
     return {
             1, 0, 0, 0,
             0, std::cos(r), -std::sin(r), 0,
@@ -295,7 +295,7 @@ inline Matrix<4,4> rotation_x(const double r) {
     };
 }
 
-inline Matrix<4,4> rotation_y(const double r) {
+inline Matrix<4,4> rotation_y(const float r) {
     return {
             std::cos(r), 0, std::sin(r), 0,
             0, 1, 0, 0,
@@ -304,7 +304,7 @@ inline Matrix<4,4> rotation_y(const double r) {
     };
 }
 
-inline Matrix<4,4> rotation_z(const double r) {
+inline Matrix<4,4> rotation_z(const float r) {
     return {
             std::cos(r), -std::sin(r), 0, 0,
             std::sin(r), std::cos(r), 0, 0,
@@ -313,9 +313,9 @@ inline Matrix<4,4> rotation_z(const double r) {
     };
 }
 
-inline Matrix<4,4> shearing(const double xy, const double xz,
-                            const double yx, const double yz,
-                            const double zx, const double zy) {
+inline Matrix<4,4> shearing(const float xy, const float xz,
+                            const float yx, const float yz,
+                            const float zx, const float zy) {
     return {
             1,  xy, xz, 0,
             yx, 1,  yz, 0,

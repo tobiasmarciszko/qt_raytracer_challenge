@@ -83,20 +83,20 @@ void Raytracer::wireframe() {
         qc.setRgbF(r, g, b);
         uint color = qRgb(qc.red(), qc.green(), qc.blue());
 
-        auto centerPoint = m * Point(0, 0, 0);
+        const auto centerPoint = m * Point(0, 0, 0);
 
-        auto x = m.get(0,0);
-        auto y = m.get(1,1);
-        auto z = m.get(2,2);
+        const auto x = m.get(0,0);
+        const auto y = m.get(1,1);
+        const auto z = m.get(2,2);
 
-        auto x1 = drawWorldPoint(Point(centerPoint.x+x, centerPoint.y, centerPoint.z));
-        auto x2 = drawWorldPoint(Point(centerPoint.x-x, centerPoint.y, centerPoint.z));
+        const auto x1 = drawWorldPoint(Point(centerPoint.x+x, centerPoint.y, centerPoint.z));
+        const auto x2 = drawWorldPoint(Point(centerPoint.x-x, centerPoint.y, centerPoint.z));
 
-        auto y1 = drawWorldPoint(Point(centerPoint.x, centerPoint.y+y,centerPoint.z));
-        auto y2 = drawWorldPoint(Point(centerPoint.x, centerPoint.y-y,centerPoint.z));
+        const auto y1 = drawWorldPoint(Point(centerPoint.x, centerPoint.y+y,centerPoint.z));
+        const auto y2 = drawWorldPoint(Point(centerPoint.x, centerPoint.y-y,centerPoint.z));
 
-        auto z1 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z+z));
-        auto z2 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z-z));
+        const auto z1 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z+z));
+        const auto z2 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z-z));
 
         drawLine(x1, x2, color);
         drawLine(y1, y2, color);

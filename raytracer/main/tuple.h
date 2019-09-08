@@ -4,17 +4,17 @@
 #include <iostream>
 
 #define EPSILON 0.00001
-bool equal(const double& a, const double& b);
+bool equal(const float& a, const float& b);
 
 struct Tuple
 {
-    Tuple(double x, double y, double z, double w);
+    Tuple(float x, float y, float z, float w);
 
     Tuple operator -() const;
     Tuple operator +(const Tuple& tuple) const;
     Tuple operator -(const Tuple& tuple) const;
-    Tuple operator *(const double& multiplier) const;
-    Tuple operator /(const double& divider) const;
+    Tuple operator *(const float& multiplier) const;
+    Tuple operator /(const float& divider) const;
     bool operator ==(const Tuple& tuple) const;
 
     bool isPoint() const;
@@ -24,10 +24,10 @@ struct Tuple
         return os << (t.isVector() ? "Vector" : "Point") << "(" << t.x << ", " << t.y << ", " << t.z << ")";
     }
 
-    double x;
-    double y;
-    double z;
-    double w;
+    float x;
+    float y;
+    float z;
+    float w;
 };
 
 #endif // TUPLE_H

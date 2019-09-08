@@ -3,10 +3,9 @@
 
 #include "tuple.h"
 
-class Point : public Tuple
+struct Point : public Tuple
 {
-public:
-    Point(double x, double y, double z);
+    Point(float x, float y, float z);
     Point(const Tuple& tuple) : Tuple(tuple) {}
 };
 

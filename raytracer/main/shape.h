@@ -1,5 +1,5 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef SHAPE_H
+#define SHAPE_H
 
 #include <cstdlib>
 #include <vector>
@@ -79,4 +79,4 @@ inline Color stripe_at_object(const Pattern& pattern, const std::shared_ptr<cons
     return pattern.stripe_at(pattern_point);
 }
 
-#endif // OBJECT_H
+#endif // SHAPE_H

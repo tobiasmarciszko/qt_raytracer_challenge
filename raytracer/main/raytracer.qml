@@ -72,7 +72,8 @@ Window {
             anchors.fill: parent
 
             onClicked: {
-                print("Object selected: " + raytracer.objectIdFromCoordinates(mouseX, mouseY))
+                selectedObject = raytracer.objectFromCoordinates(mouseX, mouseY)
+                updateTextbox()
             }
         }
 
@@ -110,6 +111,7 @@ Window {
         value: raytracer.fromX
 
         onMoved: {
+            updateTextbox()
             raytracer.fromX = slider.value
             raytracer.wireframe()
         }
@@ -130,6 +132,7 @@ Window {
         from: -10
 
         onMoved: {
+            updateTextbox()
             raytracer.fromY = slider1.value
             raytracer.wireframe()
         }
@@ -137,9 +140,9 @@ Window {
 
     Switch {
         id: element
-        y: 430
+        y: 552
         anchors.left: parent.left
-        anchors.leftMargin: 20
+        anchors.leftMargin: 62
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         display: AbstractButton.IconOnly
@@ -151,9 +154,11 @@ Window {
 
     Text {
         id: element2
+        y: 564
         text: qsTr("Blinn-Phong")
+        anchors.leftMargin: 6
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        anchors.bottomMargin: 21
         anchors.left: element.right
         font.pointSize: 11
     }
@@ -246,6 +251,64 @@ Window {
         value: raytracer.progress
         visible: raytracer.rendering
     }
+
+    Window {
+
+        id: window2
+        title: "Information"
+        width: 250
+        height: window.height
+        x: window.x-250
+        y: window.y
+
+        TextArea {
+            id: informationBox
+            anchors.fill: parent
+            wrapMode: TextEdit.Wrap
+        }
+    }
+
+    RoundButton {
+        id: informationButton
+        y: 552
+        text: "i"
+        anchors.left: parent.left
+        anchors.leftMargin: 16
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+
+        onPressed: {
+            if (window2.visibility === Window.Hidden) {
+                updateTextbox()
+                window2.show()
+            } else if (window2.visibility !== Window.Hidden) {
+                window2.close()
+            }
+        }
+    }
+
+    property ShapeBridge selectedObject
+    function updateTextbox() {
+
+        informationBox.x = window.x-250;
+        informationBox.y = window.y;
+
+        informationBox.text = "Camera Position: \n"
+        informationBox.text += "x: " + raytracer.fromX.toFixed(1) + "\n"
+        informationBox.text += "y: " + raytracer.fromY.toFixed(1) + "\n"
+        informationBox.text += "z: " + raytracer.fromZ.toFixed(1) + "\n\n"
+
+        if (selectedObject != null) {
+
+            informationBox.text += "Object Selection\n\n"
+            informationBox.text += "Color: " + selectedObject.color + "\n"
+            informationBox.text += "Transform: \n"
+            informationBox.text += selectedObject.transform.row(0) + "\n"
+            informationBox.text += selectedObject.transform.row(1) + "\n"
+            informationBox.text += selectedObject.transform.row(2) + "\n"
+            informationBox.text += selectedObject.transform.row(3) + "\n"
+        }
+    }
 }
 
 
@@ -380,7 +443,33 @@ Window {
 
 
 
-/*##^## Designer {
-    D{i:6;anchors_height:100;anchors_width:100}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*##^##
+Designer {
+    D{i:6;anchors_height:100;anchors_width:100}D{i:22;anchors_x:16}
 }
- ##^##*/
+##^##*/

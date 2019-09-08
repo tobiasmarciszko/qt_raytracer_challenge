@@ -5,11 +5,11 @@
 #include <QDebug>
 #include <cmath>
 
-bool equal(const double& a, const double& b) {
+bool equal(const float& a, const float& b) {
     return std::abs(a - b) < EPSILON;
 }
 
-Tuple::Tuple(double x_, double y_, double z_, double w_) :
+Tuple::Tuple(float x_, float y_, float z_, float w_) :
     x(x_),
     y(y_),
     z(z_),
@@ -31,10 +31,10 @@ Tuple Tuple::operator-() const {
 }
 
 Tuple Tuple::operator+(const Tuple& tuple) const {
-    const double newx = x + tuple.x;
-    const double newy = y + tuple.y;
-    const double newz = z + tuple.z;
-    const double neww = w + tuple.w;
+    const float newx = x + tuple.x;
+    const float newy = y + tuple.y;
+    const float newz = z + tuple.z;
+    const float neww = w + tuple.w;
 
     if (equal(neww, 0)) {
         return Vector(newx, newy, newz);
@@ -47,11 +47,11 @@ Tuple Tuple::operator-(const Tuple& t) const {
     return {x - t.x, y - t.y, z - t.z, w -  t.w};
 }
 
-Tuple Tuple::operator*(const double& m) const {
+Tuple Tuple::operator*(const float& m) const {
     return {x * m, y * m, z * m, w * m};
 }
 
-Tuple Tuple::operator/(const double& d) const {
+Tuple Tuple::operator/(const float& d) const {
     return {x / d, y / d, z / d, w / d};
 }
 

@@ -41,6 +41,8 @@ add_executable(freeside-raytracer
         imageitem.h
         plane.h
         pattern.h
+        camera.h
+        shapeqmlbridge.h
 
         color.cpp
         main.cpp
@@ -49,7 +51,8 @@ add_executable(freeside-raytracer
         raytracer.cpp
         tuple.cpp
         imageitem.cpp
-        camera.h)
+        shapeqmlbridge.cpp
+        )
 
 target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 

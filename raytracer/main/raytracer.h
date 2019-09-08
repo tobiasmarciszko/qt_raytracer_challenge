@@ -10,6 +10,7 @@
 #include "canvas.h"
 #include "camera.h"
 #include "world.h"
+#include "shapeqmlbridge.h"
 
 class Raytracer : public QObject
 {
@@ -22,7 +23,8 @@ public:
     Q_PROPERTY(int progress MEMBER m_progress NOTIFY progressChanged)
     Q_PROPERTY(bool rendering MEMBER m_rendering NOTIFY renderingChanged)
     Q_PROPERTY(double fromX MEMBER m_fromX NOTIFY fromXChanged)
-    Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)    
+    Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)
+    Q_PROPERTY(double fromZ MEMBER m_fromZ NOTIFY fromZChanged)
     Q_PROPERTY(double lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
 
 public slots:
@@ -33,14 +35,17 @@ public slots:
     void progressValueChanged(int value);
     void switchChanged();
 
-    int objectIdFromCoordinates(int x, int y) {
+    QObject* objectFromCoordinates(int x, int y) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
         const auto is = intersect_world(m_world, ray);
         const auto h = hit(is);
         if (!h.has_value()) {
-            return -1;
+            return nullptr;
         }
-        return h->object.get()->id();
+
+        return createShapeQmlBridge(h.value().object);
+
+        // return h->object.get()->id();
     }
 
 signals:
@@ -49,6 +54,7 @@ signals:
     void progressChanged();
     void fromXChanged();
     void fromYChanged();
+    void fromZChanged();
 
 private:
     // Camera
@@ -81,6 +87,10 @@ private:
     void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
     Point drawWorldPoint(const Point& point, uint color = qRgb(255, 255, 255));
     void setPixel(int x, int y, uint color = qRgb(255, 255, 255));
+
+    /////////// QML BRIDGE ///////////
+
+
 };
 
 #endif // RAYTRACER_H

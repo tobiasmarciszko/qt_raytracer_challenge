@@ -8,15 +8,15 @@
 class Vector : public Tuple
 {
 public:
-    Vector(double x,
-           double y,
-           double z) :
+    Vector(float x,
+           float y,
+           float z) :
         Tuple(x, y, z, 0)
     {}
 
     Vector(const Tuple& tuple) : Tuple(tuple) {}
 
-    inline double magnitude() const
+    inline float magnitude() const
     {
         // aka length
         // Pythagoras to the rescue!
@@ -25,13 +25,13 @@ public:
 
     inline Vector normalize() const
     {
-        double magnitude = this->magnitude();
+        float magnitude = this->magnitude();
         return {x / magnitude,
                 y / magnitude,
                 z / magnitude};
     }
 
-    inline double dot(const Vector& b) const
+    inline float dot(const Vector& b) const
     {
         return (
             x * b.x +
