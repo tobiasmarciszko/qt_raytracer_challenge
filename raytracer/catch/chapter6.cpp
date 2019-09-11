@@ -80,7 +80,7 @@ TEST_CASE("Reflecting a vector approaching at 45°") {
 
 TEST_CASE("Reflecting a vector off a slanted surface") {
     const auto v = Vector(0, -1, 0);
-    const auto n = Vector(M_SQRT2/2, M_SQRT2/2, 0);
+    const auto n = Vector(M_SQRT2/2.0, M_SQRT2/2.0, 0);
     const auto r = v.reflect(n);
 
     REQUIRE(r == Vector(1, 0, 0));
@@ -100,10 +100,10 @@ TEST_CASE("The default material") {
     const auto m = Material();
 
     REQUIRE(m.color == Color(1, 1, 1));
-    REQUIRE(equal(m.ambient, 0.1));
-    REQUIRE(equal(m.diffuse, 0.9));
-    REQUIRE(equal(m.specular, 0.9));
-    REQUIRE(equal(m.shininess, 200.0));
+    REQUIRE(equal(m.ambient, 0.1f));
+    REQUIRE(equal(m.diffuse, 0.9f));
+    REQUIRE(equal(m.specular, 0.9f));
+    REQUIRE(equal(m.shininess, 200.0f));
 }
 
 TEST_CASE("A sphere has a default material") {
@@ -158,7 +158,7 @@ SCENARIO("Lighting") {
 
         const auto result = lighting(m, object, light, position, eyev, normalv);
 
-        REQUIRE(result == Color(0.7364, 0.7364, 0.7364));
+        REQUIRE(result == Color(0.7364f, 0.7364f, 0.7364f));
     }
 
     GIVEN("Lighting with eye in the path of the reflection vector")
@@ -169,7 +169,7 @@ SCENARIO("Lighting") {
 
         const auto result = lighting(m, object, light, position, eyev, normalv);
 
-        REQUIRE(result == Color(1.6364, 1.6364, 1.6364));
+        REQUIRE(result == Color(1.6364f, 1.6364f, 1.6364f));
     }
 
     GIVEN("Lighting with the light behind the surface")
@@ -180,10 +180,6 @@ SCENARIO("Lighting") {
 
         const auto result = lighting(m, object, light, position, eyev, normalv);
 
-        REQUIRE(result == Color(0.1, 0.1, 0.1));
+        REQUIRE(result == Color(0.1f, 0.1f, 0.1f));
     }
-
 }
-
-
-

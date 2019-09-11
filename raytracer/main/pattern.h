@@ -101,10 +101,10 @@ struct Pattern {
     inline Color stripe_at(const Point& p) const {
 
         // Stripe pattern
-//        if (static_cast<int>(std::floor(p.x)) % 2 == 0) {
-//            return a;
-//        }
-//        return b;
+        if (static_cast<int>(std::floor(p.x)) % 2 == 0) {
+            return a;
+        }
+        return b;
 
         // XOR pattern
 //        int c = (int)p.x^(int)p.y^(int)p.z;
@@ -116,20 +116,20 @@ struct Pattern {
 
 //        return Color(cfr, cfg, cfb);
 
-        int y = (240-abs(int(p.y)));
-        int x = (int(p.x)) % 320;
+//        int y = (240-abs(int(p.y)));
+//        int x = (int(p.x)) % 320;
 
-        if (y > 240) return black;
-        if (y < 0) return black;
+//        if (y > 240) return black;
+//        if (y < 0) return black;
 
-        int index = firePixels[y * FIRE_WIDTH + x];
-        QRgb color = palette[index];
+//        int index = firePixels[y * FIRE_WIDTH + x];
+//        QRgb color = palette[index];
 
-        float cfr = (float)qRed(color)/255.0;
-        float cfg = (float)qGreen(color)/255.0;
-        float cfb = (float)qBlue(color)/255.0;
+//        float cfr = (float)qRed(color)/255.0;
+//        float cfg = (float)qGreen(color)/255.0;
+//        float cfb = (float)qBlue(color)/255.0;
 
-        return Color(cfr, cfg, cfb);
+//        return Color(cfr, cfg, cfb);
     }
 
     inline void set_transform(const Matrix<4,4>& t) {

@@ -7,10 +7,10 @@
 
 struct Material {
     Color color = Color(1, 1, 1);
-    double ambient   = 0.1;
-    double diffuse   = 0.9;
-    double specular  = 0.9;
-    double shininess = 200.0;
+    float ambient   = 0.1f;
+    float diffuse   = 0.9f;
+    float specular  = 0.9f;
+    float shininess = 200.0f;
     std::optional<Pattern> pattern;
 
     bool operator ==(const Material& m) const {

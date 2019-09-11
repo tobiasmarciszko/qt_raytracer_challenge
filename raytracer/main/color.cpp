@@ -1,6 +1,6 @@
 #include "color.h"
 
-Color::Color(double red, double green, double blue):
+Color::Color(float red, float green, float blue):
     red(red),
     green(green),
     blue(blue)
@@ -8,39 +8,39 @@ Color::Color(double red, double green, double blue):
 }
 
 Color Color::operator+(const Color& color) const {
-    const double r = red + color.red;
-    const double g = green + color.green;
-    const double b = blue + color.blue;
+    const float r = red + color.red;
+    const float g = green + color.green;
+    const float b = blue + color.blue;
 
     return {r, g, b};
 }
 
 Color Color::operator-(const Color& color) const {
-    const double r = red - color.red;
-    const double g = green - color.green;
-    const double b = blue - color.blue;
+    const float r = red - color.red;
+    const float g = green - color.green;
+    const float b = blue - color.blue;
     return {r, g, b};
 }
 
-Color Color::operator*(const double& multiplier) const {
-    const double r = red * multiplier;
-    const double g = green * multiplier;
-    const double b = blue * multiplier;
+Color Color::operator*(const float& multiplier) const {
+    const float r = red * multiplier;
+    const float g = green * multiplier;
+    const float b = blue * multiplier;
     return {r, g, b};
 }
 
-Color Color::operator/(const double& divider) const {
-    const double r = red / divider;
-    const double g = green / divider;
-    const double b = blue / divider;
+Color Color::operator/(const float& divider) const {
+    const float r = red / divider;
+    const float g = green / divider;
+    const float b = blue / divider;
     return {r, g, b};
 }
 
 // Hadamard product (Schur product)
 Color Color::operator *(const Color& color) const {
-    const double r = red * color.red;
-    const double g = green * color.green;
-    const double b = blue * color.blue;
+    const float r = red * color.red;
+    const float g = green * color.green;
+    const float b = blue * color.blue;
 
     return {r, g, b};
 }
