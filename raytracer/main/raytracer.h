@@ -35,7 +35,7 @@ public slots:
     void progressValueChanged(int value);
     void switchChanged();
 
-    QObject* objectFromCoordinates(int x, int y) {
+    QObject* objectFromCoordinates(unsigned int x, unsigned int y) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
         const auto is = intersect_world(m_world, ray);
         const auto h = hit(is);
@@ -43,9 +43,8 @@ public slots:
             return nullptr;
         }
 
-        return createShapeQmlBridge(h.value().object);
-
-        // return h->object.get()->id();
+        m_currentShapeBridge = createShapeQmlBridge(h.value().object);
+        return m_currentShapeBridge;
     }
 
 signals:
@@ -75,8 +74,9 @@ private:
     World m_world;
     LightingModel m_lighting = LightingModel::Phong;
     bool m_rendering = false;
-    int m_progress;
-    int m_lastRenderTime;
+    int m_progress{0};
+    int m_lastRenderTime{0};
+    ShapeQmlBridge* m_currentShapeBridge = nullptr;
 
     QFutureWatcher<void> m_futureWatcher;
     QElapsedTimer m_timer;

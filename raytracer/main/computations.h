@@ -14,9 +14,15 @@ struct Computations {
     Point point{0,0,0};
     Vector eyev{0,0,0};
     Vector normalv{0,0,0};
+    Vector reflectv{0,0,0};
     Point over_point{point + normalv * EPSILON};
     bool inside{false};
 };
+
+
+inline Vector reflect(const Vector& direction, const Vector& normal) {
+    return Vector{0,0,0};
+}
 
 inline Computations prepare_computations(const Intersection& i, const Ray& r) {
     Computations comps;
@@ -33,6 +39,8 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r) {
     } else {
         comps.inside = false;
     }
+
+    comps.reflectv = r.direction().reflect(comps.normalv);
 
     comps.over_point = comps.point + comps.normalv * EPSILON;
 

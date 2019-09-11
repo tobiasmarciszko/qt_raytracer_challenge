@@ -53,7 +53,6 @@ inline std::shared_ptr<Pattern> stripe_pattern(const Color& a, const Color &b) {
 struct XORPattern : public Pattern {
 
     Color pattern_at(const Point& p) const override {
-        //        // XOR pattern
         int c = (int)p.x^(int)p.y^(int)p.z;
         c = abs(c) % 256;
 
