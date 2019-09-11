@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define EPSILON 0.00001
+#define EPSILON 0.0001f
 bool equal(const float& a, const float& b);
 
 struct Tuple

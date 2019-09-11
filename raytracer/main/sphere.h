@@ -19,19 +19,19 @@ struct Sphere : public Shape
     inline std::vector<Intersection> local_intersect(const Ray& ray) const override {
 
         const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
-        const double a = ray.direction().dot(ray.direction());
-        const double b = 2 * ray.direction().dot(sphere_to_ray);
-        const double c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
+        const float a = ray.direction().dot(ray.direction());
+        const float b = 2 * ray.direction().dot(sphere_to_ray);
+        const float c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
-        const double discriminant = (b * b) - (4.0 * a * c);
+        const float discriminant = (b * b) - (4.0f * a * c);
 
         // No hit
         if (discriminant < 0) return {};
 
         // Hit, either two intersections (discriminant == 0)
         // or one on the tanget
-        const double t1 = (-b - std::sqrt(discriminant)) / ( 2.0 * a);
-        const double t2 = (-b + std::sqrt(discriminant)) / ( 2.0 * a);
+        const float t1 = (-b - std::sqrt(discriminant)) / ( 2.0f * a);
+        const float t2 = (-b + std::sqrt(discriminant)) / ( 2.0f * a);
         const auto sphere_ptr = std::make_shared<const Sphere>(*this);
         return {intersection(t1, sphere_ptr), intersection(t2, sphere_ptr)};
     }

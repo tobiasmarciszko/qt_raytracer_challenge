@@ -5,29 +5,30 @@
 #include <algorithm>
 #include <optional>
 #include <memory>
+#include <cmath>
 
 struct Shape;
 struct Intersection
 {
     Intersection() = delete;
-    Intersection(double _t, std::shared_ptr<const Shape> _object) :
+    Intersection(float _t, std::shared_ptr<const Shape> _object) :
         t(_t),
         object(_object) {}
 
     inline bool operator==(const Intersection& i1) const {
-        if (i1.t != t) return false;
+        if (!(std::fabs(i1.t - t) < 0.0001f)) return false;
         if (!(i1.object == object)) return false;
 
         return true;
     }
 
-    double t;
+    float t;
     std::shared_ptr<const Shape> object;
 };
 
 using Intersections = std::vector<Intersection>;
 
-inline Intersection intersection(double t, std::shared_ptr<const Shape> s) {
+inline Intersection intersection(float t, std::shared_ptr<const Shape> s) {
     return {t, s};
 }
 
