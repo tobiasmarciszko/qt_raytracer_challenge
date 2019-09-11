@@ -35,8 +35,8 @@ inline Color lighting(
     Color materialColor;
 
     // Check if the material has a pattern first
-    if (material.pattern.has_value()) {
-        materialColor = stripe_at_object(material.pattern.value(), object, point);
+    if (material.pattern_ptr) {
+        materialColor = pattern_at_shape(material.pattern_ptr, object, point);
     } else {
         materialColor = material.color;
     }

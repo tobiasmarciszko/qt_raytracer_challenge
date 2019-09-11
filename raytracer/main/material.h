@@ -11,7 +11,7 @@ struct Material {
     float diffuse   = 0.9f;
     float specular  = 0.9f;
     float shininess = 200.0f;
-    std::optional<Pattern> pattern;
+    std::shared_ptr<Pattern> pattern_ptr = nullptr;
 
     bool operator ==(const Material& m) const {
         if (!(color == m.color)) return false;

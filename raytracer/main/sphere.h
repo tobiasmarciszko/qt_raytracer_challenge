@@ -21,7 +21,7 @@ struct Sphere : public Shape
         const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
         const float a = ray.direction().dot(ray.direction());
         const float b = 2 * ray.direction().dot(sphere_to_ray);
-        const float c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
+        const float c = sphere_to_ray.dot(sphere_to_ray) - 1.0f;
 
         const float discriminant = (b * b) - (4.0f * a * c);
 

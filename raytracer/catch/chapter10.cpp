@@ -6,48 +6,40 @@
 #include "sphere.h"
 #include "shape.h"
 
-TEST_CASE("Creating a stripe pattering")
-{
-    auto pattern = stripe_pattern(white, black);
-
-    REQUIRE(pattern.a == white);
-    REQUIRE(pattern.b == black);
-}
-
 TEST_CASE("A stripe pattern is constant in y")
 {
     auto pattern = stripe_pattern(white, black);
 
-    REQUIRE(pattern.stripe_at(Point(0,0,0)) == white);
-    REQUIRE(pattern.stripe_at(Point(0,1,0)) == white);
-    REQUIRE(pattern.stripe_at(Point(0,2,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,0,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,1,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,2,0)) == white);
 }
 
 TEST_CASE("A stripe pattern is constant in z")
 {
     auto pattern = stripe_pattern(white, black);
 
-    REQUIRE(pattern.stripe_at(Point(0,0,0)) == white);
-    REQUIRE(pattern.stripe_at(Point(0,0,1)) == white);
-    REQUIRE(pattern.stripe_at(Point(0,0,2)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,0,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,0,1)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,0,2)) == white);
 }
 
 TEST_CASE("A stripe pattern alternates in x")
 {
     auto pattern = stripe_pattern(white, black);
 
-    REQUIRE(pattern.stripe_at(Point(0,0,0)) == white);
-    REQUIRE(pattern.stripe_at(Point(0.9,0,0)) == white);
-    REQUIRE(pattern.stripe_at(Point(1,0,0)) == black);
-    REQUIRE(pattern.stripe_at(Point(-0.1,0,0)) == black);
-    REQUIRE(pattern.stripe_at(Point(-1,0,0)) == black);
-    REQUIRE(pattern.stripe_at(Point(-1.1,0,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0,0,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(0.9,0,0)) == white);
+    REQUIRE(pattern->pattern_at(Point(1,0,0)) == black);
+    REQUIRE(pattern->pattern_at(Point(-0.1,0,0)) == black);
+    REQUIRE(pattern->pattern_at(Point(-1,0,0)) == black);
+    REQUIRE(pattern->pattern_at(Point(-1.1,0,0)) == white);
 }
 
 TEST_CASE("Lighting with a pattern applied")
 {
     Material m;
-    m.pattern = stripe_pattern(Color(1,1,1), Color(0,0,0));
+    m.pattern_ptr = stripe_pattern(Color(1,1,1), Color(0,0,0));
     m.ambient = 1;
     m.diffuse = 0;
     m.specular = 0;
@@ -71,7 +63,7 @@ TEST_CASE("Stripes with an object transformation")
     object->set_transform(scaling(2, 2, 2));
 
     auto pattern = stripe_pattern(white, black);
-    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+    auto c = pattern_at_shape(pattern, object, Point(1.5, 0, 0));
 
     REQUIRE(c == white);
 }
@@ -82,8 +74,8 @@ TEST_CASE("Stripes with a pattern transformation")
     object->set_transform(scaling(2, 2, 2));
 
     auto pattern = stripe_pattern(white, black);
-    pattern.set_transform(scaling(2, 2, 2));
-    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+    pattern->set_transform(scaling(2, 2, 2));
+    auto c = pattern_at_shape(pattern, object, Point(1.5, 0, 0));
 
     REQUIRE(c == white);
 
@@ -95,8 +87,8 @@ TEST_CASE("Stripes with both an object and a pattern transformation")
     object->set_transform(scaling(2, 2, 2));
 
     auto pattern = stripe_pattern(white, black);
-    pattern.set_transform(scaling(2, 2, 2));
-    auto c = stripe_at_object(pattern, object, Point(1.5, 0, 0));
+    pattern->set_transform(scaling(2, 2, 2));
+    auto c = pattern_at_shape(pattern, object, Point(1.5, 0, 0));
 
     REQUIRE(c == white);
 }

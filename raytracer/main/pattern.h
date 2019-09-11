@@ -5,12 +5,71 @@
 #include "point.h"
 #include "matrix.h"
 #include <cmath>
+#include <memory>
 #include <QDebug>
 #include <QtGui/qrgb.h>
 
 // Predefined colors for convenience
 const Color black = Color(0,0,0);
 const Color white = Color(1,1,1);
+
+struct Pattern {
+    virtual ~Pattern() = default;
+
+    Matrix<4,4> transform = identity_matrix;
+    Matrix<4,4> inverse_transform = transform.inverse();
+
+    virtual Color pattern_at(const Point& p) const = 0;
+
+    inline void set_transform(const Matrix<4,4>& t) {
+        transform = t;
+        inverse_transform = transform.inverse();
+    }
+};
+
+///////////////// Stripe Pattern /////////////////////
+
+struct StripePattern : public Pattern {
+
+    StripePattern(const Color& _a, const Color& _b) : a(_a), b(_b) {}
+
+    Color a;
+    Color b;
+
+    Color pattern_at(const Point& p) const override {
+        if (static_cast<int>(std::floor(p.x)) % 2 == 0) {
+            return a;
+        }
+        return b;
+    }
+};
+
+inline std::shared_ptr<Pattern> stripe_pattern(const Color& a, const Color &b) {
+    return std::make_shared<StripePattern>(StripePattern(a, b));
+}
+
+///////////////// XOR Pattern /////////////////////
+
+struct XORPattern : public Pattern {
+
+    Color pattern_at(const Point& p) const override {
+        //        // XOR pattern
+        int c = (int)p.x^(int)p.y^(int)p.z;
+        c = abs(c) % 256;
+
+        float cfr = (float)(255-c) / 255.0;
+        float cfg = (float)(c % 128) / 255.0;
+        float cfb = 1 - cfr;
+
+        return Color(cfr, cfg, cfb);
+    }
+};
+
+inline std::shared_ptr<Pattern> xor_pattern() {
+    return std::make_shared<XORPattern>(XORPattern());
+}
+
+///////////////// DOOM fire Pattern /////////////////////
 
 const int FIRE_WIDTH  = 320;
 const int FIRE_HEIGHT = 240;
@@ -75,11 +134,9 @@ static void doFire() {
     }
 }
 
-struct Pattern {
+struct DoomFirePattern : public Pattern {
 
-    Pattern() = default;
-    Pattern(const Color& _a, const Color& _b) : a(_a), b(_b) {
-
+    DoomFirePattern() {
         for (uint i = 0; i < FIRE_WIDTH*FIRE_HEIGHT; i++) {
             firePixels[i] = 0;
         }
@@ -93,53 +150,26 @@ struct Pattern {
         }
     }
 
-    Color a;
-    Color b;
-    Matrix<4,4> transform = identity_matrix;
-    Matrix<4,4> inverse_transform = transform.inverse();
+    Color pattern_at(const Point& p) const override {
+        int y = (240-abs(int(p.y)));
+        int x = (int(p.x)) % 320;
 
-    inline Color stripe_at(const Point& p) const {
+        if (y > 240) return black;
+        if (y < 0) return black;
 
-        // Stripe pattern
-        if (static_cast<int>(std::floor(p.x)) % 2 == 0) {
-            return a;
-        }
-        return b;
+        int index = firePixels[y * FIRE_WIDTH + x];
+        QRgb color = palette[index];
 
-        // XOR pattern
-//        int c = (int)p.x^(int)p.y^(int)p.z;
-//        c = abs(c) % 256;
+        float cfr = qRed(color)/255.0f;
+        float cfg = qGreen(color)/255.0f;
+        float cfb = qBlue(color)/255.0f;
 
-//        float cfr = (float)(255-c) / 255.0;
-//        float cfg = (float)(c % 128) / 255.0;
-//        float cfb = 1 - cfr;
-
-//        return Color(cfr, cfg, cfb);
-
-//        int y = (240-abs(int(p.y)));
-//        int x = (int(p.x)) % 320;
-
-//        if (y > 240) return black;
-//        if (y < 0) return black;
-
-//        int index = firePixels[y * FIRE_WIDTH + x];
-//        QRgb color = palette[index];
-
-//        float cfr = (float)qRed(color)/255.0;
-//        float cfg = (float)qGreen(color)/255.0;
-//        float cfb = (float)qBlue(color)/255.0;
-
-//        return Color(cfr, cfg, cfb);
-    }
-
-    inline void set_transform(const Matrix<4,4>& t) {
-        transform = t;
-        inverse_transform = transform.inverse();
+        return Color(cfr, cfg, cfb);
     }
 };
 
-inline Pattern stripe_pattern(const Color& a, const Color &b) {
-    return Pattern(a, b);
+inline std::shared_ptr<Pattern> doomfire_pattern() {
+    return std::make_shared<DoomFirePattern>(DoomFirePattern());
 }
 
 #endif // PATTERN_H

@@ -222,44 +222,49 @@ void Raytracer::switchChanged() {
 }
 
 inline World threeBallsOnAPlane() {
-    auto floor = Plane();
-    auto m = floor.material();
+    Plane floor;
+    Material m = floor.material();
     m.color = Color(1, 0.2, 0.2);
-//    m.pattern = stripe_pattern(black, white);
-//    m.pattern->set_transform(scaling(0.1,0.1,0.1));
+    m.pattern_ptr = stripe_pattern(black, white);
     floor.set_material(m);
 
-    auto middle = Sphere();
+    Plane sky;
+    Material m1 = sky.material();
+    sky.set_transform(translation(0, 100, 0) * rotation_z(M_PI));
+    m1.color = Color(0.1, 0.1, 0.9);
+    sky.set_material(m1);
+
+    Sphere middle;
     middle.set_transform(translation(0, 1, 0));
-    auto m2 = Material();
+    Material m2;
     m2.color = Color(0.1, 1, 0.5);
     m2.diffuse = 0.7;
     m2.specular = 0.3;
-    m2.pattern = stripe_pattern(black, white);
-    m2.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
+    m2.pattern_ptr = doomfire_pattern();
+    m2.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     middle.set_material(m2);
 
-    auto right = Sphere();
+    Sphere right;
     right.set_transform(translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5));
-    auto m3 = Material();
+    Material m3;
     m3.color = Color(0.5, 1, 0.1);
     m3.diffuse = 0.7;
     m3.specular = 0.3;
-    m3.pattern = stripe_pattern(black, white);
-    m3.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
+    m3.pattern_ptr = xor_pattern();
+    m3.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     right.set_material(m3);
 
-    auto left = Sphere();
+    Sphere left;
     left.set_transform(translation(-1.5, 0.33, -0.75) * scaling(0.33, 0.33, 0.33));
-    auto m4 = Material();
+    Material m4;
     m4.color = Color(1, 0.8, 0.1);
     m4.diffuse = 0.7;
     m4.specular = 0.3;
-    m4.pattern = stripe_pattern(black, white);
-    m4.pattern->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
+    m4.pattern_ptr = stripe_pattern(Color(0.1, 0.1, 0.8), white);
+    m4.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.02,0.02,0.02));
     left.set_material(m4);
 
-    auto world = World();
+    World world;
 
     world.lights.emplace_back(PointLight(Point(-10, 10, -10), Color(1, 1, 1)));
     world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.4, 0.4, 0.4)));
@@ -269,7 +274,8 @@ inline World threeBallsOnAPlane() {
                     std::make_shared<Sphere>(middle),
                     std::make_shared<Sphere>(right),
                     std::make_shared<Sphere>(left),
-                    std::make_shared<Plane>(floor)
+                    std::make_shared<Plane>(floor),
+                    std::make_shared<Plane>(sky)
     };
 
     return world;
