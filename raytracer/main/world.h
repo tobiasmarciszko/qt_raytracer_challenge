@@ -81,29 +81,9 @@ inline bool is_shadowed(const World& world, const Point& point) {
     return is_shadowed(world, point, world.lights.front());
 }
 
-inline Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong) {
+Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
 
-    Color c{0, 0, 0};
-    for (const auto& light: w.lights) {
-        const auto in_shadow = is_shadowed(w, comps.over_point, light);
-
-        const auto color = lighting(
-            comps.object->material(),
-            comps.object,
-            light,
-            comps.point,
-            comps.eyev,
-            comps.normalv,
-            in_shadow,
-            lightingModel);
-
-        c = c + color;
-    }
-
-    return c;
-}
-
-inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong) {
+inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
 
     const Color black{0, 0, 0};
 
@@ -114,11 +94,55 @@ inline Color color_at(const World& w, const Ray& r, const LightingModel& lightin
     }
 
     const auto comps = prepare_computations(h.value(), r);
-    const auto color = shade_hit(w, comps, lightingModel);
+    const auto color = shade_hit(w, comps, lightingModel, remaining);
 
     return color;
 }
 
+inline Color reflected_color(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
+
+    // Prevent infinite recursion
+    if (remaining <= 0) {
+        return Color(0, 0, 0);
+    }
+
+    if (equal(comps.object->material().reflective, 0)) {
+        return Color(0, 0, 0);
+    }
+
+    const Ray reflect_ray(comps.over_point, comps.reflectv);
+    const Color color = color_at(w, reflect_ray, lightingModel, remaining - 1);
+
+    return color * comps.object->material().reflective;
+}
+
+inline Color reflected_color(const World& w, const Computations& comps, int remaining) {
+    return reflected_color(w, comps, LightingModel::Phong, remaining);
+}
+
+inline Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining) {
+
+    Color c{0, 0, 0};
+    for (const auto& light: w.lights) {
+        const auto in_shadow = is_shadowed(w, comps.over_point, light);
+
+        const auto surface = lighting(
+            comps.object->material(),
+            comps.object,
+            light,
+            comps.over_point,
+            comps.eyev,
+            comps.normalv,
+            in_shadow,
+            lightingModel);
+
+        const auto reflected = reflected_color(w, comps, lightingModel, remaining);
+
+        c = c + (surface + reflected);
+    }
+
+    return c;
+}
 
 inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up) {
 
