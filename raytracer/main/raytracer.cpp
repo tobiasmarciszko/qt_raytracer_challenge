@@ -69,11 +69,16 @@ void Raytracer::render() {
 void Raytracer::wireframe() {
     m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
     m_camera.inverse_transform = m_camera.transform.inverse();
-    m_framebuffer.fill(QColor(0, 0, 0));
+    m_framebuffer.fill(QColor(100, 100, 100));
 
     for (auto& shape: m_world.shapes) {
         auto m = shape->transform();
         auto c = shape->material().color;
+
+        // Only draw the bounding boxes on Spheres
+        if (!dynamic_cast<Sphere*>(shape.get())) {
+            continue;
+        }
 
         // TODO: Refactoring into a color conversion method
         QColor qc;
@@ -85,22 +90,48 @@ void Raytracer::wireframe() {
 
         const auto centerPoint = m * Point(0, 0, 0);
 
-        const auto x = m.get(0,0);
-        const auto y = m.get(1,1);
-        const auto z = m.get(2,2);
+        const auto xScale = m.get(0,0);
+        const auto yScale = m.get(1,1);
+        const auto zScale = m.get(2,2);
 
-        const auto x1 = drawWorldPoint(Point(centerPoint.x+x, centerPoint.y, centerPoint.z));
-        const auto x2 = drawWorldPoint(Point(centerPoint.x-x, centerPoint.y, centerPoint.z));
+        const auto xPos = centerPoint.x+xScale;
+        const auto xNeg = centerPoint.x-xScale;
 
-        const auto y1 = drawWorldPoint(Point(centerPoint.x, centerPoint.y+y,centerPoint.z));
-        const auto y2 = drawWorldPoint(Point(centerPoint.x, centerPoint.y-y,centerPoint.z));
+        const auto yPos = centerPoint.y+yScale;
+        const auto yNeg = centerPoint.y-yScale;
 
-        const auto z1 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z+z));
-        const auto z2 = drawWorldPoint(Point(centerPoint.x,centerPoint.y, centerPoint.z-z));
+        const auto zPos = centerPoint.z+zScale;
+        const auto zNeg = centerPoint.z-zScale;
 
-        drawLine(x1, x2, color);
-        drawLine(y1, y2, color);
-        drawLine(z1, z2, color);
+        // Top points
+        const auto a1 = drawWorldPoint(Point(xPos, yPos, zNeg));
+        const auto a2 = drawWorldPoint(Point(xNeg, yPos, zNeg));
+        const auto a3 = drawWorldPoint(Point(xPos, yPos, zPos));
+        const auto a4 = drawWorldPoint(Point(xNeg, yPos, zPos));
+
+        // Bottom points
+        const auto b1 = drawWorldPoint(Point(xPos, yNeg, zNeg));
+        const auto b2 = drawWorldPoint(Point(xNeg, yNeg, zNeg));
+        const auto b3 = drawWorldPoint(Point(xPos, yNeg, zPos));
+        const auto b4 = drawWorldPoint(Point(xNeg, yNeg, zPos));
+
+        // Top square
+        drawLine(a1, a2, color);
+        drawLine(a3, a4, color);
+        drawLine(a1, a3, color);
+        drawLine(a2, a4, color);
+
+        // Bottom square
+        drawLine(b1, b2, color);
+        drawLine(b3, b4, color);
+        drawLine(b1, b3, color);
+        drawLine(b2, b4, color);
+
+        // Connect top and bottom
+        drawLine(a1, b1, color);
+        drawLine(a2, b2, color);
+        drawLine(a3, b3, color);
+        drawLine(a4, b4, color);
     }
 
     emit imageReady(m_framebuffer);
@@ -224,9 +255,9 @@ void Raytracer::switchChanged() {
 inline World threeBallsOnAPlane() {
     Plane floor;
     Material m = floor.material();
-    m.reflective = 0.2;
+    m.reflective = 0.5;
     m.color = Color(1, 0.2, 0.2);
-    m.pattern_ptr = stripe_pattern(black, white);
+    //m.pattern_ptr = stripe_pattern(black, white);
     floor.set_material(m);
 
     Plane sky;
@@ -239,7 +270,10 @@ inline World threeBallsOnAPlane() {
     Material mwall = wall.material();
     wall.set_transform(translation(0, 0, 4) * rotation_x(M_PI_2));
     mwall.color = Color(0, 0, 0);
-    mwall.reflective = 1;
+    mwall.reflective = 0.8;
+    mwall.pattern_ptr = doomfire_pattern();
+    mwall.pattern_ptr->set_transform(scaling(0.02, 0.02, 0.02) * rotation_x(M_PI_2));
+
     wall.set_material(mwall);
 
     Sphere middle;
@@ -247,8 +281,8 @@ inline World threeBallsOnAPlane() {
     Material m2;
     m2.color = Color(0, 0, 0);
     m2.diffuse = 0.7;
-    m2.specular = 0.3;
-    m2.reflective = 0.5;
+    m2.specular = 0.9;
+    m2.reflective = 0.6;
 //    m2.pattern_ptr = doomfire_pattern();
 //    m2.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     middle.set_material(m2);
@@ -259,25 +293,27 @@ inline World threeBallsOnAPlane() {
     m3.color = Color(0.5, 1, 0.1);
     m3.diffuse = 0.7;
     m3.specular = 0.3;
-    m3.pattern_ptr = xor_pattern();
-    m3.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
+    m3.reflective = 1.0;
+//    m3.pattern_ptr = xor_pattern();
+//    m3.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
     right.set_material(m3);
 
     Sphere left;
     left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
     Material m4;
     m4.color = Color(1, 0.8, 0.1);
-    m4.diffuse = 0.7;
-    m4.specular = 0.3;
+    m4.diffuse = 0.3;
+    m4.specular = 0.2;
+    m4.reflective = 0.7;
 //    m4.pattern_ptr = stripe_pattern(Color(0.1, 0.1, 0.8), white);
 //    m4.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.02,0.02,0.02));
     left.set_material(m4);
 
     World world;
 
-    world.lights.emplace_back(PointLight(Point(-3, 3, -3), Color(0.6, 0.6, 0.6)));
-    world.lights.emplace_back(PointLight(Point(2, 2,-20), Color(0.2, 0.2, 0.2)));
-//    world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
+    world.lights.emplace_back(PointLight(Point(-3, 3, -3), Color(1, 1, 1)));
+    // world.lights.emplace_back(PointLight(Point(2, 2,-10), Color(1, 1, 1)));
+    // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
     world.shapes = {
                     std::make_shared<Sphere>(middle),
