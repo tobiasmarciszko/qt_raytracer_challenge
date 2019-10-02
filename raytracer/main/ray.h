@@ -22,7 +22,7 @@ public:
         return m_direction;
     }
 
-    inline Point position(const double t) const {
+    inline Point position(const float t) const {
         return m_origin + m_direction * t;
     }
 

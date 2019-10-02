@@ -73,6 +73,7 @@ Window {
 
             onClicked: {
                 selectedObject = raytracer.objectFromCoordinates(mouseX, mouseY)
+                raytracer.materialPreview()
                 updateTextbox()
             }
         }
@@ -252,20 +253,11 @@ Window {
         visible: raytracer.rendering
     }
 
-    Window {
-
-        id: window2
-        title: "Information"
-        width: 250
-        height: window.height
-        x: window.x-250
+    InformationWindow {
+        id: informationWindow
         y: window.y
-
-        TextArea {
-            id: informationBox
-            anchors.fill: parent
-            wrapMode: TextEdit.Wrap
-        }
+        x: window.x-250
+        height: window.height
     }
 
     RoundButton {
@@ -278,11 +270,11 @@ Window {
         anchors.bottomMargin: 10
 
         onPressed: {
-            if (window2.visibility === Window.Hidden) {
+            if (informationWindow.visibility === Window.Hidden) {
                 updateTextbox()
-                window2.show()
-            } else if (window2.visibility !== Window.Hidden) {
-                window2.close()
+                informationWindow.show()
+            } else if (informationWindow.visibility !== Window.Hidden) {
+                informationWindow.close()
             }
         }
     }
@@ -290,23 +282,20 @@ Window {
     property ShapeBridge selectedObject
     function updateTextbox() {
 
-        informationBox.x = window.x-250;
-        informationBox.y = window.y;
-
-        informationBox.text = "Camera Position: \n"
-        informationBox.text += "x: " + raytracer.fromX.toFixed(1) + "\n"
-        informationBox.text += "y: " + raytracer.fromY.toFixed(1) + "\n"
-        informationBox.text += "z: " + raytracer.fromZ.toFixed(1) + "\n\n"
+        informationWindow.text = "Camera Position: \n"
+        informationWindow.text += "x: " + raytracer.fromX.toFixed(1) + "\n"
+        informationWindow.text += "y: " + raytracer.fromY.toFixed(1) + "\n"
+        informationWindow.text += "z: " + raytracer.fromZ.toFixed(1) + "\n\n"
 
         if (selectedObject != null) {
 
-            informationBox.text += "Object Selection\n\n"
-            informationBox.text += "Color: " + selectedObject.color + "\n"
-            informationBox.text += "Transform: \n"
-            informationBox.text += selectedObject.transform.row(0) + "\n"
-            informationBox.text += selectedObject.transform.row(1) + "\n"
-            informationBox.text += selectedObject.transform.row(2) + "\n"
-            informationBox.text += selectedObject.transform.row(3) + "\n"
+            informationWindow.text += "Object Selection\n\n"
+            informationWindow.text += "Color: " + selectedObject.color + "\n"
+            informationWindow.text += "Transform: \n"
+            informationWindow.text += selectedObject.transform.row(0) + "\n"
+            informationWindow.text += selectedObject.transform.row(1) + "\n"
+            informationWindow.text += selectedObject.transform.row(2) + "\n"
+            informationWindow.text += selectedObject.transform.row(3) + "\n"
         }
     }
 }

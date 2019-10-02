@@ -43,6 +43,7 @@ add_executable(freeside-raytracer
         pattern.h
         camera.h
         shapeqmlbridge.h
+        worlds.h
 
         color.cpp
         main.cpp

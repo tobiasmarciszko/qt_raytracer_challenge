@@ -1,7 +1,6 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <optional>
 #include "color.h"
 #include "pattern.h"
 
@@ -20,6 +19,7 @@ struct Material {
         if (!equal(diffuse, m.diffuse)) return false;
         if (!equal(specular, m.specular)) return false;
         if (!equal(shininess, m.shininess)) return false;
+        if (!equal(reflective, m.reflective)) return false;
 
         return true;
     }

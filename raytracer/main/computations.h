@@ -9,7 +9,7 @@
 #include <memory>
 
 struct Computations {
-    double t{-1};
+    float t{-1};
     std::shared_ptr<const Shape> object;
     Point point{0,0,0};
     Vector eyev{0,0,0};
@@ -18,11 +18,6 @@ struct Computations {
     Point over_point{point + normalv * EPSILON};
     bool inside{false};
 };
-
-
-inline Vector reflect(const Vector& direction, const Vector& normal) {
-    return Vector{0,0,0};
-}
 
 inline Computations prepare_computations(const Intersection& i, const Ray& r) {
     Computations comps;

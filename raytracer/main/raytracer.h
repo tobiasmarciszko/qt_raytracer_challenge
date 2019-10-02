@@ -30,8 +30,10 @@ public:
 public slots:
     void render();
     void wireframe();
+    void materialPreview();
     void setViewportSize(int width, int height);
     void renderFinished();
+    void materialPreviewFinished();
     void progressValueChanged(int value);
     void switchChanged();
 
@@ -44,11 +46,13 @@ public slots:
         }
 
         m_currentShapeBridge = createShapeQmlBridge(h.value().object);
+        m_selectedMaterial = h.value().object->material();
         return m_currentShapeBridge;
     }
 
 signals:
     void imageReady(const QImage& image);
+    void materialPreviewReady(const QImage& image);
     void renderingChanged();
     void progressChanged();
     void fromXChanged();
@@ -66,12 +70,16 @@ private:
     double m_toZ = 0;
 
     // Viewport
-    int m_width = 320;
-    int m_height = 240;
+    int m_width = 640;
+    int m_height = 480;
 
     Canvas m_canvas = Canvas(640, 480);
     Camera m_camera = Camera(640, 480, M_PI / 3.0);
+    QImage m_framebuffer = QImage(640, 480, QImage::Format_RGB32);
+
     World m_world;
+    World m_previewWorld;
+
     LightingModel m_lighting = LightingModel::Phong;
     bool m_rendering = false;
     int m_progress{0};
@@ -79,18 +87,20 @@ private:
     ShapeQmlBridge* m_currentShapeBridge = nullptr;
 
     QFutureWatcher<void> m_futureWatcher;
+    QFutureWatcher<void> m_materialPreviewfutureWatcher;
     QElapsedTimer m_timer;
-
-    QImage m_framebuffer = QImage(640, 480, QImage::Format_RGB32);
 
     void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
     void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
     Point drawWorldPoint(const Point& point, uint color = qRgb(255, 255, 255));
     void setPixel(int x, int y, uint color = qRgb(255, 255, 255));
+    void copyFrameBuffer();
 
-    /////////// QML BRIDGE ///////////
-
-
+    // Material preview
+    Canvas m_previewCanvas = Canvas(140, 140);
+    Camera m_previewCamera = Camera(140, 140, M_PI / 3.0);
+    QImage m_previewframebuffer = QImage(140, 140, QImage::Format_RGB32);
+    Material m_selectedMaterial;
 };
 
 #endif // RAYTRACER_H
