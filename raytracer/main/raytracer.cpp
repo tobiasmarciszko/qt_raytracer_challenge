@@ -17,6 +17,7 @@
 #include <QRgb>
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QPainter>
 
 static int counter = 0;
 
@@ -123,16 +124,16 @@ void Raytracer::wireframe() {
         const auto zNeg = centerPoint.z-zScale;
 
         // Top points
-        const auto a1 = drawWorldPoint(Point(xPos, yPos, zNeg));
-        const auto a2 = drawWorldPoint(Point(xNeg, yPos, zNeg));
-        const auto a3 = drawWorldPoint(Point(xPos, yPos, zPos));
-        const auto a4 = drawWorldPoint(Point(xNeg, yPos, zPos));
+        const auto a1 = convertWorldToScreenPoint(Point(xPos, yPos, zNeg));
+        const auto a2 = convertWorldToScreenPoint(Point(xNeg, yPos, zNeg));
+        const auto a3 = convertWorldToScreenPoint(Point(xPos, yPos, zPos));
+        const auto a4 = convertWorldToScreenPoint(Point(xNeg, yPos, zPos));
 
         // Bottom points
-        const auto b1 = drawWorldPoint(Point(xPos, yNeg, zNeg));
-        const auto b2 = drawWorldPoint(Point(xNeg, yNeg, zNeg));
-        const auto b3 = drawWorldPoint(Point(xPos, yNeg, zPos));
-        const auto b4 = drawWorldPoint(Point(xNeg, yNeg, zPos));
+        const auto b1 = convertWorldToScreenPoint(Point(xPos, yNeg, zNeg));
+        const auto b2 = convertWorldToScreenPoint(Point(xNeg, yNeg, zNeg));
+        const auto b3 = convertWorldToScreenPoint(Point(xPos, yNeg, zPos));
+        const auto b4 = convertWorldToScreenPoint(Point(xNeg, yNeg, zPos));
 
         // Top square
         drawLine(a1, a2, color);
@@ -219,7 +220,7 @@ void Raytracer::copyFrameBuffer() {
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
-Point Raytracer::drawWorldPoint(const Point& point, uint color) {
+Point Raytracer::convertWorldToScreenPoint(const Point& point, uint color) {
 
     // Transform point in world coordinate to camera
     auto pCamera = m_camera.transform * point;
@@ -237,6 +238,8 @@ Point Raytracer::drawWorldPoint(const Point& point, uint color) {
     auto pRasterx = ((p1xoffset / m_camera.pixel_size) - 0.5);
     auto pRastery = ((p1yoffset / m_camera.pixel_size) - 0.5);
 
+// Enable to draw pixel instead of just converting the coordinates
+#if 0
     // Clip before draw to avoid plotting outside the screen
     if (pRasterx >=0 &&
         pRastery >=0 &&
@@ -244,19 +247,31 @@ Point Raytracer::drawWorldPoint(const Point& point, uint color) {
         pRastery < m_camera.vsize) {
         setPixel(pRasterx, pRastery, color);
     }
+#endif
 
     // Return the pixel coordinates on the canvas/screen
     return Point(pRasterx, pRastery, 0);
 }
 
 void Raytracer::setPixel(int x, int y, uint color) {
+
+// Raw access to pixel, I don't know if this is equivalent to using QPainter's "drawPoint"
+#if 0
     QRgb *pixel = reinterpret_cast<QRgb *>(m_framebuffer.scanLine(y)); // select row
     pixel += x; // select column
     *pixel = color;
+#endif
+    QPainter p(&m_framebuffer);
+    p.setPen(color);
+    p.drawPoint(x, y);
 }
 
 void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
-    drawLine(p1.x, p1.y, p2.x, p2.y, color);
+    // drawLine(p1.x, p1.y, p2.x, p2.y, color);
+    QPainter p(&m_framebuffer);
+    p.setRenderHints(QPainter::Antialiasing);
+    p.setPen(color);
+    p.drawLine(p1.x, p1.y, p2.x, p2.y);
 }
 
 // Bresenham's line algorithm

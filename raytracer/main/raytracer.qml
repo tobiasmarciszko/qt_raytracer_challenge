@@ -70,11 +70,15 @@ Window {
         MouseArea {
             id: mouseArea
             anchors.fill: parent
+            onClicked: raytracer.selectObject(mouseX, mouseY)
 
-            onClicked: {
-                selectedObject = raytracer.objectFromCoordinates(mouseX, mouseY)
-                raytracer.materialPreview()
-                updateTextbox()
+            Connections {
+                target: raytracer
+                onObjectSelected: {
+                    selectedObject = shapeBridge
+                    raytracer.materialPreview()
+                    updateTextbox()
+                }
             }
         }
 
@@ -287,7 +291,7 @@ Window {
         informationWindow.text += "y: " + raytracer.fromY.toFixed(1) + "\n"
         informationWindow.text += "z: " + raytracer.fromZ.toFixed(1) + "\n\n"
 
-        if (selectedObject != null) {
+        if (selectedObject !== null) {
 
             informationWindow.text += "Object Selection\n\n"
             informationWindow.text += "Color: " + selectedObject.color + "\n"

@@ -31,23 +31,19 @@ public slots:
     void render();
     void wireframe();
     void materialPreview();
-    void setViewportSize(int width, int height);
-    void renderFinished();
-    void materialPreviewFinished();
-    void progressValueChanged(int value);
     void switchChanged();
+    void setViewportSize(int width, int height);
 
-    QObject* objectFromCoordinates(unsigned int x, unsigned int y) {
+    void selectObject(unsigned int x, unsigned int y ) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
         const auto is = intersect_world(m_world, ray);
         const auto h = hit(is);
-        if (!h.has_value()) {
-            return nullptr;
+        if (h.has_value()) {
+            createShapeQmlBridge(m_shapeBridge, h.value().object);
+            m_selectedMaterial = h.value().object->material();
         }
 
-        m_currentShapeBridge = createShapeQmlBridge(h.value().object);
-        m_selectedMaterial = h.value().object->material();
-        return m_currentShapeBridge;
+        emit objectSelected(&m_shapeBridge);
     }
 
 signals:
@@ -58,8 +54,14 @@ signals:
     void fromXChanged();
     void fromYChanged();
     void fromZChanged();
+    void objectSelected(ShapeQmlBridge* shapeBridge);
 
-private:
+private slots:
+    void renderFinished();
+    void materialPreviewFinished();
+    void progressValueChanged(int value);
+
+private: // Variables
     // Camera
     double m_fromX = 0;
     double m_fromY = 1.5;
@@ -73,9 +75,9 @@ private:
     int m_width = 640;
     int m_height = 480;
 
-    Canvas m_canvas = Canvas(640, 480);
-    Camera m_camera = Camera(640, 480, M_PI / 3.0);
-    QImage m_framebuffer = QImage(640, 480, QImage::Format_RGB32);
+    Canvas m_canvas{640, 480};
+    Camera m_camera{640, 480, M_PI / 3.0};
+    QImage m_framebuffer{640, 480, QImage::Format_RGB32};
 
     World m_world;
     World m_previewWorld;
@@ -84,23 +86,24 @@ private:
     bool m_rendering = false;
     int m_progress{0};
     int m_lastRenderTime{0};
-    ShapeQmlBridge* m_currentShapeBridge = nullptr;
+    ShapeQmlBridge m_shapeBridge;
 
     QFutureWatcher<void> m_futureWatcher;
     QFutureWatcher<void> m_materialPreviewfutureWatcher;
     QElapsedTimer m_timer;
 
+    // Material preview
+    Canvas m_previewCanvas{140, 140};
+    Camera m_previewCamera{140, 140, M_PI / 3.0};
+    QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
+    Material m_selectedMaterial;
+
+private: // Methods
     void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
     void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
-    Point drawWorldPoint(const Point& point, uint color = qRgb(255, 255, 255));
+    Point convertWorldToScreenPoint(const Point& point, uint color = qRgb(255, 255, 255));
     void setPixel(int x, int y, uint color = qRgb(255, 255, 255));
     void copyFrameBuffer();
-
-    // Material preview
-    Canvas m_previewCanvas = Canvas(140, 140);
-    Camera m_previewCamera = Camera(140, 140, M_PI / 3.0);
-    QImage m_previewframebuffer = QImage(140, 140, QImage::Format_RGB32);
-    Material m_selectedMaterial;
 };
 
 #endif // RAYTRACER_H
