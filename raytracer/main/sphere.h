@@ -32,8 +32,8 @@ struct Sphere : public Shape
         // or one on the tanget
         const float t1 = (-b - std::sqrt(discriminant)) / ( 2.0f * a);
         const float t2 = (-b + std::sqrt(discriminant)) / ( 2.0f * a);
-        const auto sphere_ptr = std::make_shared<const Sphere>(*this);
-        return {intersection(t1, sphere_ptr), intersection(t2, sphere_ptr)};
+
+        return {Intersection(t1, this), Intersection(t2, this)};
     }
 };
 

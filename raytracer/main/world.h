@@ -46,7 +46,10 @@ inline Intersections intersect_world(const World& w, const Ray& r)
 
     for (const auto& object: w.shapes) {
         const Intersections xs = object->intersect(r);
-        is.insert(std::end(is), std::begin(xs), std::end(xs));
+
+        for (const auto& intersection: xs) {
+            is.emplace_back(intersection);
+        }
     }
 
     std::sort(is.begin(), is.end(), [](

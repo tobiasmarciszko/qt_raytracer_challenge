@@ -72,7 +72,7 @@ private:
     Material m_material;
 };
 
-inline Color pattern_at_shape(std::shared_ptr<Pattern> pattern_ptr, const std::shared_ptr<const Shape> shape, const Point& world_point) {
+inline Color pattern_at_shape(std::shared_ptr<Pattern> pattern_ptr, const Shape* shape, const Point& world_point) {
     const auto object_point = shape->inverse_transform() * world_point;
     const auto pattern_point = pattern_ptr->inverse_transform * object_point;
 

@@ -17,9 +17,9 @@ TEST_CASE("Reflectivity for the default material")
 
 TEST_CASE("Precomputing the reflection vector")
 {
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
+    const std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
     Ray r(Point(0, 1, -1), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape);
+    Intersection i(M_SQRT2, shape.get());
     Computations comps = prepare_computations(i, r);
     REQUIRE(comps.reflectv == Vector(0, M_SQRT2/2, M_SQRT2/2));
 }
@@ -28,7 +28,7 @@ TEST_CASE("The reflected color for a nonreflective material")
 {
     World w = default_world();
     Ray r(Point(0, 0, 0), Vector(0, 0, 1));
-    std::shared_ptr<Shape> shape = w.shapes.at(1);
+    auto shape = w.shapes.at(1).get();
     Material m = shape->material();
     m.ambient = 1;
     shape->set_material(m);
@@ -52,7 +52,7 @@ TEST_CASE("The reflected color for a reflective material")
     w.shapes.emplace_back(shape);
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape);
+    Intersection i(M_SQRT2, shape.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = reflected_color(w, comps);
@@ -72,7 +72,7 @@ TEST_CASE("shade_hit() with a reflective material")
     w.shapes.emplace_back(shape);
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape);
+    Intersection i(M_SQRT2, shape.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = shade_hit(w, comps);
@@ -119,7 +119,7 @@ TEST_CASE("The reflected color at the maximum recursive depth")
     w.shapes.emplace_back(shape);
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape);
+    Intersection i(M_SQRT2, shape.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = reflected_color(w, comps, 0);

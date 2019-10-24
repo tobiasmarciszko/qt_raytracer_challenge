@@ -98,14 +98,14 @@ TEST_CASE("Spheres should have unique ids") {
 }
 
 TEST_CASE("An intersection encapsulates t and object") {
-    const auto s = std::make_shared<Sphere>(Sphere());
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
     const auto i = Intersection(3.5, s);
     REQUIRE(equal(i.t, 3.5));
-    REQUIRE(s.get() == i.object.get());
+    REQUIRE(s == i.object);
 }
 
 TEST_CASE("Aggregating intersections") {
-    const auto s = std::make_shared<Sphere>(Sphere());
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
     const auto i1 = Intersection(1, s);
     const auto i2 = Intersection(2, s);
 
@@ -123,14 +123,14 @@ TEST_CASE("Intersect sets the object on the intersection") {
 
     REQUIRE(xs.size() == 2);
 
-    REQUIRE(*xs.at(0).object.get() == s);
-    REQUIRE(*xs.at(1).object.get() == s);
+    REQUIRE(*xs.at(0).object == s);
+    REQUIRE(*xs.at(1).object == s);
 }
 
 TEST_CASE("The hit, when all intersections have positive t") {
-    const auto s = std::make_shared<Sphere>(Sphere());
-    const auto i1 = intersection(1, s);
-    const auto i2 = intersection(2, s);
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
+    const auto i1 = Intersection(1, s);
+    const auto i2 = Intersection(2, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -139,9 +139,9 @@ TEST_CASE("The hit, when all intersections have positive t") {
 }
 
 TEST_CASE("The hit, when some intersections have negative t") {
-    const auto s = std::make_shared<Sphere>(Sphere());
-    const auto i1 = intersection(-1, s);
-    const auto i2 = intersection(1, s);
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
+    const auto i1 = Intersection(-1, s);
+    const auto i2 = Intersection(1, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -150,9 +150,9 @@ TEST_CASE("The hit, when some intersections have negative t") {
 }
 
 TEST_CASE("The hit, when all intersections have negative t") {
-    const auto s = std::make_shared<Sphere>(Sphere());
-    const auto i1 = intersection(-2, s);
-    const auto i2 = intersection(-1, s);
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
+    const auto i1 = Intersection(-2, s);
+    const auto i2 = Intersection(-1, s);
 
     const auto xs = Intersections({i1, i2});
     const auto i = hit(xs);
@@ -161,12 +161,12 @@ TEST_CASE("The hit, when all intersections have negative t") {
 }
 
 TEST_CASE("The hit is always the lowest non negative intersection") {
-    const auto s = std::make_shared<Sphere>(Sphere());
+    const auto s = std::make_shared<Sphere>(Sphere()).get();
 
-    const auto i1 = intersection(5, s);
-    const auto i2 = intersection(7, s);
-    const auto i3 = intersection(-3, s);
-    const auto i4 = intersection(2, s);
+    const auto i1 = Intersection(5, s);
+    const auto i2 = Intersection(7, s);
+    const auto i3 = Intersection(-3, s);
+    const auto i4 = Intersection(2, s);
 
     const auto xs = Intersections({i1, i2, i3, i4});
     const auto i = hit(xs);

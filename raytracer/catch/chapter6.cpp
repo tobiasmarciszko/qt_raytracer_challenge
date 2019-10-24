@@ -126,7 +126,7 @@ SCENARIO("Lighting") {
 
     const auto m = Material();
     const auto position = Point(0, 0, 0);
-    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+    const auto object = std::make_shared<Sphere>().get();
 
     GIVEN("Lighting with the eye between the light and the surface")
     {

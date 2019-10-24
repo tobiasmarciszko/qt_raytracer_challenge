@@ -157,6 +157,9 @@ struct DoomFirePattern : public Pattern {
         if (y < 0) return black;
 
         int index = firePixels[y * FIRE_WIDTH + x];
+
+        if (index > 36) return black;
+
         QRgb color = palette[index];
 
         float cfr = qRed(color)/255.0f;

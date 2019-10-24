@@ -22,7 +22,7 @@ public:
     QColor color;
 };
 
-inline void createShapeQmlBridge(ShapeQmlBridge& bridge, std::shared_ptr<const Shape> shape_ptr) {
+inline void createShapeQmlBridge(ShapeQmlBridge& bridge, const Shape* shape_ptr) {
 
     QColor qcolor;
     const QMatrix4x4 matrix(shape_ptr->transform().get(0,0),

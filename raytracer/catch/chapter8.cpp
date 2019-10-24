@@ -18,7 +18,7 @@ TEST_CASE("Lighting with the surface in shadow")
     const auto light = PointLight(Point(0, 0, -10), Color(1, 1, 1));
     const auto in_shadow = true;
 
-    const std::shared_ptr<Shape> object = std::make_shared<Sphere>();
+    const auto object = std::make_shared<Sphere>().get();
 
     const auto result = lighting(m, object, light, position, eyev, normalv, in_shadow);
 
@@ -63,15 +63,15 @@ TEST_CASE("shade_hit() is given an intersection in shadow")
 
     w.lights.emplace_back(PointLight(Point(0, 0, -10), Color(1, 1, 1)));
 
-    auto s1 = Sphere();
-    w.shapes.emplace_back(std::make_shared<Sphere>(s1));
+    std::shared_ptr<Shape> s1 = std::make_shared<Sphere>(Sphere());
+    w.shapes.emplace_back(s1);
 
-    Sphere s2 = Sphere();
-    s2.set_transform(translation(0, 0, 10));
-    w.shapes.emplace_back(std::make_shared<Sphere>(s2));
+    std::shared_ptr<Shape> s2 = std::make_shared<Sphere>(Sphere());
+    s2->set_transform(translation(0, 0, 10));
+    w.shapes.emplace_back(s2);
 
     const auto r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
-    const auto i = intersection(4, std::make_shared<Sphere>(s2));
+    const auto i = Intersection(4, s2.get());
 
     const auto comps = prepare_computations(i, r);
     const auto c = shade_hit(w, comps);
@@ -82,9 +82,9 @@ TEST_CASE("shade_hit() is given an intersection in shadow")
 TEST_CASE("The hit should offset the point")
 {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
-    auto shape = Sphere();
-    shape.set_transform(translation(0, 0, 1));
-    auto i = intersection(5, std::make_shared<Sphere>(shape));
+    std::shared_ptr<Shape> shape = std::make_shared<Sphere>(Sphere());
+    shape->set_transform(translation(0, 0, 1));
+    auto i = Intersection(5, shape.get());
     auto comps = prepare_computations(i, r);
 
     REQUIRE(comps.over_point.z < - EPSILON/2);

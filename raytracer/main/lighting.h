@@ -18,7 +18,7 @@ enum class LightingModel {
 
 inline Color lighting(
     const Material& material,
-    const std::shared_ptr<const Shape> object,
+    const Shape* object,
     const Light& light,
     const Point& point,
     const Vector& eyev,

@@ -46,8 +46,8 @@ TEST_CASE("Intersect a world with a ray") {
 
 TEST_CASE("Precomputing the state of an intersection") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
-    const auto shape = std::make_shared<Sphere>(Sphere());
-    const auto i = intersection(4, shape);
+    std::shared_ptr<Shape> shape = std::make_shared<Sphere>(Sphere());
+    const auto i = Intersection(4, shape.get());
     const auto comps = prepare_computations(i, r);
 
     REQUIRE(equal(comps.t, i.t));
@@ -59,8 +59,8 @@ TEST_CASE("Precomputing the state of an intersection") {
 
 TEST_CASE("The hit, when an intersection occurs on the outside") {
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
-    const auto shape = std::make_shared<Sphere>(Sphere());
-    const auto i = intersection(4, shape);
+    std::shared_ptr<Shape> shape = std::make_shared<Sphere>(Sphere());
+    const auto i = Intersection(4, shape.get());
     const auto comps = prepare_computations(i, r);
 
     REQUIRE(comps.inside == false);
@@ -68,8 +68,8 @@ TEST_CASE("The hit, when an intersection occurs on the outside") {
 
 TEST_CASE("The hit, when an intersection occurs on the inside") {
     const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
-    const auto shape = std::make_shared<Sphere>(Sphere());
-    const auto i = intersection(1, shape);
+    std::shared_ptr<Shape> shape = std::make_shared<Sphere>(Sphere());
+    const auto i = Intersection(1, shape.get());
     const auto comps = prepare_computations(i, r);
 
     REQUIRE(comps.point == Point(0, 0, 1));
@@ -84,8 +84,8 @@ TEST_CASE("Shading an intersection") {
     const auto w = default_world();
     const auto r = Ray(Point(0, 0, -5), Vector(0, 0, 1));
 
-    const auto shape = w.shapes.at(0);
-    const auto i = intersection(4, shape);
+    const auto shape = w.shapes.at(0).get();
+    const auto i = Intersection(4, shape);
     const auto comps = prepare_computations(i, r);
     const auto c = shade_hit(w, comps);
 
@@ -97,8 +97,8 @@ TEST_CASE("Shading an intersection from the inside") {
     w.lights = {PointLight(Point(0, 0.25, 0), Color(1, 1, 1))};
     const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
 
-    const auto shape = w.shapes.at(1);
-    const auto i = intersection(0.5, shape);
+    const auto shape = w.shapes.at(1).get();
+    const auto i = Intersection(0.5, shape);
     const auto comps = prepare_computations(i, r);
     const auto c = shade_hit(w, comps);
 

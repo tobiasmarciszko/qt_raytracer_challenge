@@ -19,16 +19,13 @@ struct Plane : public Shape
     }
 
     inline std::vector<Intersection> local_intersect(const Ray& ray) const override {
-
         // Ray is parallel to the plane
         if (std::abs(ray.direction().y) < EPSILON) {
             return {};
         }
 
-        const double t = -ray.origin().y / ray.direction().y;
-        const auto plane_ptr = std::make_shared<const Plane>(*this);
-        return {intersection(t, plane_ptr)};
-
+        const float t = -ray.origin().y / ray.direction().y;
+        return {Intersection(t, this)};
     }
 };
 

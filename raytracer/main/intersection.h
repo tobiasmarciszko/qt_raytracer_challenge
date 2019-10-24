@@ -11,7 +11,7 @@ struct Shape;
 struct Intersection
 {
     Intersection() = delete;
-    Intersection(float _t, std::shared_ptr<const Shape> _object) :
+    Intersection(float _t, const Shape* _object) :
         t(_t),
         object(_object) {}
 
@@ -23,14 +23,10 @@ struct Intersection
     }
 
     float t;
-    std::shared_ptr<const Shape> object;
+    const Shape* object;
 };
 
 using Intersections = std::vector<Intersection>;
-
-inline Intersection intersection(float t, std::shared_ptr<const Shape> s) {
-    return {t, s};
-}
 
 inline std::optional<Intersection> hit(Intersections intersections) {
 
@@ -45,9 +41,9 @@ inline std::optional<Intersection> hit(Intersections intersections) {
             return i1.t < i2.t;
     });
 
-    for (const Intersection& intersection: intersections) {
-        if (intersection.t >= 0) {
-            return {intersection};
+    for (const Intersection& intersect: intersections) {
+        if (intersect.t >= 0) {
+            return {intersect};
         }
     }
 
