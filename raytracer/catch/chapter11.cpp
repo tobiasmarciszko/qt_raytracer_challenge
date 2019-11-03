@@ -200,7 +200,39 @@ TEST_CASE("The under point is offset below the surface") {
 
     Computations comps = prepare_computations(i, r, xs);
 
+
     REQUIRE(comps.under_point.z > EPSILON /2);
     REQUIRE(comps.point.z < comps.under_point.z);
+}
+
+TEST_CASE("The refracted color with an opaque surface") {
+    World w = default_world();
+    auto shape = w.shapes.front().get();
+
+    Ray r{Point{0,0,-5}, Vector{0,0,1}};
+    Intersections xs{{4, shape}, {6, shape}};
+
+    Computations comps = prepare_computations(xs.at(0), r, xs);
+    Color c = refracted_color(w, comps, 5);
+
+    REQUIRE(c == Color(0,0,0));
+}
+
+TEST_CASE("The refracted color at the maximum recursive depth")
+{
+    World w = default_world();
+
+    auto shape = w.shapes.front().get();
+    Material m = shape->material();
+    m.transparency = 1.0;
+    m.refractive_index = 1.5;
+    shape->set_material(m);
+
+    Ray r{Point{0, 0, -5}, Vector{0, 0, 1}};
+    Intersections xs{{4, shape}, {6, shape}};
+
+    Computations comps = prepare_computations(xs.at(0), r, xs);
+    Color color = refracted_color(w, comps, 0);
+    REQUIRE(color == Color(0, 0, 0));
 }
 

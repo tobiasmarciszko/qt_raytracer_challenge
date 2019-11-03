@@ -164,4 +164,18 @@ inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vect
     return orientation * translation(-from.x, -from.y, -from.z);
 }
 
+inline Color refracted_color(const World& world, const Computations& comps, int remaining) {
+
+    // Prevent infinite recursion
+    if (remaining <= 0) {
+        return black;
+    }
+
+    if (equal(comps.object->material().transparency, 0)) {
+        return black;
+    }
+
+    return white;
+}
+
 #endif //WORLD_H
