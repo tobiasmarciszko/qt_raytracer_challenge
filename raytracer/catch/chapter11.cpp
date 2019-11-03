@@ -125,3 +125,65 @@ TEST_CASE("The reflected color at the maximum recursive depth")
     Color color = reflected_color(w, comps, 0);
     REQUIRE(color == Color(0, 0, 0));
 }
+
+TEST_CASE("Transparency and Refractive Index for the default material")
+{
+    Material m;
+
+    REQUIRE(equal(m.transparency, 0.0));
+    REQUIRE(equal(m.refractive_index, 1.0));
+}
+
+TEST_CASE("A helper for producing a sphere with a glassy material")
+{
+    Sphere s = glass_sphere();
+
+    REQUIRE(s.transform() == identity_matrix);
+    REQUIRE(equal(s.material().transparency, 1.0));
+    REQUIRE(equal(s.material().refractive_index, 1.5));
+}
+
+
+TEST_CASE("Finding n1 and n2 at various intersections")
+{
+    Material m;
+
+    Sphere A{glass_sphere()};
+    Sphere B{glass_sphere()};
+    Sphere C{glass_sphere()};
+
+    A.set_transform(scaling(2, 2, 2));
+    m = A.material();
+    m.refractive_index = 1.5;
+    A.set_material(m);
+
+    B.set_transform(translation(0, 0, -0.25));
+    m = B.material();
+    m.refractive_index = 2.0;
+    B.set_material(m);
+
+    C.set_transform(translation(0, 0, 0.25));
+    m = C.material();
+    m.refractive_index = 2.5;
+    C.set_material(m);
+
+    const Ray r{Point(0,0,-4), Vector(0,0,1)};
+    const Intersections xs{{2, &A}, {2.75, &B}, {3.25, &C}, {4.75, &B}, {5.25, &C}, {6, &A}};
+
+    const std::vector<std::tuple<uint, float, float>> data{
+        {0, 1.0, 1.5},
+        {1, 1.5, 2.0},
+        {2, 2.0, 2.5},
+        {3, 2.5, 2.5},
+        {4, 2.5, 1.5},
+        {5, 1.5, 1.0},
+    };
+
+    for (const auto& values: data) {
+        auto [index, n1, n2] = values;
+
+        Computations comps = prepare_computations(xs.at(index), r, xs);
+        REQUIRE(equal(comps.n1, n1));
+        REQUIRE(equal(comps.n2, n2));
+    }
+}

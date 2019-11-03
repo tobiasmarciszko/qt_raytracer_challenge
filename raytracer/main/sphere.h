@@ -37,4 +37,15 @@ struct Sphere : public Shape
     }
 };
 
+inline Sphere glass_sphere() {
+    Sphere s;
+    s.transform() = identity_matrix;
+
+    Material m = s.material();
+    m.transparency = 1.0;
+    m.refractive_index = 1.5;
+    s.set_material(m);
+    return s;
+}
+
 #endif // SPHERE_H
