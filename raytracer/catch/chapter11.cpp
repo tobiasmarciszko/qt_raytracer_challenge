@@ -103,7 +103,8 @@ TEST_CASE("color_at() with mutually reflective surfaces")
 
     Ray r(Point(0, 0, 0), Vector(0, 1, 0));
 
-    Color color = color_at(w, r);
+    color_at(w, r);
+
     REQUIRE(true);
 }
 
@@ -187,3 +188,19 @@ TEST_CASE("Finding n1 and n2 at various intersections")
         REQUIRE(equal(comps.n2, n2));
     }
 }
+
+
+TEST_CASE("The under point is offset below the surface") {
+    const Ray r{Point{0,0,-5}, Vector{0,0,1}};
+
+    std::shared_ptr<Shape> shape = std::make_shared<Sphere>(glass_sphere());
+    shape->set_transform(translation(0,0,1));
+    Intersection i{5, shape.get()};
+    Intersections xs{i};
+
+    Computations comps = prepare_computations(i, r, xs);
+
+    REQUIRE(comps.under_point.z > EPSILON /2);
+    REQUIRE(comps.point.z < comps.under_point.z);
+}
+

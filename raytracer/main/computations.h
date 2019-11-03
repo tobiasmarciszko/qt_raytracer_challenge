@@ -16,6 +16,7 @@ struct Computations {
     Vector normalv{0,0,0};
     Vector reflectv{0,0,0};
     Point over_point{point + normalv * EPSILON};
+    Point under_point{point - normalv * EPSILON};
     bool inside{false};
     float n1{0};
     float n2{0};
@@ -40,6 +41,7 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r, co
     comps.reflectv = r.direction().reflect(comps.normalv);
 
     comps.over_point = comps.point + comps.normalv * EPSILON;
+    comps.under_point = comps.point - comps.normalv * EPSILON;
 
     // Refraction
     std::vector<const Shape*> containers{};
