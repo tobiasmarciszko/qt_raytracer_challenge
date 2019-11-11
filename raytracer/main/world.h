@@ -175,6 +175,20 @@ inline Color refracted_color(const World& world, const Computations& comps, int 
         return black;
     }
 
+    // Check for total internal reflection:
+    // # Find the ratio of first index of refraction to the second.
+    // # (Yup, this is inverted from the definition of Snell's Law.)
+    const auto n_ratio = comps.n1 / comps.n2;
+
+    // # cos(theta_i) is the same as the dot product of the two vectors
+    const auto cos_i = comps.eyev.dot(comps.normalv);
+
+    // # Find sin(theta_t)^2 via trigonometric identity
+    const auto sin2_t = (n_ratio * n_ratio) * (1 - (cos_i * cos_i));
+
+    // Total internal reflection if the value is greater than one!
+    if (sin2_t > 1) return black;
+
     return white;
 }
 

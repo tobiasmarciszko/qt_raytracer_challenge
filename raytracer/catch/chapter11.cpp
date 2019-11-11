@@ -234,3 +234,23 @@ TEST_CASE("The refracted color at the maximum recursive depth")
     REQUIRE(color == Color(0, 0, 0));
 }
 
+TEST_CASE("The refracted color under total internal reflection")
+{
+    World w = default_world();
+
+    auto shape = w.shapes.front().get();
+    Material m = shape->material();
+    m.transparency = 1.0;
+    m.refractive_index = 1.5;
+    shape->set_material(m);
+
+    Ray r{Point{0, 0, M_SQRT2/2}, Vector{0, 1, 0}};
+    Intersections xs{{-M_SQRT2/2, shape}, {M_SQRT2/2, shape}};
+
+    // Inside the sphere, need to look at the second intersection!
+
+    Computations comps = prepare_computations(xs.at(1), r, xs);
+    Color color = refracted_color(w, comps, 5);
+    REQUIRE(color == Color(0, 0, 0));
+}
+
