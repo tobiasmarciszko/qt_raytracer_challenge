@@ -211,7 +211,7 @@ TEST_CASE("The refracted color with an opaque surface") {
     Intersections xs{{4, shape}, {6, shape}};
 
     Computations comps = prepare_computations(xs.at(0), r, xs);
-    Color c = refracted_color(w, comps, 5);
+    Color c = refracted_color(w, comps, LightingModel::Phong, 5);
 
     REQUIRE(c == Color(0,0,0));
 }
@@ -230,7 +230,7 @@ TEST_CASE("The refracted color at the maximum recursive depth")
     Intersections xs{{4, shape}, {6, shape}};
 
     Computations comps = prepare_computations(xs.at(0), r, xs);
-    Color color = refracted_color(w, comps, 0);
+    Color color = refracted_color(w, comps, LightingModel::Phong, 0);
     REQUIRE(color == Color(0, 0, 0));
 }
 
@@ -250,7 +250,30 @@ TEST_CASE("The refracted color under total internal reflection")
     // Inside the sphere, need to look at the second intersection!
 
     Computations comps = prepare_computations(xs.at(1), r, xs);
-    Color color = refracted_color(w, comps, 5);
+    Color color = refracted_color(w, comps, LightingModel::Phong, 5);
     REQUIRE(color == Color(0, 0, 0));
 }
 
+TEST_CASE("The refracted color with a refracted ray")
+{
+    World w = default_world();
+
+    auto A = w.shapes.front().get();
+    Material m1 = A->material();
+    m1.ambient = 1.0;
+    m1.pattern_ptr = test_pattern();
+    A->set_material(m1);
+
+    auto B = w.shapes.at(1).get();
+    Material m2 = B->material();
+    m2.transparency = 1.0;
+    m2.refractive_index = 1.5;
+    B->set_material(m2);
+
+    Ray r{Point{0, 0, 0.1}, Vector{0, 1, 0}};
+    Intersections xs{{-0.9899, A}, {-0.4899, B}, {0.4899, B}, {0.9899, A}};
+
+    Computations comps = prepare_computations(xs.at(2), r, xs);
+    Color color = refracted_color(w, comps, LightingModel::Phong, 5);
+    REQUIRE(color == Color(0, 0.99888, 0.04725));
+}

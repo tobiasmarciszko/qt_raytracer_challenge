@@ -27,6 +27,18 @@ struct Pattern {
     }
 };
 
+///////////////// Test Pattern /////////////////////
+struct TestPattern : public Pattern {
+    Color pattern_at(const Point& p) const override {
+        return Color(p.x, p.y, p.z);
+    }
+};
+
+
+inline std::shared_ptr<Pattern> test_pattern() {
+    return std::make_shared<TestPattern>(TestPattern());
+}
+
 ///////////////// Stripe Pattern /////////////////////
 
 struct StripePattern : public Pattern {

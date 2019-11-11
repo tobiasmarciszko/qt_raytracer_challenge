@@ -164,7 +164,7 @@ inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vect
     return orientation * translation(-from.x, -from.y, -from.z);
 }
 
-inline Color refracted_color(const World& world, const Computations& comps, int remaining) {
+inline Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
 
     // Prevent infinite recursion
     if (remaining <= 0) {
@@ -189,7 +189,22 @@ inline Color refracted_color(const World& world, const Computations& comps, int 
     // Total internal reflection if the value is greater than one!
     if (sin2_t > 1) return black;
 
-    return white;
+    // Refracted Color with a refracted ray
+
+    // # Find cos(theta_t) via trigonometric identity
+    const auto cos_t = std::sqrt(1.0 - sin2_t);
+
+    // # Compute the direction of the refracted ray
+    const auto direction = comps.normalv * (n_ratio * cos_i - cos_t) - comps.eyev * n_ratio;
+
+    // # Create the refracted ray
+    const Ray refract_ray{comps.under_point, direction};
+
+    // # Find the color of the refracted ray, making sure to multiply
+    // # by the transparency value to account for any opacity
+    const auto color = color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material().transparency;
+
+    return color;
 }
 
 #endif //WORLD_H
