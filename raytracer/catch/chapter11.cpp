@@ -277,3 +277,32 @@ TEST_CASE("The refracted color with a refracted ray")
     Color color = refracted_color(w, comps, LightingModel::Phong, 5);
     REQUIRE(color == Color(0, 0.99888, 0.04725));
 }
+
+
+TEST_CASE("shade_hit() with a transparent material")
+{
+    World w = default_world();
+
+    std::shared_ptr<Shape> floor = std::make_shared<Plane>(Plane());
+    floor->set_transform(translation(0, -1, 0));
+    Material m1 = floor->material();
+    m1.transparency = 0.5;
+    m1.refractive_index = 1.5;
+    floor->set_material(m1);
+    w.shapes.emplace_back(floor);
+
+    std::shared_ptr<Shape> ball = std::make_shared<Sphere>(Sphere());
+    ball->set_transform(translation(0, -3.5, -0.5));
+    Material m2 = ball->material();
+    m2.color = Color(1, 0, 0);
+    m2.ambient = 0.5;
+    ball->set_material(m2);
+    w.shapes.emplace_back(ball);
+
+    Ray r{Point{0, 0, -3}, Vector{0, -M_SQRT2/2, M_SQRT2/2}};
+    Intersections xs{{M_SQRT2, floor.get()}};
+
+    Computations comps = prepare_computations(xs[0], r, xs);
+    Color color = shade_hit(w, comps, LightingModel::Phong, 5);
+    REQUIRE(color == Color(0.93642, 0.68642, 0.68642));
+}

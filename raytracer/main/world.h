@@ -85,6 +85,7 @@ inline bool is_shadowed(const World& world, const Point& point) {
 }
 
 Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
+Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
 
 inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
 
@@ -140,8 +141,9 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
             lightingModel);
 
         const auto reflected = reflected_color(w, comps, lightingModel, remaining);
+        const auto refracted = refracted_color(w, comps, lightingModel, remaining);
 
-        c = c + (surface + reflected);
+        c = c + (surface + reflected + refracted);
     }
 
     return c;
@@ -164,7 +166,7 @@ inline Matrix<4,4> view_transform(const Point& from, const Point& to, const Vect
     return orientation * translation(-from.x, -from.y, -from.z);
 }
 
-inline Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
+inline Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel, int remaining) {
 
     // Prevent infinite recursion
     if (remaining <= 0) {
