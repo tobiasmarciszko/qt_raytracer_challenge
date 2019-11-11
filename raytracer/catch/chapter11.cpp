@@ -180,10 +180,8 @@ TEST_CASE("Finding n1 and n2 at various intersections")
         {5, 1.5, 1.0},
     };
 
-    for (const auto& values: data) {
-        auto [index, n1, n2] = values;
-
-        Computations comps = prepare_computations(xs.at(index), r, xs);
+    for (const auto& [index, n1, n2]: data) {
+        const Computations comps = prepare_computations(xs.at(index), r, xs);
         REQUIRE(equal(comps.n1, n1));
         REQUIRE(equal(comps.n2, n2));
     }
