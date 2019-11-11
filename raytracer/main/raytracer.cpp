@@ -61,7 +61,7 @@ void Raytracer::render() {
 
     std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
         const Ray ray = ray_for_pixel(m_camera, pixel.x, pixel.y);
-        pixel.color = color_at(m_world, ray, m_lighting);
+        pixel.color = color_at(m_world, ray, m_lighting, 5);
     };
 
     m_timer.start();

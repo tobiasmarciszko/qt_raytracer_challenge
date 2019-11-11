@@ -84,7 +84,7 @@ inline bool is_shadowed(const World& world, const Point& point) {
     return is_shadowed(world, point, world.lights.front());
 }
 
-Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
+Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 5);
 Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
 
 inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
@@ -94,10 +94,10 @@ inline Color color_at(const World& w, const Ray& r, const LightingModel& lightin
     const auto is = intersect_world(w, r);
     const auto h = hit(is);
     if (!h.has_value()) {
-        return black;
+        return Color(0, 0, 0);
     }
 
-    const auto comps = prepare_computations(h.value(), r);
+    const auto comps = prepare_computations(h.value(), r, is);
     const auto color = shade_hit(w, comps, lightingModel, remaining);
 
     return color;
@@ -204,9 +204,7 @@ inline Color refracted_color(const World& world, const Computations& comps, cons
 
     // # Find the color of the refracted ray, making sure to multiply
     // # by the transparency value to account for any opacity
-    const auto color = color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material().transparency;
-
-    return color;
+    return color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material().transparency;
 }
 
 #endif //WORLD_H
