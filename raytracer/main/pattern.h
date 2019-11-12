@@ -8,6 +8,7 @@
 #include <memory>
 #include <QDebug>
 #include <QtGui/qrgb.h>
+#include <QtGui/qimage.h>
 
 // Predefined colors for convenience
 const Color black = Color(0,0,0);
@@ -26,6 +27,26 @@ struct Pattern {
         inverse_transform = transform.inverse();
     }
 };
+
+///////////////// Cloud Pattern /////////////////////
+struct CloudPattern : public Pattern {
+
+    QImage *clouds = new QImage(":/clouds");
+
+    Color pattern_at(const Point& p) const override {
+        int y = (abs(int(p.z))) % clouds->height();
+        int x = (abs(int(p.x))) % clouds->width();
+
+        const QColor color = clouds->pixelColor(x, y);
+        return Color(color.redF(), color.greenF(), color.blueF());
+    }
+};
+
+
+inline std::shared_ptr<Pattern> cloud_pattern() {
+    return std::make_shared<CloudPattern>(CloudPattern());
+}
+
 
 ///////////////// Test Pattern /////////////////////
 struct TestPattern : public Pattern {

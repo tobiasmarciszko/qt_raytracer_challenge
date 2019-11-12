@@ -107,11 +107,11 @@ inline Color reflected_color(const World& w, const Computations& comps, const Li
 
     // Prevent infinite recursion
     if (remaining <= 0) {
-        return Color(0, 0, 0);
+        return black;
     }
 
     if (equal(comps.object->material().reflective, 0)) {
-        return Color(0, 0, 0);
+        return black;
     }
 
     const Ray reflect_ray(comps.over_point, comps.reflectv);

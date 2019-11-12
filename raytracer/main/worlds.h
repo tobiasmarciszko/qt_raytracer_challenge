@@ -3,21 +3,24 @@
 
 #include "world.h"
 #include "plane.h"
+#include "materials.h"
 
 namespace Worlds  {
 
     inline World threeBallsOnAPlane() {
         Plane floor;
         Material m = floor.material();
-        // m.reflective = 0.5;
-        m.color = Color(1, 0.2, 0.2);
-        // m.pattern_ptr = test_pattern();
+        m.color = Color(0, 0.3, 0);
+        m.reflective = 0.3;
         floor.set_material(m);
 
         Plane sky;
         Material m1 = sky.material();
-        sky.set_transform(translation(0, 200, 0) * rotation_z(M_PI));
-        m1.color = Color(0.2, 0.2, 0.9);
+        m1.ambient = 0.6;
+        m1.diffuse = 0.6;
+        m1.pattern_ptr = cloud_pattern();
+        m1.pattern_ptr->set_transform(scaling(30, 30, 30));
+        sky.set_transform(translation(0, 1000, 0));
         sky.set_material(m1);
 
         Plane wall;
@@ -26,52 +29,26 @@ namespace Worlds  {
         mwall.color = Color(0, 0, 0);
         //mwall.reflective = 0.8;
         mwall.pattern_ptr = doomfire_pattern();
-        mwall.pattern_ptr->set_transform(scaling(0.02, 0.02, 0.02) * rotation_x(M_PI_2));
+        mwall.pattern_ptr->set_transform(translation(0, -10, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         wall.set_material(mwall);
 
-        Sphere middle = glass_sphere();
+        Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
-         Material m2;
-        m2.color = Color(0, 0, 0);
-        m2.ambient = 0.5;
-        m2.diffuse = 0.7;
-        m2.specular = 0.3;
-        // m2.reflective = 0.6;
-        m2.transparency = 0.5;
-        m2.refractive_index = 1.5;
-        //    m2.pattern_ptr = doomfire_pattern();
-        //    m2.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
-        // middle.set_material(m2);
+        middle.set_material(Materials::Glass());
 
         Sphere right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
-        Material m3;
-        m3.color = Color(0.5, 1, 0.1);
-        m3.diffuse = 0.7;
-        m3.specular = 0.3;
-        m3.transparency = 1.0;
-        m3.refractive_index = 1.5;
-        //m3.reflective = 1.0;
-        //    m3.pattern_ptr = xor_pattern();
-        //    m3.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.01,0.01,0.01));
-        right.set_material(m3);
+        right.set_material(Materials::Glass());
 
         Sphere left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
-        Material m4;
-        m4.color = Color(1, 0.8, 0.1);
-        m4.diffuse = 0.3;
-        m4.specular = 0.2;
-        //m4.reflective = 0.7;
-        //    m4.pattern_ptr = stripe_pattern(Color(0.1, 0.1, 0.8), white);
-        //    m4.pattern_ptr->set_transform(translation(0, -0.9, 0) * scaling(0.02,0.02,0.02));
-        left.set_material(m4);
+        left.set_material(Materials::Glass());
 
         World world;
 
-        world.lights.emplace_back(PointLight(Point(-3, 3, -3), Color(1, 1, 1)));
-        // world.lights.emplace_back(PointLight(Point(2, 2,-10), Color(1, 1, 1)));
+        world.lights.emplace_back(PointLight(Point(-30, 50, -100), Color(1, 1, 1)));
+        // world.lights.emplace_back(PointLight(Point(2, 20, -100), Color(0.5, 0.5, 0.5)));
         // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
         world.shapes = {
@@ -80,7 +57,7 @@ namespace Worlds  {
             std::make_shared<Sphere>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
-            std::make_shared<Plane>(wall)
+//            std::make_shared<Plane>(wall)
         };
 
         return world;
@@ -92,11 +69,25 @@ namespace Worlds  {
         world.lights = {light};
 
         auto sphere1 = std::make_shared<Sphere>(Sphere());
+        sphere1->set_transform(translation(0, 0.5, -0.5) * scaling(0.5, 0.5, 0.5));
         Material m;
         m.color = Color(1, 0, 0);
         sphere1->set_material(m);
 
-        world.shapes = {sphere1};
+        auto floor = std::make_shared<Plane>(Plane());
+        Material m1;
+        m1.pattern_ptr = stripe_pattern(white, black);
+        m1.pattern_ptr->set_transform(scaling(0.2, 1, 1));
+        floor->set_material(m1);
+
+        auto wall = std::make_shared<Plane>(Plane());
+        wall->set_transform(translation(0, 0, 1) * rotation_x(M_PI_2));
+        Material m2;
+        m2.pattern_ptr = stripe_pattern(white, black);
+        m2.pattern_ptr->set_transform(scaling(0.2, 0.2, 0.2) * rotation_x(M_PI_2) * rotation_z(M_PI_2));
+        wall->set_material(m2);
+
+        world.shapes = {sphere1, floor, wall};
         return world;
     }
 }

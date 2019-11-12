@@ -22,6 +22,7 @@ find_package(Qt5 COMPONENTS Core Quick Concurrent REQUIRED)
 
 add_executable(freeside-raytracer
         qml.qrc
+        textures.qrc
         canvas.h
         color.h
         intersection.h
@@ -44,6 +45,7 @@ add_executable(freeside-raytracer
         camera.h
         shapeqmlbridge.h
         worlds.h
+        materials.h
 
         color.cpp
         main.cpp
