@@ -145,7 +145,7 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
         const auto refracted = refracted_color(w, comps, lightingModel, remaining);
 
 
-        // If the object is both reflective and refractive, the schlick approximisation is used:
+        // If the object is both reflective and refractive, the schlick approximation is used:
 
         const auto material = comps.object->material;
         if (material.reflective > 0 && material.transparency >0) {
