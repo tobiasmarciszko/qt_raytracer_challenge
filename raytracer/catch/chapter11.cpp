@@ -141,7 +141,7 @@ TEST_CASE("A helper for producing a sphere with a glassy material")
 
     REQUIRE(s.transform() == identity_matrix);
     REQUIRE(equal(s.material.transparency, 1.0));
-    REQUIRE(equal(s.material.refractive_index, 1.5));
+    REQUIRE(equal(s.material.refractive_index, 1.52));
 }
 
 
@@ -283,7 +283,7 @@ TEST_CASE("shade_hit() with a transparent material")
 {
     World w = default_world();
 
-    std::shared_ptr<Shape> floor = std::make_shared<Plane>(Plane());
+    auto floor = std::make_shared<Plane>(Plane());
     floor->set_transform(translation(0, -1, 0));
     Material m1 = floor->material;
     m1.transparency = 0.5;
@@ -291,7 +291,7 @@ TEST_CASE("shade_hit() with a transparent material")
     floor->set_material(m1);
     w.shapes.emplace_back(floor);
 
-    std::shared_ptr<Shape> ball = std::make_shared<Sphere>(Sphere());
+    auto ball = std::make_shared<Sphere>(Sphere());
     ball->set_transform(translation(0, -3.5, -0.5));
     Material m2 = ball->material;
     m2.color = Color(1, 0, 0);

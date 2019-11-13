@@ -31,15 +31,15 @@ namespace Worlds  {
 
         Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
-        middle.material = Materials::Glass();
+        middle.material = Materials::glass;
 
         Sphere right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
-        right.set_material(Materials::Glass());
+        right.set_material(Materials::glass);
 
         Sphere left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
-        left.set_material(Materials::Glass());
+        left.set_material(Materials::glass);
 
         World world;
 

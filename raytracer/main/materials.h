@@ -4,18 +4,7 @@
 #include "material.h"
 
 namespace Materials {
-    struct Glass : public Material {
-        Glass() {
-            color = black;
-            ambient = 0;
-            diffuse = 0;
-            transparency = 1.0;
-            refractive_index = 1.5;
-            reflective = 0.5;
-            specular = 1;
-            shininess = 300;
-        }
-    };
+    const Material glass{black, 0, 0, 1, 300, 0.5, 1, 1.52};
 }
 
 #endif // MATERIALS_H
