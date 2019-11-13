@@ -29,6 +29,10 @@ Raytracer::Raytracer(QObject *parent) :
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
     connect(&m_materialPreviewfutureWatcher, SIGNAL(finished()), this, SLOT(materialPreviewFinished()));
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
+
+    // Material preview
+    m_previewCamera.transform = view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0));
+    m_previewCamera.inverse_transform = m_previewCamera.transform.inverse();
 }
 
 void Raytracer::progressValueChanged(int value)
@@ -71,10 +75,6 @@ void Raytracer::render() {
 void Raytracer::materialPreview() {
 
     m_materialPreviewfutureWatcher.cancel();
-
-    m_previewCamera.transform = view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0));
-    m_previewCamera.inverse_transform = m_previewCamera.transform.inverse();
-
     m_previewWorld.shapes.at(0)->set_material(m_selectedMaterial);
 
     std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
