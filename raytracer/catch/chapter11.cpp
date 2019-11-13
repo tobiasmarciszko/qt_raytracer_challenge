@@ -29,7 +29,7 @@ TEST_CASE("The reflected color for a nonreflective material")
     World w = default_world();
     Ray r(Point(0, 0, 0), Vector(0, 0, 1));
     auto shape = w.shapes.at(1).get();
-    Material m = shape->material();
+    Material m = shape->material;
     m.ambient = 1;
     shape->set_material(m);
 
@@ -45,7 +45,7 @@ TEST_CASE("The reflected color for a reflective material")
     World w = default_world();
 
     std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material();
+    Material m = shape->material;
     m.reflective = 0.5;
     shape->set_material(m);
     shape->set_transform(translation(0, -1, 0));
@@ -65,7 +65,7 @@ TEST_CASE("shade_hit() with a reflective material")
     World w = default_world();
 
     std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material();
+    Material m = shape->material;
     m.reflective = 0.5;
     shape->set_material(m);
     shape->set_transform(translation(0, -1, 0));
@@ -88,14 +88,14 @@ TEST_CASE("color_at() with mutually reflective surfaces")
     w.lights.emplace_back(light);
 
     std::shared_ptr<Shape> lower = std::make_shared<Plane>(Plane());
-    Material m = lower->material();
+    Material m = lower->material;
     m.reflective = 1;
     lower->set_material(m);
     lower->set_transform(translation(0, -1, 0));
     w.shapes.emplace_back(lower);
 
     std::shared_ptr<Shape> upper = std::make_shared<Plane>(Plane());
-    m = lower->material();
+    m = lower->material;
     m.reflective = 1;
     upper->set_material(m);
     upper->set_transform(translation(0, 11, 0));
@@ -113,7 +113,7 @@ TEST_CASE("The reflected color at the maximum recursive depth")
     World w = default_world();
 
     std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material();
+    Material m = shape->material;
     m.reflective = 0.5;
     shape->set_material(m);
     shape->set_transform(translation(0, -1, 0));
@@ -140,8 +140,8 @@ TEST_CASE("A helper for producing a sphere with a glassy material")
     Sphere s = glass_sphere();
 
     REQUIRE(s.transform() == identity_matrix);
-    REQUIRE(equal(s.material().transparency, 1.0));
-    REQUIRE(equal(s.material().refractive_index, 1.5));
+    REQUIRE(equal(s.material.transparency, 1.0));
+    REQUIRE(equal(s.material.refractive_index, 1.5));
 }
 
 
@@ -154,17 +154,17 @@ TEST_CASE("Finding n1 and n2 at various intersections")
     Sphere C{glass_sphere()};
 
     A.set_transform(scaling(2, 2, 2));
-    m = A.material();
+    m = A.material;
     m.refractive_index = 1.5;
     A.set_material(m);
 
     B.set_transform(translation(0, 0, -0.25));
-    m = B.material();
+    m = B.material;
     m.refractive_index = 2.0;
     B.set_material(m);
 
     C.set_transform(translation(0, 0, 0.25));
-    m = C.material();
+    m = C.material;
     m.refractive_index = 2.5;
     C.set_material(m);
 
@@ -221,7 +221,7 @@ TEST_CASE("The refracted color at the maximum recursive depth")
     World w = default_world();
 
     auto shape = w.shapes.front().get();
-    Material m = shape->material();
+    Material m = shape->material;
     m.transparency = 1.0;
     m.refractive_index = 1.5;
     shape->set_material(m);
@@ -239,7 +239,7 @@ TEST_CASE("The refracted color under total internal reflection")
     World w = default_world();
 
     auto shape = w.shapes.front().get();
-    Material m = shape->material();
+    Material m = shape->material;
     m.transparency = 1.0;
     m.refractive_index = 1.5;
     shape->set_material(m);
@@ -259,13 +259,13 @@ TEST_CASE("The refracted color with a refracted ray")
     World w = default_world();
 
     auto A = w.shapes.front().get();
-    Material m1 = A->material();
+    Material m1 = A->material;
     m1.ambient = 1.0;
     m1.pattern_ptr = test_pattern();
     A->set_material(m1);
 
     auto B = w.shapes.at(1).get();
-    Material m2 = B->material();
+    Material m2 = B->material;
     m2.transparency = 1.0;
     m2.refractive_index = 1.5;
     B->set_material(m2);
@@ -285,7 +285,7 @@ TEST_CASE("shade_hit() with a transparent material")
 
     std::shared_ptr<Shape> floor = std::make_shared<Plane>(Plane());
     floor->set_transform(translation(0, -1, 0));
-    Material m1 = floor->material();
+    Material m1 = floor->material;
     m1.transparency = 0.5;
     m1.refractive_index = 1.5;
     floor->set_material(m1);
@@ -293,7 +293,7 @@ TEST_CASE("shade_hit() with a transparent material")
 
     std::shared_ptr<Shape> ball = std::make_shared<Sphere>(Sphere());
     ball->set_transform(translation(0, -3.5, -0.5));
-    Material m2 = ball->material();
+    Material m2 = ball->material;
     m2.color = Color(1, 0, 0);
     m2.ambient = 0.5;
     ball->set_material(m2);

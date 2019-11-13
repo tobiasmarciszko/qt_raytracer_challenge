@@ -44,7 +44,7 @@ TEST_CASE("A ray intersecting a plane from above")
 
     REQUIRE(xs.size() == 1);
     REQUIRE(equal(xs.at(0).t, 1));
-    REQUIRE(xs.at(0).object->id() == p.id());
+    REQUIRE(xs.at(0).object->id == p.id);
 }
 
 
@@ -57,5 +57,5 @@ TEST_CASE("A ray intersecting a plane from below")
 
     REQUIRE(xs.size() == 1);
     REQUIRE(equal(xs.at(0).t, 1));
-    REQUIRE(xs.at(0).object->id() == p.id());
+    REQUIRE(xs.at(0).object->id == p.id);
 }

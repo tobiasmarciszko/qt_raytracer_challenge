@@ -107,10 +107,8 @@ TEST_CASE("The default material") {
 }
 
 TEST_CASE("A sphere has a default material") {
-    const auto s = Sphere();
-    const auto m = s.material();
-
-    REQUIRE(m == Material());
+    Sphere s;
+    REQUIRE(s.material == Material());
 }
 
 TEST_CASE("A sphere may be assigned a material") {
@@ -119,7 +117,7 @@ TEST_CASE("A sphere may be assigned a material") {
     m.ambient = 1.0;
     s.set_material(m);
 
-    REQUIRE(s.material() == m);
+    REQUIRE(s.material == m);
 }
 
 SCENARIO("Lighting") {

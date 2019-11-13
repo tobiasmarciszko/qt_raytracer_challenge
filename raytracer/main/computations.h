@@ -51,7 +51,7 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r, co
             if (containers.empty()) {
                 comps.n1 = 1.0;
             } else {
-                comps.n1 = containers.back()->material().refractive_index;
+                comps.n1 = containers.back()->material.refractive_index;
             }
         }
 
@@ -72,7 +72,7 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r, co
             if (containers.empty()) {
                 comps.n2 = 1.0;
             } else {
-                comps.n2 = containers.back()->material().refractive_index;
+                comps.n2 = containers.back()->material.refractive_index;
             }
 
             break;

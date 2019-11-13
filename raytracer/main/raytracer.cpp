@@ -93,7 +93,7 @@ void Raytracer::wireframe() {
 
     for (auto& shape: m_world.shapes) {
         auto m = shape->transform();
-        auto c = shape->material().color;
+        auto c = shape->material.color;
 
         // Only draw the bounding boxes on Spheres
         if (!dynamic_cast<Sphere*>(shape.get())) {

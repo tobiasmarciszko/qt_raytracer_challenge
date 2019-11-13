@@ -40,7 +40,7 @@ public slots:
         const auto h = hit(is);
         if (h.has_value()) {
             createShapeQmlBridge(m_shapeBridge, h.value().object);
-            m_selectedMaterial = h.value().object->material();
+            m_selectedMaterial = h.value().object->material;
         }
 
         emit objectSelected(&m_shapeBridge);

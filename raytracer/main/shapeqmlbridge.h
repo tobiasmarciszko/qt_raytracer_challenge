@@ -42,7 +42,7 @@ inline void createShapeQmlBridge(ShapeQmlBridge& bridge, const Shape* shape_ptr)
                       shape_ptr->transform().get(3,2),
                       shape_ptr->transform().get(3,3));
 
-    Color color = shape_ptr->material().color;
+    Color color = shape_ptr->material.color;
     qcolor.setRgbF(color.red, color.green, color.blue);
 
     bridge.color = qcolor;

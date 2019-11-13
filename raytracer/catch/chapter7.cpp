@@ -125,19 +125,19 @@ TEST_CASE("The color when a ray hits") {
 TEST_CASE("The color with an intersection behind the ray") {
     auto w = default_world();
     auto outer = w.shapes.at(0);
-    auto m = outer->material();
+    auto m = outer->material;
     m.ambient = 1;
     outer->set_material(m);
 
     auto inner = w.shapes.at(1);
-    auto m2 = inner->material();
+    auto m2 = inner->material;
     m2.ambient = 1;
     inner->set_material(m2);
 
     const auto r = Ray(Point(0, 0, 0.75), Vector(0, 0, -1));
     const auto c = color_at(w, r);
 
-    REQUIRE(c == inner->material().color);
+    REQUIRE(c == inner->material.color);
 }
 
 TEST_CASE("The transformation matrix for the default orientation") {

@@ -25,11 +25,11 @@ inline World default_world()
     world.lights = {light};
 
     auto sphere1 = std::make_shared<Sphere>(Sphere());
-    auto material = Material();
+    Material material;
     material.color = Color(0.8, 1.0, 0.6);
     material.diffuse = 0.7;
     material.specular = 0.2;
-    sphere1->set_material(material);
+    sphere1->material = material;
 
     auto sphere2 = std::make_shared<Sphere>(Sphere());
     auto transform = scaling(0.5, 0.5, 0.5);
@@ -110,14 +110,14 @@ inline Color reflected_color(const World& w, const Computations& comps, const Li
         return black;
     }
 
-    if (equal(comps.object->material().reflective, 0)) {
+    if (equal(comps.object->material.reflective, 0)) {
         return black;
     }
 
     const Ray reflect_ray(comps.over_point, comps.reflectv);
     const Color color = color_at(w, reflect_ray, lightingModel, remaining - 1);
 
-    return color * comps.object->material().reflective;
+    return color * comps.object->material.reflective;
 }
 
 inline Color reflected_color(const World& w, const Computations& comps, int remaining) {
@@ -131,7 +131,7 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
         const auto in_shadow = is_shadowed(w, comps.over_point, light);
 
         const auto surface = lighting(
-            comps.object->material(),
+            comps.object->material,
             comps.object,
             light,
             comps.over_point,
@@ -173,7 +173,7 @@ inline Color refracted_color(const World& world, const Computations& comps, cons
         return black;
     }
 
-    if (equal(comps.object->material().transparency, 0)) {
+    if (equal(comps.object->material.transparency, 0)) {
         return black;
     }
 
@@ -204,7 +204,7 @@ inline Color refracted_color(const World& world, const Computations& comps, cons
 
     // # Find the color of the refracted ray, making sure to multiply
     // # by the transparency value to account for any opacity
-    return color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material().transparency;
+    return color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material.transparency;
 }
 
 #endif //WORLD_H

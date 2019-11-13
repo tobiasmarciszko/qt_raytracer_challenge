@@ -9,33 +9,29 @@ namespace Worlds  {
 
     inline World threeBallsOnAPlane() {
         Plane floor;
-        Material m = floor.material();
+        Material& m = floor.material;
         m.color = Color(0, 0.3, 0);
         m.reflective = 0.3;
-        floor.set_material(m);
 
         Plane sky;
-        Material m1 = sky.material();
+        Material& m1 = sky.material;
         m1.ambient = 0.6;
         m1.diffuse = 0.6;
         m1.pattern_ptr = cloud_pattern();
         m1.pattern_ptr->set_transform(scaling(30, 30, 30));
         sky.set_transform(translation(0, 1000, 0));
-        sky.set_material(m1);
 
         Plane wall;
-        Material mwall = wall.material();
+        Material& mwall = wall.material;
         wall.set_transform(translation(0, 0, 4) * rotation_x(M_PI_2));
         mwall.color = Color(0, 0, 0);
         //mwall.reflective = 0.8;
         mwall.pattern_ptr = doomfire_pattern();
         mwall.pattern_ptr->set_transform(translation(0, -10, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
-        wall.set_material(mwall);
-
         Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
-        middle.set_material(Materials::Glass());
+        middle.material = Materials::Glass();
 
         Sphere right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));

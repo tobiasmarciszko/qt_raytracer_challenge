@@ -12,26 +12,18 @@
 
 static unsigned int shape_count = 0;
 
-class Intersection;
-class Shape
+struct Intersection;
+struct Shape
 {
-public:
     virtual ~Shape() = default;
+    Shape() = default;
 
-    inline unsigned int id() const {
-        return m_id;
-    }
-
-    inline Material material() const {
-        return m_material;
+    bool operator==(const Shape& object) const {
+        return object.id == id;
     }
 
     inline void set_material(const Material& m) {
-        m_material = m;
-    }
-
-    bool operator==(const Shape& object) const {
-        return object.id() == m_id;
+        material = m;
     }
 
     inline void set_transform(const Matrix<4,4>& transform) {
@@ -64,12 +56,11 @@ public:
 
     virtual std::vector<Intersection> local_intersect(const Ray& r) const = 0;
 
-    Matrix<4,4> m_transform = identity_matrix;
-    Matrix<4,4> m_inverse_transform = m_transform.inverse();
+    Matrix<4,4> m_transform{identity_matrix};
+    Matrix<4,4> m_inverse_transform{m_transform.inverse()};
 
-private:
-    unsigned int m_id = shape_count++;
-    Material m_material;
+    const unsigned int id{shape_count++};
+    Material material;
 };
 
 inline Color pattern_at_shape(std::shared_ptr<Pattern> pattern_ptr, const Shape* shape, const Point& world_point) {
