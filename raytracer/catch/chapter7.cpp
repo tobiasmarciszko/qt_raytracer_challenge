@@ -198,7 +198,7 @@ TEST_CASE("Constructing a camera") {
     REQUIRE(c.hsize == 160);
     REQUIRE(c.vsize == 120);
     REQUIRE(c.field_of_view == M_PI_2);
-    REQUIRE(c.transform == identity_matrix);
+    REQUIRE(c.transform() == identity_matrix);
 }
 
 TEST_CASE("The pixel size for a horizontal canvas") {
@@ -236,8 +236,7 @@ TEST_CASE("Constructing a ray through a corner of the canvas") {
 TEST_CASE("Constructing a ray when the camera is transformed") {
 
     auto c = Camera(201, 101, M_PI_2);
-    c.transform = rotation_y(M_PI_4) * translation(0, -2, 5);
-    c.inverse_transform = c.transform.inverse();
+    c.set_transform(rotation_y(M_PI_4) * translation(0, -2, 5));
     const auto r = ray_for_pixel(c, 100, 50);
 
     REQUIRE(r.origin() == Point(0, 2, -5));

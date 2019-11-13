@@ -60,8 +60,8 @@ inline Ray ray_for_pixel(const Camera& camera, unsigned int px, unsigned int py)
 
     // Point = pixel * camera.transform
 
-    const auto pixel = camera.inverse_transform * Point(world_x, world_y, -1);
-    const auto origin = camera.inverse_transform * Point(0, 0, 0);
+    const auto pixel = camera.inverse_transform() * Point(world_x, world_y, -1);
+    const auto origin = camera.inverse_transform() * Point(0, 0, 0);
     const auto direction = Vector(pixel - origin).normalize();
 
     return {origin, direction};

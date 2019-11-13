@@ -30,18 +30,32 @@ struct Camera {
         pixel_size = (half_width * 2.0) / hsize;
     }
 
+
+    inline void set_transform(const Matrix<4,4>& transform) {
+        m_transform = transform;
+        m_inverse_transform = transform.inverse();
+    }
+
+    inline auto transform() const {
+        return m_transform;
+    }
+
+    inline auto inverse_transform() const {
+        return m_inverse_transform;
+    }
+
     double hsize; // In pixels
     double vsize;
 
     double field_of_view;
 
-    Matrix<4,4> transform = identity_matrix;
-    Matrix<4,4> inverse_transform = identity_matrix.inverse();
-
     double half_width;
     double half_height;
     double pixel_size;
 
+private:
+    Matrix<4,4> m_transform{identity_matrix};
+    Matrix<4,4> m_inverse_transform{identity_matrix};
 };
 
 #endif //CAMERA_H

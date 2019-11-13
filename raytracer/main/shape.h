@@ -56,11 +56,13 @@ struct Shape
 
     virtual std::vector<Intersection> local_intersect(const Ray& r) const = 0;
 
-    Matrix<4,4> m_transform{identity_matrix};
-    Matrix<4,4> m_inverse_transform{m_transform.inverse()};
 
     const unsigned int id{shape_count++};
     Material material;
+
+private:
+    Matrix<4,4> m_transform{identity_matrix};
+    Matrix<4,4> m_inverse_transform{identity_matrix};
 };
 
 inline Color pattern_at_shape(std::shared_ptr<Pattern> pattern_ptr, const Shape* shape, const Point& world_point) {

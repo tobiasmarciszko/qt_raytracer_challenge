@@ -31,8 +31,7 @@ Raytracer::Raytracer(QObject *parent) :
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
 
     // Material preview
-    m_previewCamera.transform = view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0));
-    m_previewCamera.inverse_transform = m_previewCamera.transform.inverse();
+    m_previewCamera.set_transform(view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0)));
 }
 
 void Raytracer::progressValueChanged(int value)
@@ -49,8 +48,7 @@ void Raytracer::setViewportSize(int width, int height) {
     m_height = height;
 
     m_camera = Camera(m_width, m_height, M_PI / 3.0);
-    m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
-    m_camera.inverse_transform = m_camera.transform.inverse();
+    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
     m_framebuffer = QImage(m_width, m_height, QImage::Format_RGB32);
     m_canvas = Canvas(m_width, m_height);
 }
@@ -87,8 +85,7 @@ void Raytracer::materialPreview() {
 
 
 void Raytracer::wireframe() {
-    m_camera.transform = view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0));
-    m_camera.inverse_transform = m_camera.transform.inverse();
+    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
     m_framebuffer.fill(QColor(100, 100, 100));
 
     for (auto& shape: m_world.shapes) {
@@ -223,7 +220,7 @@ void Raytracer::copyFrameBuffer() {
 Point Raytracer::convertWorldToScreenPoint(const Point& point, uint color) {
 
     // Transform point in world coordinate to camera
-    auto pCamera = m_camera.transform * point;
+    auto pCamera = m_camera.transform() * point;
 
     // Ignore points behind the camera
     if (pCamera.z > 0) return {-1, -1, -1};
