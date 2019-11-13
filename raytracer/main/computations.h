@@ -82,4 +82,6 @@ inline Computations prepare_computations(const Intersection& i, const Ray& r, co
     return comps;
 }
 
+
+
 #endif //COMPUTATIONS_H

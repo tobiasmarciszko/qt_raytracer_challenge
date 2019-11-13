@@ -141,7 +141,7 @@ TEST_CASE("A helper for producing a sphere with a glassy material")
 
     REQUIRE(s.transform() == identity_matrix);
     REQUIRE(equal(s.material.transparency, 1.0));
-    REQUIRE(equal(s.material.refractive_index, 1.52));
+    REQUIRE(equal(s.material.refractive_index, 1.5));
 }
 
 
@@ -305,4 +305,72 @@ TEST_CASE("shade_hit() with a transparent material")
     Computations comps = prepare_computations(xs[0], r, xs);
     Color color = shade_hit(w, comps, LightingModel::Phong, 5);
     REQUIRE(color == Color(0.93642, 0.68642, 0.68642));
+}
+
+TEST_CASE("The Schlick approximation under total internal reflection")
+{
+    auto shape = std::make_shared<Sphere>(glass_sphere());
+
+    const Ray r{Point{0, 0, M_SQRT2/2}, Vector{0, 1, 0}};
+    const Intersections xs{{-M_SQRT2/2, shape.get()}, {M_SQRT2/2, shape.get()}};
+
+    const Computations comps = prepare_computations(xs[1], r, xs);
+
+    const float reflectance = schlick(comps);
+    REQUIRE(equal(reflectance, 1.0));
+}
+
+TEST_CASE("The Schlick approximation with a perpendicular viewing angle")
+{
+    auto shape = std::make_shared<Sphere>(glass_sphere());
+
+    const Ray r{Point{0, 0, 0}, Vector{0, 1, 0}};
+    const Intersections xs{{-1, shape.get()}, {-1, shape.get()}};
+
+    const Computations comps = prepare_computations(xs[1], r, xs);
+
+    const float reflectance = schlick(comps);
+    REQUIRE(equal(reflectance, 0.04));
+}
+
+
+TEST_CASE("The Schlick approximation with small angle and n2 > n1")
+{
+    auto shape = std::make_shared<Sphere>(glass_sphere());
+
+    const Ray r{Point{0, 0.99, -2}, Vector{0, 0, 1}};
+    const Intersections xs{{1.8589, shape.get()}};
+
+    const Computations comps = prepare_computations(xs[0], r, xs);
+
+    const float reflectance = schlick(comps);
+    REQUIRE(equal(reflectance, 0.48873));
+}
+
+TEST_CASE("shade_hit() with a with a reflective, transparent material")
+{
+    World w = default_world();
+
+    auto floor = std::make_shared<Plane>(Plane());
+    floor->set_transform(translation(0, -1, 0));
+    Material& m1 = floor->material;
+    m1.transparency = 0.5;
+    m1.reflective = 0.5;
+    m1.refractive_index = 1.5;
+    w.shapes.emplace_back(floor);
+
+    auto ball = std::make_shared<Sphere>(Sphere());
+    ball->set_transform(translation(0, -3.5, -0.5));
+    Material m2 = ball->material;
+    m2.color = Color(1, 0, 0);
+    m2.ambient = 0.5;
+    ball->set_material(m2);
+    w.shapes.emplace_back(ball);
+
+    Ray r{Point{0, 0, -3}, Vector{0, -M_SQRT2/2, M_SQRT2/2}};
+    Intersections xs{{M_SQRT2, floor.get()}};
+
+    Computations comps = prepare_computations(xs[0], r, xs);
+    Color color = shade_hit(w, comps, LightingModel::Phong, 5);
+    REQUIRE(color == Color(0.93391, 0.69643, 0.69243));
 }

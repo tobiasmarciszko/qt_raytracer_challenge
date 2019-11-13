@@ -4,7 +4,17 @@
 #include "material.h"
 
 namespace Materials {
-    const Material glass{black, 0, 0, 1, 300, 0.5, 1, 1.52};
+    const Material glass
+    {
+        black,  // color
+        0,      // ambient
+        0,      // diffuse
+        1,      // specular
+        300,    // shininess
+        0.9,    // reflective
+        1,      // transparency
+        1.5     // refractive index
+    };
 }
 
 #endif // MATERIALS_H

@@ -15,8 +15,8 @@ namespace Worlds  {
 
         Plane sky;
         Material& m1 = sky.material;
-        m1.ambient = 0.6;
-        m1.diffuse = 0.6;
+        m1.ambient = 1;
+        m1.diffuse = 1;
         m1.pattern_ptr = cloud_pattern();
         m1.pattern_ptr->set_transform(scaling(30, 30, 30));
         sky.set_transform(translation(0, 1000, 0));
@@ -43,8 +43,8 @@ namespace Worlds  {
 
         World world;
 
-        world.lights.emplace_back(PointLight(Point(-30, 50, -100), Color(1, 1, 1)));
-        // world.lights.emplace_back(PointLight(Point(2, 20, -100), Color(0.5, 0.5, 0.5)));
+        world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(0.9, 0.9, 0.9)));
+        //world.lights.emplace_back(PointLight(Point(15, 45, -200), Color(0.5, 0.5, 0.5)));
         // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
         world.shapes = {

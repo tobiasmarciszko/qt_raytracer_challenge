@@ -86,6 +86,7 @@ inline bool is_shadowed(const World& world, const Point& point) {
 
 Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 5);
 Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4);
+float schlick(const Computations& comps);
 
 inline Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel = LightingModel::Phong, int remaining = 4) {
 
@@ -143,7 +144,17 @@ inline Color shade_hit(const World& w, const Computations& comps, const Lighting
         const auto reflected = reflected_color(w, comps, lightingModel, remaining);
         const auto refracted = refracted_color(w, comps, lightingModel, remaining);
 
-        c = c + (surface + reflected + refracted);
+
+        // If the object is both reflective and refractive, the schlick approximisation is used:
+
+        const auto material = comps.object->material;
+        if (material.reflective > 0 && material.transparency >0) {
+            const auto reflectance = schlick(comps);
+            c = c + (surface + reflected * reflectance + refracted * (1 - reflectance));
+        } else
+        {
+            c = c + (surface + reflected + refracted);
+        }
     }
 
     return c;
@@ -205,6 +216,28 @@ inline Color refracted_color(const World& world, const Computations& comps, cons
     // # Find the color of the refracted ray, making sure to multiply
     // # by the transparency value to account for any opacity
     return color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material.transparency;
+}
+
+inline float schlick(const Computations& comps) {
+    // # find the cosine of the angle between the eye and normal vectors
+    auto cos = comps.eyev.dot(comps.normalv);
+
+    // # total internal reflection can only occur if n1 > n2
+    if (comps.n1 > comps.n2) {
+        const auto n = comps.n1 / comps.n2;
+        const auto sin2_t = (n * n) * (1 - (cos * cos));
+
+        if (sin2_t > 1) return 1;
+
+        // # compute cosine of theta_t using trig identity
+        const auto cos_t = std::sqrt(1 - sin2_t);
+
+        // when n1 > n2, use cos(theta_t) instead
+        cos = cos_t;
+    }
+
+    const auto r0 = std::pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
+    return r0 + (1 - r0) * std::pow((1 - cos), 5);
 }
 
 #endif //WORLD_H
