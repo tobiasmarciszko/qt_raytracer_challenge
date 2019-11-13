@@ -31,7 +31,7 @@ namespace Worlds  {
 
         Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
-        middle.material = Materials::glass;
+        middle.material = Materials::diamond;
 
         Sphere right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
