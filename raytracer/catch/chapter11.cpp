@@ -1,13 +1,17 @@
 #include "catch.hpp"
 #include "material.h"
 #include "vector.h"
-#include "lighting.h"
 #include "sphere.h"
 #include "shape.h"
 #include "plane.h"
 #include "math.h"
 #include "computations.h"
 #include "world.h"
+#include "worlds.h"
+#include "engine.h"
+
+using namespace Worlds;
+using namespace Raytracer::Engine;
 
 TEST_CASE("Reflectivity for the default material")
 {

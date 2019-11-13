@@ -30,13 +30,12 @@ add_executable(freeside-raytracer
         shape.h
         point.h
         ray.h
-        raytracer.h
+        raytracerbackend.h
         sphere.h
         tuple.h
         vector.h
         light.h
         material.h
-        lighting.h
         world.h
         computations.h
         imageitem.h
@@ -46,12 +45,14 @@ add_executable(freeside-raytracer
         shapeqmlbridge.h
         worlds.h
         materials.h
+        engine.h
+        engine.cpp
 
         color.cpp
         main.cpp
         point.cpp
         ray.cpp
-        raytracer.cpp
+        raytracerbackend.cpp
         tuple.cpp
         imageitem.cpp
         shapeqmlbridge.cpp

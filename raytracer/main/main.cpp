@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "imageitem.h"
-#include "raytracer.h"
+#include "raytracerbackend.h"
 #include "shapeqmlbridge.h"
 
 int main(int argc, char *argv[])
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    Raytracer raytracer;
+    RaytracerBackend raytracer;
     engine.rootContext()->setContextProperty("raytracer", &raytracer);
     engine.load(url);
 

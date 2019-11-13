@@ -16,6 +16,7 @@ add_executable(catchtests
         ../main/point.cpp
         ../main/ray.cpp
         ../main/tuple.cpp
+        ../main/engine.cpp
 
         main.cpp
         chapter1.cpp

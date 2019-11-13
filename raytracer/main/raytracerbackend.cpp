@@ -1,17 +1,4 @@
-#include "raytracer.h"
-#include "canvas.h"
-#include "color.h"
-#include "point.h"
-#include "vector.h"
-#include "matrix.h"
-#include "ray.h"
-#include "sphere.h"
-#include "light.h"
-#include "lighting.h"
-#include "intersection.h"
-#include "camera.h"
-#include "world.h"
-#include "plane.h"
+#include "raytracerbackend.h"
 #include "worlds.h"
 
 #include <QRgb>
@@ -21,7 +8,9 @@
 
 static int counter = 0;
 
-Raytracer::Raytracer(QObject *parent) :
+using namespace Raytracer::Engine;
+
+RaytracerBackend::RaytracerBackend(QObject *parent) :
     QObject(parent),
     m_world(Worlds::threeBallsOnAPlane()),
     m_previewWorld(Worlds::materialPreviewWorld())
@@ -34,13 +23,13 @@ Raytracer::Raytracer(QObject *parent) :
     m_previewCamera.set_transform(view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0)));
 }
 
-void Raytracer::progressValueChanged(int value)
+void RaytracerBackend::progressValueChanged(int value)
 {
     m_progress = value * 100 / m_canvas.pixels.size();
     emit progressChanged();
 }
 
-void Raytracer::setViewportSize(int width, int height) {
+void RaytracerBackend::setViewportSize(int width, int height) {
 
     if (width < 0 || height < 0) return;
 
@@ -53,7 +42,7 @@ void Raytracer::setViewportSize(int width, int height) {
     m_canvas = Canvas(m_width, m_height);
 }
 
-void Raytracer::render() {
+void RaytracerBackend::render() {
 
     m_futureWatcher.cancel();
     m_rendering = true;
@@ -70,7 +59,7 @@ void Raytracer::render() {
     m_futureWatcher.setFuture(QtConcurrent::map(m_canvas.pixels, renderPixel));
 }
 
-void Raytracer::materialPreview() {
+void RaytracerBackend::materialPreview() {
 
     m_materialPreviewfutureWatcher.cancel();
     m_previewWorld.shapes.at(0)->set_material(m_selectedMaterial);
@@ -84,7 +73,7 @@ void Raytracer::materialPreview() {
 }
 
 
-void Raytracer::wireframe() {
+void RaytracerBackend::wireframe() {
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
     m_framebuffer.fill(QColor(100, 100, 100));
 
@@ -154,7 +143,7 @@ void Raytracer::wireframe() {
     emit imageReady(m_framebuffer);
 }
 
-void Raytracer::renderFinished() {
+void RaytracerBackend::renderFinished() {
     m_lastRenderTime = static_cast<int>(m_timer.elapsed());
     m_timer.start();
 
@@ -172,7 +161,7 @@ void Raytracer::renderFinished() {
     qDebug() << "";
 }
 
-void Raytracer::materialPreviewFinished() {
+void RaytracerBackend::materialPreviewFinished() {
     // Pointer to first pixel
     QRgb *data = reinterpret_cast<QRgb *>(m_previewframebuffer.bits());
     QColor color;
@@ -194,7 +183,7 @@ void Raytracer::materialPreviewFinished() {
     emit materialPreviewReady(m_previewframebuffer);
 }
 
-void Raytracer::copyFrameBuffer() {
+void RaytracerBackend::copyFrameBuffer() {
     // Pointer to first pixel
     QRgb *data = reinterpret_cast<QRgb *>(m_framebuffer.bits());
     QColor color;
@@ -217,7 +206,7 @@ void Raytracer::copyFrameBuffer() {
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
-Point Raytracer::convertWorldToScreenPoint(const Point& point, uint color) {
+Point RaytracerBackend::convertWorldToScreenPoint(const Point& point, uint color) {
 
     // Transform point in world coordinate to camera
     auto pCamera = m_camera.transform() * point;
@@ -250,7 +239,7 @@ Point Raytracer::convertWorldToScreenPoint(const Point& point, uint color) {
     return Point(pRasterx, pRastery, 0);
 }
 
-void Raytracer::setPixel(int x, int y, uint color) {
+void RaytracerBackend::setPixel(int x, int y, uint color) {
 
 // Raw access to pixel, I don't know if this is equivalent to using QPainter's "drawPoint"
 #if 0
@@ -263,7 +252,7 @@ void Raytracer::setPixel(int x, int y, uint color) {
     p.drawPoint(x, y);
 }
 
-void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
+void RaytracerBackend::drawLine(const Point& p1, const Point& p2, uint color) {
     // drawLine(p1.x, p1.y, p2.x, p2.y, color);
     QPainter p(&m_framebuffer);
     p.setRenderHints(QPainter::Antialiasing);
@@ -273,7 +262,7 @@ void Raytracer::drawLine(const Point& p1, const Point& p2, uint color) {
 
 // Bresenham's line algorithm
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-void Raytracer::drawLine(int x0, int y0, const int x1, const int y1, const uint color) {
+void RaytracerBackend::drawLine(int x0, int y0, const int x1, const int y1, const uint color) {
     const auto dx = abs(x1 - x0);
     const auto dy = abs(y1 - y0);
     const auto sx = (x0 < x1) ? 1 : -1;
@@ -295,7 +284,7 @@ void Raytracer::drawLine(int x0, int y0, const int x1, const int y1, const uint 
     }
 }
 
-void Raytracer::switchChanged() {
+void RaytracerBackend::switchChanged() {
     if (m_lighting == LightingModel::Phong) {
         m_lighting = LightingModel::BlinnPhong;
 

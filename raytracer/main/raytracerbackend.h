@@ -11,13 +11,14 @@
 #include "camera.h"
 #include "world.h"
 #include "shapeqmlbridge.h"
+#include "engine.h"
 
-class Raytracer : public QObject
+class RaytracerBackend : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Raytracer(QObject *parent = nullptr);
+    RaytracerBackend(QObject *parent = nullptr);
 
 public:
     Q_PROPERTY(int progress MEMBER m_progress NOTIFY progressChanged)
@@ -36,7 +37,7 @@ public slots:
 
     void selectObject(unsigned int x, unsigned int y ) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
-        const auto is = intersect_world(m_world, ray);
+        const auto is = Raytracer::Engine::intersect_world(m_world, ray);
         const auto h = hit(is);
         if (h.has_value()) {
             createShapeQmlBridge(m_shapeBridge, h.value().object);

@@ -15,6 +15,12 @@
 #include "computations.h"
 #include "camera.h"
 
+#include "worlds.h"
+#include "engine.h"
+
+using namespace Worlds;
+using namespace Raytracer::Engine;
+
 TEST_CASE("Creating a world") {
     const auto w = World();
 

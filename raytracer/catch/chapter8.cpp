@@ -1,12 +1,18 @@
 #include "catch.hpp"
 
-#include "lighting.h"
 #include "point.h"
 #include "vector.h"
 #include "color.h"
 #include "light.h"
 #include "material.h"
 #include "world.h"
+#include "sphere.h"
+#include "computations.h"
+#include "worlds.h"
+#include "engine.h"
+
+using namespace Worlds;
+using namespace Raytracer::Engine;
 
 TEST_CASE("Lighting with the surface in shadow")
 {

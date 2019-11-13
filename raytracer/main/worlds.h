@@ -4,8 +4,34 @@
 #include "world.h"
 #include "plane.h"
 #include "materials.h"
+#include "light.h"
+#include "sphere.h"
 
 namespace Worlds  {
+
+    inline World default_world()
+    {
+        World world;
+
+        // Default world:
+        const auto light = PointLight(Point(-10, 10, -10), Color(1, 1, 1));
+        world.lights = {light};
+
+        auto sphere1 = std::make_shared<Sphere>(Sphere());
+        Material material;
+        material.color = Color(0.8, 1.0, 0.6);
+        material.diffuse = 0.7;
+        material.specular = 0.2;
+        sphere1->material = material;
+
+        auto sphere2 = std::make_shared<Sphere>(Sphere());
+        auto transform = scaling(0.5, 0.5, 0.5);
+        sphere2->set_transform(transform);
+
+        world.shapes = {sphere1, sphere2};
+
+        return world;
+    }
 
     inline World threeBallsOnAPlane() {
         Plane floor;

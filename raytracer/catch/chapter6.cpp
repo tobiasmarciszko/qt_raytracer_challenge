@@ -11,7 +11,9 @@
 #include "sphere.h"
 #include "light.h"
 #include "material.h"
-#include "lighting.h"
+#include "engine.h"
+
+using namespace Raytracer::Engine;
 
 TEST_CASE("The normal on a sphere at a point on the x axis") {
     const auto s = Sphere();

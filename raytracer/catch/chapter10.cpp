@@ -2,9 +2,12 @@
 #include "pattern.h"
 #include "material.h"
 #include "vector.h"
-#include "lighting.h"
 #include "sphere.h"
 #include "shape.h"
+#include "light.h"
+#include "engine.h"
+
+using namespace Raytracer::Engine;
 
 TEST_CASE("A stripe pattern is constant in y")
 {
