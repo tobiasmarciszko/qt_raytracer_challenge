@@ -195,9 +195,9 @@ struct DoomFirePattern : public Pattern {
 
         QRgb color = palette[index];
 
-        float cfr = qRed(color)/255.0f;
-        float cfg = qGreen(color)/255.0f;
-        float cfb = qBlue(color)/255.0f;
+        float cfr = qRed(color)/255.0F;
+        float cfg = qGreen(color)/255.0F;
+        float cfb = qBlue(color)/255.0F;
 
         return Color(cfr, cfg, cfb);
     }

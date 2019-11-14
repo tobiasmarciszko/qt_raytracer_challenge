@@ -7,6 +7,7 @@
 #include "light.h"
 #include "engine.h"
 #include "equal.h"
+#include "intersection.h"
 
 using namespace Raytracer::Engine;
 

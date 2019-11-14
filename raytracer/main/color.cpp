@@ -1,10 +1,10 @@
 #include "color.h"
 #include "equal.h"
 
-Color::Color(float red, float green, float blue):
-    red(red),
-    green(green),
-    blue(blue)
+Color::Color(float r, float g, float b):
+    red(r),
+    green(g),
+    blue(b)
 {
 }
 

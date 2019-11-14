@@ -28,5 +28,5 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("raytracer", &raytracer);
     engine.load(url);
 
-    return app.exec();
+    return QGuiApplication::exec();
 }

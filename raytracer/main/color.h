@@ -6,8 +6,8 @@
 
 struct Color
 {
-    Color() : red{0}, green{0}, blue{0} {}
-    Color(float red, float green, float blue);
+    Color() = default;
+    Color(float r, float g, float b);
 
     Color operator +(const Color& color) const;
     Color operator -(const Color& color) const;
@@ -20,16 +20,16 @@ struct Color
         return os << "(" << c.red << ", " << c.green << ", " << c.blue << ")";
     }
 
-    float red;
-    float green;
-    float blue;
+    float red{0};
+    float green{0};
+    float blue{0};
 };
 
 struct Pixel
 {
     Color color;
-    int x;
-    int y;
+    int x{0};
+    int y{0};
 };
 
 #endif // COLOR_H

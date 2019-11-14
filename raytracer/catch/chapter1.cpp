@@ -166,7 +166,7 @@ TEST_CASE("testDot")
     Vector a = Vector(1,2,3);
     Vector b = Vector(2,3,4);
 
-    double dot = a.dot(b);
+    const float dot = a.dot(b);
 
     REQUIRE(equal(20, dot));
 }

@@ -4,12 +4,12 @@
 #include "sphere.h"
 #include "shape.h"
 #include "plane.h"
-#include "math.h"
 #include "computations.h"
 #include "world.h"
 #include "worlds.h"
 #include "engine.h"
 #include "equal.h"
+#include <cmath>
 
 using namespace Worlds;
 using namespace Raytracer::Engine;
@@ -17,7 +17,7 @@ using namespace Raytracer::Engine;
 TEST_CASE("Reflectivity for the default material")
 {
     Material m;
-    REQUIRE(equal(m.reflective, 0.0f));
+    REQUIRE(equal(m.reflective, 0.0));
 }
 
 TEST_CASE("Precomputing the reflection vector")

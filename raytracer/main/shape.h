@@ -65,7 +65,7 @@ private:
     Matrix<4,4> m_inverse_transform{identity_matrix};
 };
 
-inline Color pattern_at_shape(std::shared_ptr<Pattern> pattern_ptr, const Shape* shape, const Point& world_point) {
+inline Color pattern_at_shape(const std::shared_ptr<Pattern>& pattern_ptr, const Shape* shape, const Point& world_point) {
     const auto object_point = shape->inverse_transform() * world_point;
     const auto pattern_point = pattern_ptr->inverse_transform * object_point;
 

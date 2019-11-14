@@ -7,7 +7,7 @@
 
 struct Computations {
     float t{-1};
-    const Shape* object;
+    const Shape* object{nullptr};
     Point point{0,0,0};
     Vector eyev{0,0,0};
     Vector normalv{0,0,0};

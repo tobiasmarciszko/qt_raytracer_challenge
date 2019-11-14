@@ -56,6 +56,7 @@ add_executable(
         equal.h
 
         # cpp
+        sphere.cpp
         engine.cpp
         color.cpp
         main.cpp

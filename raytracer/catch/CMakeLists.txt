@@ -25,6 +25,7 @@ add_executable(
         ../main/ray.cpp
         ../main/tuple.cpp
         ../main/engine.cpp
+        ../main/sphere.cpp
 
         # test files
         main.cpp

@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <array>
 #include "tuple.h"
 #include "equal.h"
 
@@ -89,10 +90,10 @@ public:
 
     Matrix<rows,cols>() = default;
 
-    inline void set(const int row, const int col, const float value) { m_data[cols * row + col] = value; }
-    constexpr inline float get(const unsigned int row, const unsigned int col) const { return m_data[cols * row + col]; }
-    inline size_t getRowCount() const { return m_rows; }
-    inline size_t getColCount() const { return m_cols; }
+    inline void set(unsigned int row, unsigned int col, float value) { m_data[cols * row + col] = value; }
+    constexpr inline float get(unsigned int row, unsigned int col) const { return m_data[cols * row + col]; }
+    constexpr inline size_t getRowCount() const { return m_rows; }
+    constexpr inline size_t getColCount() const { return m_cols; }
 
     inline bool operator==(const Matrix<rows, cols>& matrix) const {
 
@@ -120,8 +121,8 @@ public:
 
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                const int row = static_cast<unsigned int>(i);
-                const int col = static_cast<unsigned int>(j);
+                const int row = static_cast<int>(i);
+                const int col = static_cast<int>(j);
 
                 result.set(col, row, get(row, col));
             }
@@ -230,7 +231,7 @@ inline float Matrix<2, 2>::determinant() const {
 // 4x4 specializations
 template<>
 inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
-    float result[4];
+    std::array<float, 4> result;
     for (unsigned int i = 0; i < 4; i++) {
             result[i] = get(i, 0) * tuple.x +
                         get(i, 1) * tuple.y +

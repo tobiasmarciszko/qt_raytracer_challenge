@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-constexpr auto EPSILON = 0.0001f;
+constexpr auto EPSILON = 0.0001F;
 
 inline bool equal(float x, float y)
 {

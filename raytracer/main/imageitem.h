@@ -11,7 +11,7 @@ class ImageItem : public QQuickPaintedItem
 public:
     explicit ImageItem(QQuickItem *parent = nullptr);
     Q_INVOKABLE void setImage(const QImage &image);
-    void paint(QPainter *painter);
+    void paint(QPainter *painter) override;
 
 private:
     QImage m_image;
