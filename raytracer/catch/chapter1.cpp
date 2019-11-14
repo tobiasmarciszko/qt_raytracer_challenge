@@ -4,6 +4,7 @@
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
+#include "equal.h"
 
 TEST_CASE("Test Tuple") {
     Tuple tuple(1.0, 2.0, 3.0, 4.0);

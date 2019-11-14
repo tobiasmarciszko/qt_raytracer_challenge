@@ -14,9 +14,9 @@
 #include "world.h"
 #include "computations.h"
 #include "camera.h"
-
 #include "worlds.h"
 #include "engine.h"
+#include "equal.h"
 
 using namespace Worlds;
 using namespace Raytracer::Engine;

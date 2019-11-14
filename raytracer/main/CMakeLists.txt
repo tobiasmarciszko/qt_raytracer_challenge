@@ -20,9 +20,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Core Quick Concurrent REQUIRED)
 
-add_executable(freeside-raytracer
+add_executable(
+
+        # target
+        freeside-raytracer
+
+        # resources
         qml.qrc
         textures.qrc
+
+        # headers
         canvas.h
         color.h
         intersection.h
@@ -46,8 +53,10 @@ add_executable(freeside-raytracer
         worlds.h
         materials.h
         engine.h
-        engine.cpp
+        equal.h
 
+        # cpp
+        engine.cpp
         color.cpp
         main.cpp
         point.cpp

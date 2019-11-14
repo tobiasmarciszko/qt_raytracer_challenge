@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include "tuple.h"
+#include "equal.h"
 
 template <size_t rows, size_t cols>
 class Matrix

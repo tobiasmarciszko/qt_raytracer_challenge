@@ -7,6 +7,7 @@
 #include "color.h"
 #include "canvas.h"
 #include "matrix.h"
+#include "equal.h"
 
 TEST_CASE("testMatrix4x4") {
     const auto m = Matrix<4,4>(

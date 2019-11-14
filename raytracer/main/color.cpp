@@ -1,4 +1,5 @@
 #include "color.h"
+#include "equal.h"
 
 Color::Color(float red, float green, float blue):
     red(red),

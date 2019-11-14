@@ -38,7 +38,7 @@ public slots:
     void selectObject(unsigned int x, unsigned int y ) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
         const auto is = Raytracer::Engine::intersect_world(m_world, ray);
-        const auto h = hit(is);
+        const auto h = Raytracer::Engine::hit(is);
         if (h.has_value()) {
             createShapeQmlBridge(m_shapeBridge, h.value().object);
             m_selectedMaterial = h.value().object->material;

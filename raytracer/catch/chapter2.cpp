@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "color.h"
 #include "canvas.h"
+#include "equal.h"
 
 TEST_CASE("testColor")
 {

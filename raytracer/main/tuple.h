@@ -3,9 +3,6 @@
 
 #include <iostream>
 
-#define EPSILON 0.0001f
-bool equal(const float& a, const float& b);
-
 struct Tuple
 {
     Tuple(float x, float y, float z, float w);

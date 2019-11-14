@@ -3,6 +3,7 @@
 
 #include "color.h"
 #include "pattern.h"
+#include "equal.h"
 
 struct Material {
 

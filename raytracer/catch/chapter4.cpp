@@ -7,6 +7,7 @@
 #include "color.h"
 #include "canvas.h"
 #include "matrix.h"
+#include "equal.h"
 
 TEST_CASE("testTranslation")
 {

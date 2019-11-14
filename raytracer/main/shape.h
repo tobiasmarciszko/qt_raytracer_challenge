@@ -10,7 +10,7 @@
 #include "matrix.h"
 #include "ray.h"
 
-static unsigned int shape_count = 0;
+static unsigned int shape_count{0};
 
 struct Intersection;
 struct Shape

@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include <vector>
+#include <optional>
 
 struct Computations;
 struct Intersection;
@@ -39,6 +40,7 @@ namespace Raytracer {
         Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining);
         Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up);
         Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel, int remaining);
+        std::optional<Intersection> hit(Intersections intersections);
     }
 }
 

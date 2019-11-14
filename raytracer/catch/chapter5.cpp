@@ -10,6 +10,10 @@
 #include "ray.h"
 #include "sphere.h"
 #include "intersection.h"
+#include "equal.h"
+#include "engine.h"
+
+using namespace Raytracer::Engine;
 
 TEST_CASE("testRayCreation")
 {
@@ -213,8 +217,8 @@ TEST_CASE("Intersecting a scaled sphere with a ray") {
     const auto xs = s.intersect(r);
 
     REQUIRE(xs.size() == 2);
-    REQUIRE(xs.at(0).t == 3);
-    REQUIRE(xs.at(1).t == 7);
+    REQUIRE(equal(xs.at(0).t, 3));
+    REQUIRE(equal(xs.at(1).t, 7));
 }
 
 TEST_CASE("Intersecting a translated sphere with a ray") {

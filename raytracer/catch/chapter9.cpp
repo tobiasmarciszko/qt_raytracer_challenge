@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "plane.h"
+#include "equal.h"
 
 TEST_CASE("The normal of a plane is constant everywhere")
 {

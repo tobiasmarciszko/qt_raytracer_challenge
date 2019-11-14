@@ -1,13 +1,10 @@
 #include "tuple.h"
 #include "point.h"
 #include "vector.h"
+#include "equal.h"
 
 #include <QDebug>
 #include <cmath>
-
-bool equal(const float& a, const float& b) {
-    return std::abs(a - b) < EPSILON;
-}
 
 Tuple::Tuple(float x_, float y_, float z_, float w_) :
     x(x_),

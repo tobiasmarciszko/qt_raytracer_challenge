@@ -11,13 +11,22 @@ find_package(Qt5Core REQUIRED)
 
 include_directories(../main)
 
-add_executable(catchtests
+add_executable(
+
+        # target
+        catchtests
+
+        # test header
+        catch.hpp
+
+        # needed from main project
         ../main/color.cpp
         ../main/point.cpp
         ../main/ray.cpp
         ../main/tuple.cpp
         ../main/engine.cpp
 
+        # test files
         main.cpp
         chapter1.cpp
         chapter2.cpp

@@ -6,7 +6,8 @@
 namespace Raytracer {
     namespace Engine {
 
-        Computations prepare_computations(const Intersection& i, const Ray& r, const Intersections& xs) {
+        Computations prepare_computations(const Intersection& i, const Ray& r, const Intersections& xs)
+        {
             Computations comps;
 
             comps.t = i.t;
@@ -66,7 +67,8 @@ namespace Raytracer {
             return comps;
         }
 
-        Intersections intersect_world(const World& w, const Ray& r) {
+        Intersections intersect_world(const World& w, const Ray& r)
+        {
             Intersections is;
 
             for (const auto& object: w.shapes) {
@@ -88,7 +90,8 @@ namespace Raytracer {
             return is;
         }
 
-        bool is_shadowed(const World& world, const Point& point, const Light& light) {
+        bool is_shadowed(const World& world, const Point& point, const Light& light)
+        {
 
             const Vector v = light.position() - point;
             const auto distance = v.magnitude();
@@ -106,11 +109,13 @@ namespace Raytracer {
             }
         }
 
-        bool is_shadowed(const World& world, const Point& point) {
+        bool is_shadowed(const World& world, const Point& point)
+        {
             return is_shadowed(world, point, world.lights.front());
         }
 
-        Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel, int remaining) {
+        Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel, int remaining)
+        {
 
             const Color black{0, 0, 0};
 
@@ -126,7 +131,8 @@ namespace Raytracer {
             return color;
         }
 
-        Color reflected_color(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining) {
+        Color reflected_color(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining)
+        {
 
             // Prevent infinite recursion
             if (remaining <= 0) {
@@ -143,11 +149,13 @@ namespace Raytracer {
             return color * comps.object->material.reflective;
         }
 
-        Color reflected_color(const World& w, const Computations& comps, int remaining) {
+        Color reflected_color(const World& w, const Computations& comps, int remaining)
+        {
             return reflected_color(w, comps, LightingModel::Phong, remaining);
         }
 
-        Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining) {
+        Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining)
+        {
 
             Color c{0, 0, 0};
             for (const auto& light: w.lights) {
@@ -182,7 +190,8 @@ namespace Raytracer {
             return c;
         }
 
-        Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up) {
+        Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up)
+        {
 
             const auto forward = Vector(to - from).normalize();
             const auto upn = up.normalize();
@@ -199,7 +208,8 @@ namespace Raytracer {
             return orientation * translation(-from.x, -from.y, -from.z);
         }
 
-        Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel, int remaining) {
+        Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel, int remaining)
+        {
 
             // Prevent infinite recursion
             if (remaining <= 0) {
@@ -240,7 +250,8 @@ namespace Raytracer {
             return color_at(world, refract_ray, lightingModel, remaining - 1) * comps.object->material.transparency;
         }
 
-        float schlick(const Computations& comps) {
+        float schlick(const Computations& comps)
+        {
             // # find the cosine of the angle between the eye and normal vectors
             auto cos = comps.eyev.dot(comps.normalv);
 
@@ -271,7 +282,8 @@ namespace Raytracer {
             const Vector& normalv,
             const bool in_shadow,
             const LightingModel& lightingModel
-            ) {
+            )
+        {
 
             const auto black = Color(0, 0, 0);
             Color ambient;
@@ -340,5 +352,27 @@ namespace Raytracer {
             return ambient + diffuse + specular;
         }
 
+
+        std::optional<Intersection> hit(Intersections intersections) {
+
+            // sort the list of intersections and return the first intersection
+            // with a non negative t value
+            //
+            // if no such value exists, return an empty Intersection
+
+            std::sort(intersections.begin(), intersections.end(), [](
+                                                                      const Intersection& i1,
+                                                                      const Intersection& i2) -> bool {
+                return i1.t < i2.t;
+            });
+
+            for (const Intersection& intersect: intersections) {
+                if (intersect.t >= 0) {
+                    return {intersect};
+                }
+            }
+
+            return {};
+        }
     }
 }

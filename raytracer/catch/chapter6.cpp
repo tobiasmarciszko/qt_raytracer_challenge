@@ -12,6 +12,7 @@
 #include "light.h"
 #include "material.h"
 #include "engine.h"
+#include "equal.h"
 
 using namespace Raytracer::Engine;
 
