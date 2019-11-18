@@ -7,6 +7,8 @@ Window {
     id: window
     title: "Information"
     width: 250
+    color: "black"
+    flags: "FramelessWindowHint"
 
     property alias informationBox: informationBox
     property alias text: informationBox.text

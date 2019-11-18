@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.3
 import myextension 1.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Material 2.12
 
 Window {
 
@@ -10,7 +11,7 @@ Window {
     visible: true
     width: 747
     height: 602
-    color: "#3f5d80"
+    color: "black"
     title: "Freeside Raytracer"
 
     Component.onCompleted: {
@@ -42,9 +43,10 @@ Window {
         }
     }
 
-    Rectangle {
+    Pane {
         id: rectangle
-        color: "white"
+        Material.background: "black"
+        Material.elevation: 10
         anchors.right: parent.right
         anchors.rightMargin: 87
         anchors.left: parent.left
@@ -72,6 +74,11 @@ Window {
             anchors.fill: parent
             onClicked: raytracer.selectObject(mouseX, mouseY)
 
+            onWheel: {
+                raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                raytracer.wireframe()
+            }
+
             Connections {
                 target: raytracer
                 onObjectSelected: {
@@ -90,17 +97,17 @@ Window {
             }
     }
 
-    DropShadow {
-        id: shadow
-        anchors.fill: rectangle
-        horizontalOffset: 3
-        verticalOffset: 3
-        radius: 8.0
-        samples: 17
-        color: "#80000000"
-        source: rectangle
-        visible: !raytracer.rendering
-    }
+//    DropShadow {
+//        id: shadow
+//        anchors.fill: rectangle
+//        horizontalOffset: 3
+//        verticalOffset: 3
+//        radius: 8.0
+//        samples: 17
+//        color: "#8FFFFFFFF"
+//        source: rectangle
+//        visible: !raytracer.rendering
+//    }
 
     Slider {
         id: slider
@@ -157,9 +164,10 @@ Window {
         }
     }
 
-    Text {
+    Label {
         id: element2
         y: 564
+        color: "teal"
         text: qsTr("Blinn-Phong")
         anchors.leftMargin: 6
         anchors.bottom: parent.bottom
@@ -172,8 +180,9 @@ Window {
         id: button
         x: 400
         y: 420
-        width: 80
+        width: 110
         text: qsTr("Render")
+        display: AbstractButton.TextOnly
         radius: 8
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
@@ -187,7 +196,7 @@ Window {
         }
     }
 
-    Text {
+    Label {
         id: element3
         text: rectangle.width + "x" + rectangle.height
         anchors.horizontalCenter: rectangle.horizontalCenter
@@ -196,7 +205,7 @@ Window {
         font.pixelSize: 14
     }
 
-    Text {
+    Label {
         id: element5
         text: slider.value.toFixed(1)
         anchors.top: slider.bottom
@@ -204,7 +213,7 @@ Window {
         font.pixelSize: 12
     }
 
-    Text {
+    Label {
         id: element6
         text: slider1.value.toFixed(1)
         anchors.left: slider1.right
@@ -216,12 +225,12 @@ Window {
         id: wireframeButton
         x: 480
         y: 542
-        width: 94
-        height: 40
+        width: 110
         radius: 8
         text: qsTr("Wireframe")
-        anchors.right: parent.right
-        anchors.rightMargin: 173
+        display: AbstractButton.TextOnly
+        anchors.right: button.left
+        anchors.rightMargin: 10
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         antialiasing: true
@@ -233,7 +242,7 @@ Window {
         }
     }
 
-    Text {
+    Label {
         id: element7
         x: -9
         y: -8
@@ -242,16 +251,14 @@ Window {
         anchors.bottomMargin: 0
         anchors.horizontalCenter: rectangle.horizontalCenter
         font.pixelSize: 14
+        visible: !raytracer.rendering
     }
 
     ProgressBar {
         id: progressBar
-        x: -35
-        y: 49
+        anchors.horizontalCenter: element3.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
-        anchors.left: wireframeButton.left
-        anchors.right: button.right
+        anchors.bottomMargin: 15
         to: 100
         value: raytracer.progress
         visible: raytracer.rendering
@@ -461,8 +468,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:6;anchors_height:100;anchors_width:100}D{i:22;anchors_x:16}
-}
-##^##*/
+
