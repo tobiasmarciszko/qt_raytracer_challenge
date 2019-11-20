@@ -37,7 +37,7 @@ namespace Worlds  {
         Plane floor;
         Material& m = floor.material;
         m.color = Color(0, 0.3, 0);
-        m.reflective = 0.3;
+        //m.reflective = 0.3;
 
         Plane sky;
         Material& m1 = sky.material;
@@ -56,16 +56,16 @@ namespace Worlds  {
         mwall.pattern_ptr->set_transform(translation(0, -10, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         Sphere middle;
-        middle.set_transform(translation(0, 1.2, 0));
-        middle.material = Materials::diamond;
+        middle.set_transform(translation(0, 0, 0));
+        // middle.material = Materials::diamond;
 
         Sphere right;
-        right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
-        right.set_material(Materials::glass);
+        right.set_transform(translation(3, 0, 0));
+        // right.set_material(Materials::glass);
 
         Sphere left;
-        left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
-        left.set_material(Materials::glass);
+        left.set_transform(translation(-3, 0, 0));
+        // left.set_material(Materials::glass);
 
         World world;
 
@@ -76,9 +76,9 @@ namespace Worlds  {
         world.shapes = {
             std::make_shared<Sphere>(middle),
             std::make_shared<Sphere>(right),
-            std::make_shared<Sphere>(left),
-            std::make_shared<Plane>(floor),
-            std::make_shared<Plane>(sky),
+            std::make_shared<Sphere>(left)
+//            std::make_shared<Plane>(floor),
+//            std::make_shared<Plane>(sky),
 //            std::make_shared<Plane>(wall)
         };
 

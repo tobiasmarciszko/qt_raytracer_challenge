@@ -4,6 +4,12 @@ import QtQuick.Controls 2.3
 import myextension 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.12
+import QtQuick.Scene3D 2.0
+
+import Qt3D.Core 2.0 as Core
+import Qt3D.Render 2.0 as Render
+import Qt3D.Input 2.0 as Input
+import Qt3D.Extras 2.0 as Extras
 
 Window {
 
@@ -32,7 +38,7 @@ Window {
         anchors.rightMargin: 13
         running: raytracer.rendering
 
-        Text {
+        Label {
             id: element4
             color: "#ffffff"
             visible: raytracer.rendering
@@ -43,10 +49,9 @@ Window {
         }
     }
 
-    Pane {
+    Rectangle {
         id: rectangle
-        Material.background: "black"
-        Material.elevation: 10
+        Material.background: "red"
         anchors.right: parent.right
         anchors.rightMargin: 87
         anchors.left: parent.left
@@ -55,7 +60,8 @@ Window {
         anchors.bottomMargin: 102
         anchors.top: parent.top
         anchors.topMargin: 20
-        clip: true
+        clip: false
+
         ImageItem {
             id: liveImageItem
             fillColor: "#FFFFFF"
@@ -69,13 +75,140 @@ Window {
             }
         }
 
+        Scene3D {
+            id: scene3d
+            anchors.fill: parent
+            x: liveImageItem.x
+            y: liveImageItem.y
+            width: liveImageItem.width
+            height: liveImageItem.height
+            focus: true
+            aspects: ["input", "logic"]
+            cameraAspectRatioMode: Scene3D.UserAspectRatio
+
+        Core.Entity {
+            id: sceneRoot
+
+            Render.Camera {
+                id: camera
+                projectionType: Render.CameraLens.CustomProjection
+                fieldOfView: 45
+                nearPlane : 0.1
+                farPlane : 1000.0
+                property var scaleX: 1 / Math.tan(fieldOfView * 0.5 * (Math.PI/180))
+                property var scaleY: 1 / Math.tan(fieldOfView * 0.5 * (Math.PI/180))
+                position: Qt.vector3d(raytracer.fromX, raytracer.fromY, raytracer.fromZ)
+                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                viewCenter: Qt.vector3d(0, 0, 0)
+                projectionMatrix: Qt.matrix4x4(
+                                      scaleX, 0, 0, 0,
+                                      0, scaleY, 0, 0,
+                                      0, 0, -1, -1,
+                                      0, 0, -1, 0
+                                      )
+            }
+
+            // Extras.FirstPersonCameraController { camera: camera }
+
+            components: [
+                Render.RenderSettings {
+                    activeFrameGraph: Extras.ForwardRenderer {
+                        camera: camera
+                        clearColor: "transparent"
+                    }
+                }
+                ,
+                Input.InputSettings { }
+            ]
+
+            Extras.PhongMaterial {
+                id: material
+            }
+
+            Extras.GoochMaterial {
+                id: gooch
+            }
+
+//            Extras.TorusMesh {
+//                id: torusMesh
+//                radius: 3
+//                minorRadius: 1
+//                rings: 100
+//                slices: 20
+//            }
+
+//            Core.Transform {
+//                id: torusTransform
+//                scale3D: Qt.vector3d(1, 1, 1)
+//                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
+//                translation: Qt.vector3d(0, 0, 0);
+//            }
+
+//            Core.Entity {
+//                id: torusEntity
+//                components: [ torusMesh, material, torusTransform ]
+//            }
+
+            Extras.SphereMesh {
+                id: middle
+                radius: 1
+            }
+
+            Core.Transform {
+                id: sphereTransform
+                translation: Qt.vector3d(0, 0, 0);
+            }
+
+            Core.Entity {
+                id: sphereEntity
+                components: [ middle, gooch, sphereTransform ]
+            }
+
+            Extras.SphereMesh {
+                id: right
+                radius: 1
+            }
+
+            Core.Transform {
+                id: rightTransform
+                translation: Qt.vector3d(3, 0, 0);
+            }
+
+            Core.Entity {
+                id: rightEntity
+                components: [ right, material, rightTransform ]
+            }
+
+            Extras.SphereMesh {
+                id: left
+                radius: 1
+            }
+
+            Core.Transform {
+                id: leftTransform
+                property real userAngle: 0.0
+                translation: Qt.vector3d(-3, 0, 0);
+
+            }
+
+            Core.Entity {
+                id: leftEntity
+                components: [ left, material, leftTransform ]
+            }
+
+
+        }
+    }
+
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             onClicked: raytracer.selectObject(mouseX, mouseY)
 
             onWheel: {
+
                 raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                console.log(raytracer.fromZ);
                 raytracer.wireframe()
             }
 
@@ -161,6 +294,7 @@ Window {
 
         onCheckedChanged: {
             raytracer.switchChanged()
+            scene3d.visible = !scene3d.visible
         }
     }
 

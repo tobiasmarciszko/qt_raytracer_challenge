@@ -12,6 +12,7 @@
 #include "world.h"
 #include "shapeqmlbridge.h"
 #include "engine.h"
+#include <QMatrix4x4>
 
 class RaytracerBackend : public QObject
 {
@@ -27,6 +28,29 @@ public:
     Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)
     Q_PROPERTY(double fromZ MEMBER m_fromZ NOTIFY fromZChanged)
     Q_PROPERTY(double lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
+    Q_PROPERTY(QMatrix4x4 projectionMatrix READ getProjectionMatrix NOTIFY projectionMatrixChanged)
+
+    QMatrix4x4 getProjectionMatrix() {
+        const auto transform = m_camera.transform();
+
+        QMatrix4x4 matrix(transform.get(0,0),
+                          transform.get(0,1),
+                          transform.get(0,2),
+                          transform.get(0,3),
+                          transform.get(1,0),
+                          transform.get(1,1),
+                          transform.get(1,2),
+                          transform.get(1,3),
+                          transform.get(2,0),
+                          transform.get(2,1),
+                          transform.get(2,2),
+                          transform.get(2,3),
+                          transform.get(3,0),
+                          transform.get(3,1),
+                          transform.get(3,2),
+                          transform.get(3,3));
+        return matrix;
+    }
 
 public slots:
     void render();
@@ -56,6 +80,7 @@ signals:
     void fromYChanged();
     void fromZChanged();
     void objectSelected(ShapeQmlBridge* shapeBridge);
+    void projectionMatrixChanged();
 
 private slots:
     void renderFinished();
@@ -69,7 +94,7 @@ private: // Variables
     double m_fromZ = -4;
 
     double m_toX = 0;
-    double m_toY = 1;
+    double m_toY = 0;
     double m_toZ = 0;
 
     // Viewport
