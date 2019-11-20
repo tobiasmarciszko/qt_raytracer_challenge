@@ -9,7 +9,7 @@ import QtQuick.Scene3D 2.0
 import Qt3D.Core 2.0 as Core
 import Qt3D.Render 2.0 as Render
 import Qt3D.Input 2.0 as Input
-import Qt3D.Extras 2.0 as Extras
+import Qt3D.Extras 2.13 as Extras
 
 Window {
 
@@ -94,18 +94,35 @@ Window {
                 projectionType: Render.CameraLens.CustomProjection
                 fieldOfView: 45
                 nearPlane : 0.1
-                farPlane : 1000.0
-                property var scaleX: 1 / Math.tan(fieldOfView * 0.5 * (Math.PI/180))
-                property var scaleY: 1 / Math.tan(fieldOfView * 0.5 * (Math.PI/180))
-                position: Qt.vector3d(raytracer.fromX, raytracer.fromY, raytracer.fromZ)
+                farPlane : 100.0
+
+                position: Qt.vector3d(raytracer.fromX, raytracer.fromY, -raytracer.fromZ)
                 upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                 viewCenter: Qt.vector3d(0, 0, 0)
+
+                property var n: nearPlane
+                property var f: farPlane
+
+                property var scale: Math.tan(fieldOfView * 0.5 * Math.PI/180) * n / 1.3
+
+                property var t: scale
+                property var r: liveImageItem.width/liveImageItem.height * scale
+                property var l: -r
+                property var b: -t
+
                 projectionMatrix: Qt.matrix4x4(
-                                      scaleX, 0, 0, 0,
-                                      0, scaleY, 0, 0,
-                                      0, 0, -1, -1,
+                                      (2*n)/(r-l), 0, (r+l)/(r-l), 0,
+                                      0, (2*n)/(t-b), (t+b)/(t-b), 0,
+                                      0, 0, -(f+n)/(f-n), -(2*f*n)/(f-n),
                                       0, 0, -1, 0
                                       )
+
+//                projectionMatrix: Qt.matrix4x4(
+//                                      scaleX, 0, 0, 0,
+//                                      0, scaleY, 0, 0,
+//                                      0, 0, -1, -1,
+//                                      0, 0, -1, 0
+//                                      )
             }
 
             // Extras.FirstPersonCameraController { camera: camera }
@@ -123,31 +140,17 @@ Window {
 
             Extras.PhongMaterial {
                 id: material
+                // ambient: "white"
+            }
+
+            Extras.PhongMaterial {
+                id: green
+                ambient: "green"
             }
 
             Extras.GoochMaterial {
                 id: gooch
             }
-
-//            Extras.TorusMesh {
-//                id: torusMesh
-//                radius: 3
-//                minorRadius: 1
-//                rings: 100
-//                slices: 20
-//            }
-
-//            Core.Transform {
-//                id: torusTransform
-//                scale3D: Qt.vector3d(1, 1, 1)
-//                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
-//                translation: Qt.vector3d(0, 0, 0);
-//            }
-
-//            Core.Entity {
-//                id: torusEntity
-//                components: [ torusMesh, material, torusTransform ]
-//            }
 
             Extras.SphereMesh {
                 id: middle
@@ -161,7 +164,7 @@ Window {
 
             Core.Entity {
                 id: sphereEntity
-                components: [ middle, gooch, sphereTransform ]
+                components: [ middle, material, sphereTransform ]
             }
 
             Extras.SphereMesh {
@@ -196,7 +199,41 @@ Window {
                 components: [ left, material, leftTransform ]
             }
 
+//            Extras.PlaneMesh {
+//                id: floor
+//                width: 1000
+//                height: 1000
+//                meshResolution: "2x2"
+//            }
 
+//            Core.Transform {
+//                id: floorTransform
+//                translation: Qt.vector3d(0, -1, 0);
+//            }
+
+//            Core.Entity {
+//                id: floorEntity
+//                components: [ floor, green, floorTransform ]
+//            }
+
+            Core.Entity {
+                id: lights
+
+                Core.Entity {
+                    components: [
+                        Render.PointLight {
+                            color: "white"
+                            intensity: 1
+                            constantAttenuation: 1.0
+                            linearAttenuation: 0
+                            quadraticAttenuation: 0
+                        },
+                        Core.Transform {
+                            translation: Qt.vector3d(30.0, 50.0, 100.0)
+                        }
+                    ]
+                }
+            }
         }
     }
 

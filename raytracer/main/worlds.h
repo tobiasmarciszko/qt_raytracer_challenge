@@ -36,7 +36,8 @@ namespace Worlds  {
     inline World threeBallsOnAPlane() {
         Plane floor;
         Material& m = floor.material;
-        m.color = Color(0, 0.3, 0);
+        floor.set_transform(translation(0, -1, 0));
+        m.color = Color(0, 1, 0);
         //m.reflective = 0.3;
 
         Plane sky;
@@ -69,15 +70,15 @@ namespace Worlds  {
 
         World world;
 
-        world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(0.9, 0.9, 0.9)));
+        world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(1, 1, 1)));
         //world.lights.emplace_back(PointLight(Point(15, 45, -200), Color(0.5, 0.5, 0.5)));
         // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
         world.shapes = {
             std::make_shared<Sphere>(middle),
             std::make_shared<Sphere>(right),
-            std::make_shared<Sphere>(left)
-//            std::make_shared<Plane>(floor),
+            std::make_shared<Sphere>(left),
+            std::make_shared<Plane>(floor)
 //            std::make_shared<Plane>(sky),
 //            std::make_shared<Plane>(wall)
         };

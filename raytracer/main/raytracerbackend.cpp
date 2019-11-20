@@ -36,7 +36,7 @@ void RaytracerBackend::setViewportSize(int width, int height) {
     m_width = width;
     m_height = height;
 
-    m_camera = Camera(m_width, m_height, M_PI / 2.0);
+    m_camera = Camera(m_width, m_height, M_PI / 4.0);
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
     m_framebuffer = QImage(m_width, m_height, QImage::Format_RGB32);
     m_canvas = Canvas(m_width, m_height);
