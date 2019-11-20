@@ -131,7 +131,7 @@ Window {
                 Render.RenderSettings {
                     activeFrameGraph: Extras.ForwardRenderer {
                         camera: camera
-                        clearColor: "transparent"
+                        clearColor: "#646464"
                     }
                 }
                 ,
@@ -168,7 +168,7 @@ Window {
             }
 
             Extras.SphereMesh {
-                id: right
+                id: rightSphere
                 radius: 1
             }
 
@@ -179,11 +179,11 @@ Window {
 
             Core.Entity {
                 id: rightEntity
-                components: [ right, material, rightTransform ]
+                components: [ rightSphere, material, rightTransform ]
             }
 
             Extras.SphereMesh {
-                id: left
+                id: leftSphere
                 radius: 1
             }
 
@@ -196,7 +196,7 @@ Window {
 
             Core.Entity {
                 id: leftEntity
-                components: [ left, material, leftTransform ]
+                components: [ leftSphere, material, leftTransform ]
             }
 
 //            Extras.PlaneMesh {
@@ -331,7 +331,6 @@ Window {
 
         onCheckedChanged: {
             raytracer.switchChanged()
-            scene3d.visible = !scene3d.visible
         }
     }
 
@@ -362,6 +361,7 @@ Window {
         antialiasing: true
         enabled: !raytracer.rendering
         onClicked: {
+            scene3d.visible = false
             raytracer.setViewportSize(rectangle.width, rectangle.height)
             raytracer.render()
         }
@@ -394,20 +394,21 @@ Window {
 
     RoundButton {
         id: wireframeButton
-        x: 480
-        y: 542
+        x: 440
+        y: 534
         width: 110
         radius: 8
         text: qsTr("Wireframe")
         display: AbstractButton.TextOnly
         anchors.right: button.left
-        anchors.rightMargin: 10
+        anchors.rightMargin: 0
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         antialiasing: true
         enabled: !raytracer.rendering
 
         onClicked: {
+            scene3d.visible = false
             raytracer.setViewportSize(rectangle.width, rectangle.height)
             raytracer.wireframe()
         }
@@ -458,6 +459,27 @@ Window {
             } else if (informationWindow.visibility !== Window.Hidden) {
                 informationWindow.close()
             }
+        }
+    }
+
+    RoundButton {
+        id: qt3dbutton
+        x: 382
+        y: 534
+        width: 61
+        height: 48
+        radius: 8
+        text: qsTr("Qt3D")
+        anchors.bottomMargin: 20
+        enabled: !raytracer.rendering
+        display: AbstractButton.TextOnly
+        anchors.right: wireframeButton.left
+        anchors.rightMargin: -3
+        antialiasing: true
+        anchors.bottom: parent.bottom
+
+        onPressed: {
+            scene3d.visible = !scene3d.visible
         }
     }
 
