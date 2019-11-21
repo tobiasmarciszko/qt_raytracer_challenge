@@ -2,6 +2,10 @@
 #include "computations.h"
 #include "intersection.h"
 #include "world.h"
+#include "appsettings.h"
+
+#define fastRenderEnabled() AppSettings::isEnabled(AppSettings::SettingKeys::FastRender)
+// #define fastRenderEnabled() false
 
 namespace Raytracer::Engine {
 
@@ -22,10 +26,12 @@ namespace Raytracer::Engine {
             comps.inside = false;
         }
 
-        comps.reflectv = r.direction().reflect(comps.normalv);
-
         comps.over_point = comps.point + comps.normalv * EPSILON;
         comps.under_point = comps.point - comps.normalv * EPSILON;
+
+        if (fastRenderEnabled()) { return comps; }
+
+        comps.reflectv = r.direction().reflect(comps.normalv);
 
         // Refraction
         std::vector<const Shape*> containers{};
@@ -91,6 +97,8 @@ namespace Raytracer::Engine {
 
     bool is_shadowed(const World& world, const Point& point, const Light& light)
     {
+        if (fastRenderEnabled()) return false;
+
         const Vector v = light.position() - point;
         const auto distance = v.magnitude();
         const auto direction = v.normalize();
@@ -165,9 +173,10 @@ namespace Raytracer::Engine {
                 in_shadow,
                 lightingModel);
 
+            if (fastRenderEnabled()) return c + surface;
+
             const auto reflected = reflected_color(w, comps, lightingModel, remaining);
             const auto refracted = refracted_color(w, comps, lightingModel, remaining);
-
 
             // If the object is both reflective and refractive, the schlick approximation is used:
 
@@ -284,13 +293,11 @@ namespace Raytracer::Engine {
         Color diffuse;
         Color specular;
 
-        Color materialColor;
+        Color materialColor = material.color;
 
         // Check if the material has a pattern first
         if (material.pattern_ptr) {
             materialColor = pattern_at_shape(material.pattern_ptr, object, point);
-        } else {
-            materialColor = material.color;
         }
 
         // combine the surface color with the light's color/intensity

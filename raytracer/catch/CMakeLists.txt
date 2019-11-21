@@ -26,6 +26,7 @@ add_executable(
         ../main/tuple.cpp
         ../main/engine.cpp
         ../main/sphere.cpp
+        ../main/appsettings.cpp
 
         # test files
         main.cpp

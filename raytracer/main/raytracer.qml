@@ -159,8 +159,12 @@ Window {
         anchors.bottomMargin: 10
         display: AbstractButton.IconOnly
 
-        onCheckedChanged: {
-            raytracer.switchChanged()
+        Component.onCompleted: {
+            checked = settings.isEnabled(AppSettings.FastRender)
+        }
+
+        onClicked: {
+            settings.setEnabled(AppSettings.FastRender, checked ? AppSettings.On : AppSettings.Off)
         }
     }
 
@@ -168,7 +172,7 @@ Window {
         id: element2
         y: 564
         color: "teal"
-        text: qsTr("Blinn-Phong")
+        text: qsTr("Fast Render")
         anchors.leftMargin: 6
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 21
