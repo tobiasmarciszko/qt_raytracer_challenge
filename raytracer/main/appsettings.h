@@ -30,7 +30,7 @@ public:
         flush();
     }
 
-    Q_INVOKABLE static bool isEnabled(const SettingKeys key) {
+    Q_INVOKABLE static bool isEnabled(const SettingKeys& key) {
 
         // Assumes cache and disk contents are the same
         if (m_cache.contains(key)) {
@@ -40,7 +40,7 @@ public:
         return false;
     }
 
-    Q_INVOKABLE static void setEnabled(const SettingKeys key, const SettingValues value) {
+    Q_INVOKABLE static void setEnabled(const SettingKeys& key, const SettingValues& value) {
 
         // Sets the value to both in-memory structure and to disk
         const auto k = AppSettings::enumToString(key);
@@ -65,7 +65,7 @@ private:
     template <class EnumClass>
     static EnumClass stringToEnum(const QVariant& str) {
         const auto metaEnum = QMetaEnum::fromType<EnumClass>();
-        const auto i = metaEnum.keyToValue(str.toString().toStdString().c_str());
+        const auto i = metaEnum.keyToValue(str.toString().toUtf8().constData());
         return static_cast<EnumClass>(i);
     }
 
