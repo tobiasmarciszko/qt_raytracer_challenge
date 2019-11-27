@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ShapeQmlBridge>("myextension", 1, 0, "ShapeBridge");
 
     // App settings
-    qmlRegisterType<AppSettings>("myextension", 1, 0, "AppSettings");
+    // qmlRegisterType<AppSettings>("myextension", 1, 0, "AppSettings");
 
     QGuiApplication app(argc, argv);
 
@@ -34,8 +34,7 @@ int main(int argc, char *argv[])
     RaytracerBackend raytracer;
     engine.rootContext()->setContextProperty("raytracer", &raytracer);
 
-    AppSettings settings;
-    engine.rootContext()->setContextProperty("settings", &settings);
+    engine.rootContext()->setContextProperty("settings", &AppSettings::get());
     engine.load(url);
 
     return QGuiApplication::exec();

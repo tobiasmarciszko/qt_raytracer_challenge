@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>raytracer.qml</file>
         <file>InformationWindow.qml</file>
+        <file>SettingsWindow.qml</file>
     </qresource>
 </RCC>

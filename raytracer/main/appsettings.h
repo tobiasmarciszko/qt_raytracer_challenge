@@ -4,92 +4,78 @@
 #include <QObject>
 #include <QSettings>
 #include <QMetaEnum>
+#include <QDebug>
 
 class AppSettings : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
 
 public:
 
     enum class SettingKeys {
+        Invalid = 0,
         FastRender
     };
     Q_ENUM(SettingKeys)
 
     enum class SettingValues {
+        Invalid = 0,
         Off,
         On
     };
     Q_ENUM(SettingValues)
 
-    AppSettings() {
-        load();
+    ~AppSettings();
+
+    static AppSettings& get()
+    {
+        static AppSettings instance;
+        return instance;
     }
 
-    ~AppSettings() {
-        flush();
-    }
+    // Loads values from disk to in-memory cache
+    void load();
 
-    Q_INVOKABLE static bool isEnabled(const SettingKeys& key) {
+    // Flushes cache to disk, "shouldn't" be necessary since all values are written to disk when changed
+    void flush();
 
-        // Assumes cache and disk contents are the same
-        if (m_cache.contains(key)) {
-            return m_cache.value(key) == SettingValues::On;
-        }
+    // Generic access to settings
+    bool isEnabled(const SettingKeys& key) const;
+    void setEnabled(const SettingKeys& key, bool isEnabled);
+    void setEnabled(const SettingKeys& key, const SettingValues& value);
 
-        return false;
-    }
+    // Explicit access to setting properties
+    // FastRender
+    Q_PROPERTY(bool fastRenderEnabled READ fastRenderEnabled WRITE setFastRenderEnabled NOTIFY fastRenderEnabledChanged               )
+    bool fastRenderEnabled() const;
+    void setFastRenderEnabled(bool isEnabled);
 
-    Q_INVOKABLE static void setEnabled(const SettingKeys& key, const SettingValues& value) {
-
-        // Sets the value to both in-memory structure and to disk
-        const auto k = AppSettings::enumToString(key);
-        const auto v = AppSettings::enumToString(value);
-
-        QSettings s;
-        s.setValue(k, v);
-        m_cache[key] = value;
-    }
+signals:
+        void fastRenderEnabledChanged();
 
 private:
-
-    // In-memory cache of settings with corresponding setting keys and values
-    static QMap<SettingKeys, SettingValues> m_cache;
+    AppSettings();
+    AppSettings(AppSettings const&) = delete;
+    AppSettings(AppSettings&&) = delete;
 
     template <class EnumClass>
-    static QString enumToString(const EnumClass& key) {
+    QString enumToString(const EnumClass& key) {
         const auto metaEnum = QMetaEnum::fromType<EnumClass>();
         return metaEnum.valueToKey(static_cast<int>(key));
     }
 
     template <class EnumClass>
-    static EnumClass stringToEnum(const QVariant& str) {
+    EnumClass stringToEnum(const QVariant& str) {
         const auto metaEnum = QMetaEnum::fromType<EnumClass>();
-        const auto i = metaEnum.keyToValue(str.toString().toUtf8().constData());
+        const auto i = metaEnum.keyToValue(str.toString().toUtf8());
         return static_cast<EnumClass>(i);
     }
 
-    // Flushes cache to disk
-    static void flush() {
-        QSettings s;
-        for (const auto& key: m_cache.keys()) {
-            const auto k = AppSettings::enumToString<SettingKeys>(key);
-            const auto v = AppSettings::enumToString<SettingValues>(m_cache.value(key));
-            s.setValue(k, v);
-        }
-        s.sync();
-    }
-
-    // Loads values from disk to in-memory cache
-    static void load() {
-        QSettings s;
-        for (const auto& key: s.allKeys()) {
-            const auto k = AppSettings::stringToEnum<SettingKeys>(key);
-            const auto v = AppSettings::stringToEnum<SettingValues>(s.value(key));
-            m_cache[k] = v;
-        }
-    }
+private:
+    // In-memory cache of settings with corresponding setting keys and values
+    QMap<SettingKeys, SettingValues> m_cache;
+    QSettings m_settings;
 };
-
 
 #endif // APPSETTINGS_H

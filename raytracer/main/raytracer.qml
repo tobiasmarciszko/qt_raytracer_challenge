@@ -150,36 +150,6 @@ Window {
         }
     }
 
-    Switch {
-        id: element
-        y: 552
-        anchors.left: parent.left
-        anchors.leftMargin: 62
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
-        display: AbstractButton.IconOnly
-
-        Component.onCompleted: {
-            checked = settings.isEnabled(AppSettings.FastRender)
-        }
-
-        onClicked: {
-            settings.setEnabled(AppSettings.FastRender, checked ? AppSettings.On : AppSettings.Off)
-        }
-    }
-
-    Label {
-        id: element2
-        y: 564
-        color: "teal"
-        text: qsTr("Fast Render")
-        anchors.leftMargin: 6
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 21
-        anchors.left: element.right
-        font.pointSize: 11
-    }
-
     RoundButton {
         id: button
         x: 400
@@ -288,8 +258,35 @@ Window {
             if (informationWindow.visibility === Window.Hidden) {
                 updateTextbox()
                 informationWindow.show()
+                settingsWindow.close()
             } else if (informationWindow.visibility !== Window.Hidden) {
                 informationWindow.close()
+            }
+        }
+    }
+
+    SettingsWindow {
+        id: settingsWindow
+        y: window.y
+        x: window.x-250
+        height: window.height
+    }
+
+    RoundButton {
+        id: settingsButton
+        y: 544
+        text: "s"
+        anchors.left: informationButton.right
+        anchors.leftMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+
+        onPressed: {
+            if (settingsWindow.visibility === Window.Hidden) {
+                settingsWindow.show()
+                informationWindow.close()
+            } else if (settingsWindow.visibility !== Window.Hidden) {
+                settingsWindow.close()
             }
         }
     }
