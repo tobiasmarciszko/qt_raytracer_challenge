@@ -5,6 +5,7 @@ import myextension 1.0
 
 Window {
     title: "Information"
+    height: 700
     width: 250
     color: "black"
     flags: Qt.FramelessWindowHint
@@ -17,6 +18,7 @@ Window {
         anchors.margins: 10
 
         TextArea {
+            background: black
             id: informationBox
             text: ""
             clip: true

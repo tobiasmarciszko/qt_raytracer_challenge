@@ -5,10 +5,10 @@ import QtQuick.Window 2.12
 import myextension 1.0
 
 Window {
+    height: 700
     width: 250
     color: "black"
     flags: Qt.FramelessWindowHint
-
 
     GroupBox {
         title: qsTr("Settings")
