@@ -3,5 +3,6 @@
         <file>raytracer.qml</file>
         <file>InformationWindow.qml</file>
         <file>SettingsWindow.qml</file>
+        <file alias="fontello">fontello.ttf</file>
     </qresource>
 </RCC>

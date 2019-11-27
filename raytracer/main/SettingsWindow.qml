@@ -10,6 +10,11 @@ Window {
     color: "black"
     flags: Qt.FramelessWindowHint
 
+    FontLoader {
+        id: glyphs
+        source: "fontello"
+    }
+
     GroupBox {
         title: qsTr("Settings")
         anchors.fill: parent
@@ -19,24 +24,128 @@ Window {
             id: column
             anchors.fill: parent
 
-            Switch {
-                id: fastRenderSetting
-                text: qsTr("Fast Render")
-                checked: settings.fastRenderEnabled
+            Row {
+                spacing: 2
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\uf135"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
-                onClicked: {
-                    settings.fastRenderEnabled = checked
+                Switch {
+                    id: fastRenderSetting
+                    font.family: glyphs.name
+                    text: qsTr("Fast Render")
+                    checked: settings.fastRenderEnabled
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    onClicked: {
+                        settings.fastRenderEnabled = checked
+                    }
                 }
             }
 
-            Switch {
-                id: setting2
-                text: qsTr("Setting 2")
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
 
-            Switch {
-                id: setting3
-                text: qsTr("Setting 3")
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row {
+                spacing: 2
+
+                Label {
+                    font.family: glyphs.name
+                    font.pointSize: 12
+                    text: "\ue800"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Switch {
+                    font.family: glyphs.name
+                    text: qsTr("Setting")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
         }
     }

@@ -7,6 +7,13 @@ import QtQuick.Controls.Material 2.12
 
 Window {
 
+    property alias glyphFont: glyphs.name
+
+    FontLoader {
+        id: glyphs
+        source: "fontello"
+    }
+
     id: window
     visible: true
     width: 747
@@ -155,7 +162,9 @@ Window {
         x: 400
         y: 420
         width: 110
-        text: qsTr("Render")
+        font.family: window.glyphFont
+        font.pointSize: 18
+        text: "\uf1b2"
         display: AbstractButton.TextOnly
         radius: 8
         anchors.bottom: parent.bottom
@@ -201,7 +210,9 @@ Window {
         y: 542
         width: 110
         radius: 8
-        text: qsTr("Wireframe")
+        font.family: window.glyphFont
+        font.pointSize: 18
+        text: "\uf1cb"
         display: AbstractButton.TextOnly
         anchors.right: button.left
         anchors.rightMargin: 10
@@ -248,7 +259,9 @@ Window {
     RoundButton {
         id: informationButton
         y: 552
-        text: "i"
+        font.family: window.glyphFont
+        font.pointSize: 14
+        text: "\ue801"
         anchors.left: parent.left
         anchors.leftMargin: 16
         anchors.bottom: parent.bottom
@@ -275,7 +288,9 @@ Window {
     RoundButton {
         id: settingsButton
         y: 544
-        text: "s"
+        font.family: window.glyphFont
+        font.pointSize: 14
+        text: "\ue800"
         anchors.left: informationButton.right
         anchors.leftMargin: 0
         anchors.bottom: parent.bottom
