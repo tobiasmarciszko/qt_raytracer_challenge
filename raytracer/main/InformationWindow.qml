@@ -18,7 +18,7 @@ Window {
         anchors.margins: 10
 
         TextArea {
-            background: black
+            background: null
             id: informationBox
             text: ""
             clip: true
