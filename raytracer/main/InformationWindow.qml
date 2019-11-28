@@ -3,7 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.3
 import myextension 1.0
 
-Window {
+ApplicationWindow {
     title: "Information"
     height: 700
     width: 250
@@ -12,6 +12,7 @@ Window {
 
     property alias informationBox: informationBox
     property alias text: informationBox.text
+
     GroupBox {
         title: qsTr("Information")
         anchors.fill: parent

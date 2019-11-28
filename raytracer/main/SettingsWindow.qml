@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.12
 import myextension 1.0
 
-Window {
+ApplicationWindow {
     height: 700
     width: 250
     color: "black"
@@ -35,7 +35,6 @@ Window {
 
                 Switch {
                     id: fastRenderSetting
-                    font.family: glyphs.name
                     text: qsTr("Fast Render")
                     checked: settings.fastRenderEnabled
                     anchors.verticalCenter: parent.verticalCenter
@@ -57,7 +56,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -74,7 +72,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -91,7 +88,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -108,7 +104,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -125,7 +120,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -142,7 +136,6 @@ Window {
                 }
 
                 Switch {
-                    font.family: glyphs.name
                     text: qsTr("Setting")
                     anchors.verticalCenter: parent.verticalCenter
                 }

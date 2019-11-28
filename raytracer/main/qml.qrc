@@ -4,5 +4,6 @@
         <file>InformationWindow.qml</file>
         <file>SettingsWindow.qml</file>
         <file alias="fontello">fontello.ttf</file>
+        <file alias="B162">B612Mono-Regular.ttf</file>
     </qresource>
 </RCC>

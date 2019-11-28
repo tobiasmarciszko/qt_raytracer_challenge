@@ -5,7 +5,7 @@ import myextension 1.0
 import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.12
 
-Window {
+ApplicationWindow {
 
     property alias glyphFont: glyphs.name
 
@@ -14,6 +14,12 @@ Window {
         source: "fontello"
     }
 
+    FontLoader {
+        id: aircraft
+        source: "B162"
+    }
+
+    font.family: aircraft.name
     id: window
     visible: true
     width: 747
@@ -210,7 +216,7 @@ Window {
         y: 542
         width: 110
         radius: 8
-        font.family: window.glyphFont
+        font.family: glyphs.name
         font.pointSize: 18
         text: "\uf1cb"
         display: AbstractButton.TextOnly
@@ -254,6 +260,7 @@ Window {
         y: window.y
         x: window.x-250
         height: window.height
+        font.family: aircraft.name
     }
 
     RoundButton {
@@ -283,6 +290,7 @@ Window {
         y: window.y
         x: window.x-250
         height: window.height
+        font.family: aircraft.name
     }
 
     RoundButton {
@@ -319,7 +327,7 @@ Window {
             informationWindow.text += "Object Selection\n\n"
             informationWindow.text += "Color: " + selectedObject.color + "\n"
             informationWindow.text += "Transform: \n"
-            informationWindow.text += selectedObject.transform.row(0) + "\n"
+            informationWindow.text += selectedObject.transform.row(0).col(0) + "\n"
             informationWindow.text += selectedObject.transform.row(1) + "\n"
             informationWindow.text += selectedObject.transform.row(2) + "\n"
             informationWindow.text += selectedObject.transform.row(3) + "\n"
