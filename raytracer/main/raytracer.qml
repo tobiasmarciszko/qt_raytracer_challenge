@@ -2,11 +2,10 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.3
 import myextension 1.0
-import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.12
+import QtQuick.Particles 2.12
 
 ApplicationWindow {
-
     property alias glyphFont: glyphs.name
 
     FontLoader {
@@ -19,7 +18,7 @@ ApplicationWindow {
         source: "B162"
     }
 
-    font.family: aircraft.name
+    // font.family: aircraft.name
     id: window
     visible: true
     width: 747
@@ -59,7 +58,6 @@ ApplicationWindow {
     Pane {
         id: rectangle
         Material.background: "black"
-        Material.elevation: 10
         anchors.right: parent.right
         anchors.rightMargin: 87
         anchors.left: parent.left
@@ -102,25 +100,25 @@ ApplicationWindow {
             }
         }
 
-        ColorOverlay {
-                anchors.fill: liveImageItem
-                source: liveImageItem
-                color: "#80800000"
-                visible: raytracer.rendering
-            }
+        //        ColorOverlay {
+        //                anchors.fill: liveImageItem
+        //                source: liveImageItem
+        //                color: "#80800000"
+        //                visible: raytracer.rendering
+        //            }
     }
 
-//    DropShadow {
-//        id: shadow
-//        anchors.fill: rectangle
-//        horizontalOffset: 3
-//        verticalOffset: 3
-//        radius: 8.0
-//        samples: 17
-//        color: "#8FFFFFFFF"
-//        source: rectangle
-//        visible: !raytracer.rendering
-//    }
+    //    DropShadow {
+    //        id: shadow
+    //        anchors.fill: rectangle
+    //        horizontalOffset: 3
+    //        verticalOffset: 3
+    //        radius: 8.0
+    //        samples: 17
+    //        color: "#8FFFFFFFF"
+    //        source: rectangle
+    //        visible: !raytracer.rendering
+    //    }
 
     Slider {
         id: slider
@@ -327,10 +325,102 @@ ApplicationWindow {
             informationWindow.text += "Object Selection\n\n"
             informationWindow.text += "Color: " + selectedObject.color + "\n"
             informationWindow.text += "Transform: \n"
-            informationWindow.text += selectedObject.transform.row(0).col(0) + "\n"
+            informationWindow.text += selectedObject.transform.row(0) + "\n"
             informationWindow.text += selectedObject.transform.row(1) + "\n"
             informationWindow.text += selectedObject.transform.row(2) + "\n"
             informationWindow.text += selectedObject.transform.row(3) + "\n"
+        }
+    }
+
+    ParticleSystem {
+        id: particles
+        anchors.fill: parent
+        running: false
+
+        ImageParticle {
+            source: "qrc:///particleresources/star.png"
+            alpha: 0
+            colorVariation: 0.7
+        }
+
+        Emitter {
+            id: pulseEmitter1
+            x: liveImageItem.x + 25
+            y: liveImageItem.y + 25
+            emitRate: 200
+            lifeSpan: 4000
+            enabled: false
+            velocity: AngleDirection{magnitude: 128; magnitudeVariation: 128; angle: 45; angleVariation: 45}
+            size: 12
+            sizeVariation: 12
+        }
+
+        Emitter {
+            id: pulseEmitter2
+            x: liveImageItem.x + liveImageItem.width + 30
+            y: liveImageItem.y + liveImageItem.height + 30
+            emitRate: 200
+            lifeSpan: 5000
+            lifeSpanVariation: 500
+            enabled: false
+            velocity: AngleDirection{magnitude: 128; magnitudeVariation: 128; angle: 225; angleVariation: 45}
+            size: 12
+            sizeVariation: 8
+        }
+        Emitter {
+            id: pulseEmitter3
+            x: liveImageItem.x + 30
+            y: liveImageItem.y + liveImageItem.height + 30
+            emitRate: 600
+            lifeSpan: 5000
+            lifeSpanVariation: 500
+            enabled: false
+            velocity: AngleDirection{magnitude: 128; magnitudeVariation: 128; angle: 315; angleVariation: 45}
+            size: 12
+            sizeVariation: 8
+        }
+        Emitter {
+            id: pulseEmitter4
+            x: liveImageItem.x + liveImageItem.width + 30
+            y: liveImageItem.y + 30
+            emitRate: 400
+            lifeSpan: 500
+            lifeSpanVariation: 500
+            enabled: false
+            velocity: AngleDirection{magnitude: 128; magnitudeVariation: 128; angle: 135; angleVariation: 45}
+            size: 12
+            sizeVariation: 8
+        }
+
+        Timer {
+            id: timer
+            interval: 7000
+            onTriggered: {
+                particles.reset()
+                particles.stop()
+            }
+            running: false
+            repeat: false
+        }
+
+        Connections {
+            target: raytracer
+            onRenderingChanged: {
+                if (!raytracer.rendering && settings.fireworksEnabled) {
+                    particles.start()
+                    timer.stop()
+
+                    pulseEmitter1.pulse(150);
+                    pulseEmitter2.pulse(130);
+                    pulseEmitter3.pulse(160);
+                    pulseEmitter4.pulse(110);
+
+                    timer.start()
+
+
+
+                }
+            }
         }
     }
 }

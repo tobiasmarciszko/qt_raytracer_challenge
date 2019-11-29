@@ -8,6 +8,9 @@ AppSettings::~AppSettings() {
     flush();
 }
 
+// Settings
+
+// FastRender
 bool AppSettings::fastRenderEnabled() const {
     return isEnabled(SettingKeys::FastRender);
 }
@@ -17,6 +20,18 @@ void AppSettings::setFastRenderEnabled(bool isEnabled) {
     emit fastRenderEnabledChanged();
 }
 
+// Fireworks
+bool AppSettings::fireworksEnabled() const {
+    return isEnabled(SettingKeys::Fireworks);
+}
+
+void AppSettings::setFireworksEnabled(bool isEnabled) {
+    setEnabled(SettingKeys::Fireworks, isEnabled);
+    emit fireworksEnabledChanged();
+}
+
+/// Boilerplate methods
+
 bool AppSettings::isEnabled(const SettingKeys& key) const {
     // Assumes cache and disk contents are the same
     if (m_cache.contains(key)) {
@@ -25,7 +40,6 @@ bool AppSettings::isEnabled(const SettingKeys& key) const {
 
     return false;
 }
-
 void AppSettings::setEnabled(const SettingKeys& key, bool isEnabled) {
     setEnabled(key, isEnabled ? SettingValues::On : SettingValues::Off);
 }

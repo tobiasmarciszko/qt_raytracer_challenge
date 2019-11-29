@@ -56,8 +56,13 @@ ApplicationWindow {
                 }
 
                 Switch {
-                    text: qsTr("Setting")
+                    text: qsTr("Fireworks")
+                    checked: settings.fireworksEnabled
                     anchors.verticalCenter: parent.verticalCenter
+
+                    onClicked: {
+                        settings.fireworksEnabled = checked
+                    }
                 }
             }
 

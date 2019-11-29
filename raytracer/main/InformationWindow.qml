@@ -26,10 +26,11 @@ ApplicationWindow {
             textFormat: Text.PlainText
             renderType: Text.QtRendering
             anchors.fill: parent
-            wrapMode: TextEdit.Wrap
+            wrapMode: TextEdit.NoWrap
             anchors.margins: 0
             cursorVisible: false
             readOnly: true
+            font.pointSize: 10
         }
 
         Rectangle {

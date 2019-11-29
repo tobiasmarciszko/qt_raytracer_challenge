@@ -15,7 +15,8 @@ public:
 
     enum class SettingKeys {
         Invalid = 0,
-        FastRender
+        FastRender,
+        Fireworks
     };
     Q_ENUM(SettingKeys)
 
@@ -47,12 +48,18 @@ public:
 
     // Explicit access to setting properties
     // FastRender
-    Q_PROPERTY(bool fastRenderEnabled READ fastRenderEnabled WRITE setFastRenderEnabled NOTIFY fastRenderEnabledChanged               )
+    Q_PROPERTY(bool fastRenderEnabled READ fastRenderEnabled WRITE setFastRenderEnabled NOTIFY fastRenderEnabledChanged)
     bool fastRenderEnabled() const;
     void setFastRenderEnabled(bool isEnabled);
 
+    // FastRender
+    Q_PROPERTY(bool fireworksEnabled READ fireworksEnabled WRITE setFireworksEnabled NOTIFY fireworksEnabledChanged)
+    bool fireworksEnabled() const;
+    void setFireworksEnabled(bool isEnabled);
+
 signals:
-        void fastRenderEnabledChanged();
+    void fastRenderEnabledChanged();
+    void fireworksEnabledChanged();
 
 private:
     AppSettings();

@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     // App settings
     // qmlRegisterType<AppSettings>("myextension", 1, 0, "AppSettings");
 
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     QCoreApplication::setOrganizationName("Tobias Marciszko");
