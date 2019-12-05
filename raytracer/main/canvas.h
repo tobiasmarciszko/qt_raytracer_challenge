@@ -7,7 +7,8 @@
 class Canvas
 {
 public:
-    Canvas() = delete;
+
+    Canvas() = default;
 
     Canvas(int width, int height) : m_width(width), m_height(height) {
         pixels.resize(width * height);

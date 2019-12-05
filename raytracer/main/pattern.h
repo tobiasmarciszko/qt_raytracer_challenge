@@ -183,7 +183,7 @@ struct DoomFirePattern : public Pattern {
     }
 
     Color pattern_at(const Point& p) const override {
-        int y = (240-abs(int(p.y)));
+        int y = (220-abs(int(p.y)));
         int x = (int(p.x)) % 320;
 
         if (y > 240) return black;

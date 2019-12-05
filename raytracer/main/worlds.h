@@ -37,7 +37,7 @@ namespace Worlds  {
         Plane floor;
         Material& m = floor.material;
         m.color = Color(0, 0.3, 0);
-        m.reflective = 0.3;
+        m.reflective = 0.5;
 
         Plane sky;
         Material& m1 = sky.material;
@@ -49,11 +49,12 @@ namespace Worlds  {
 
         Plane wall;
         Material& mwall = wall.material;
-        wall.set_transform(translation(0, 0, 4) * rotation_x(M_PI_2));
+        wall.set_transform(translation(0, 0, 5) * rotation_x(M_PI / 1.2));
         mwall.color = Color(0, 0, 0);
         //mwall.reflective = 0.8;
+        mwall.transparency = 0.5;
         mwall.pattern_ptr = doomfire_pattern();
-        mwall.pattern_ptr->set_transform(translation(0, -10, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
+        mwall.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
@@ -79,7 +80,7 @@ namespace Worlds  {
             std::make_shared<Sphere>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
-//            std::make_shared<Plane>(wall)
+            std::make_shared<Plane>(wall)
         };
 
         return world;

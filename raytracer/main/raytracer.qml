@@ -4,21 +4,13 @@ import QtQuick.Controls 2.3
 import myextension 1.0
 import QtQuick.Controls.Material 2.12
 import QtQuick.Particles 2.12
+import QtQuick.Layouts 1.13
+import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     property alias glyphFont: glyphs.name
 
-    FontLoader {
-        id: glyphs
-        source: "fontello"
-    }
-
-    FontLoader {
-        id: aircraft
-        source: "B162"
-    }
-
-    // font.family: aircraft.name
+    font.family: aircraft.name
     id: window
     visible: true
     width: 747
@@ -29,9 +21,16 @@ ApplicationWindow {
     Component.onCompleted: {
         x = Screen.width / 2 - width / 2
         y = Screen.height / 2 - height / 2
+    }
 
-        raytracer.setViewportSize(640, 480)
-        raytracer.wireframe()
+    FontLoader {
+        id: glyphs
+        source: "fontello"
+    }
+
+    FontLoader {
+        id: aircraft
+        source: "B162"
     }
 
     BusyIndicator {
@@ -67,58 +66,139 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.topMargin: 20
         clip: true
-        ImageItem {
-            id: liveImageItem
-            fillColor: "#FFFFFF"
-            clip: true
-            enabled: false
+
+        GridLayout {
+            id: grid
             anchors.fill: parent
+            columns: 2
+            rows: 2
+            columnSpacing: 10
+            rowSpacing: 10
 
-            Connections {
-                target: raytracer
-                onImageReady: liveImageItem.setImage(image)
-            }
-        }
-
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            onClicked: raytracer.selectObject(mouseX, mouseY)
-
-            onWheel: {
-                raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+            Component.onCompleted: {
+                raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
                 raytracer.wireframe()
             }
 
             Connections {
                 target: raytracer
-                onObjectSelected: {
-                    selectedObject = shapeBridge
-                    raytracer.materialPreview()
-                    updateTextbox()
+                onWireframesReady: {
+                    liveImageItem.setImage(top)
+                    liveImageItem2.setImage(left)
+                    liveImageItem3.setImage(right)
+                    liveImageItem4.setImage(perspective)
+                }
+            }
+
+            ImageItem {
+                id: liveImageItem
+                fillColor: "#FFFFFF"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Front"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    onClicked: raytracer.selectObject(mouseX, mouseY)
+
+                    onWheel: {
+                        raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.wireframe()
+                    }
+
+                    Connections {
+                        target: raytracer
+                        onObjectSelected: {
+                            selectedObject = shapeBridge
+                            raytracer.materialPreview()
+                            updateTextbox()
+                        }
+                    }
+                }
+            }
+
+            ImageItem {
+                id: liveImageItem2
+                fillColor: "#FFFFFF"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Left"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: raytracer.selectObject(mouseX, mouseY)
+
+                    onWheel: {
+                        raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.wireframe()
+                    }
+                }
+            }
+
+            ImageItem {
+                id: liveImageItem3
+                fillColor: "#FFFFFF"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Right"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: raytracer.selectObject(mouseX, mouseY)
+
+                    onWheel: {
+                        raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.wireframe()
+                    }
+                }
+            }
+
+            ImageItem {
+                id: liveImageItem4
+                fillColor: "#FFFFFF"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                Connections {
+                    target: raytracer
+                    onImageReady: liveImageItem4.setImage(image)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: raytracer.selectObject(mouseX, mouseY)
+
+                    onWheel: {
+                        raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.wireframe()
+                    }
+                }
+
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: "#80800000"
+                    visible: raytracer.rendering
                 }
             }
         }
-
-        //        ColorOverlay {
-        //                anchors.fill: liveImageItem
-        //                source: liveImageItem
-        //                color: "#80800000"
-        //                visible: raytracer.rendering
-        //            }
     }
-
-    //    DropShadow {
-    //        id: shadow
-    //        anchors.fill: rectangle
-    //        horizontalOffset: 3
-    //        verticalOffset: 3
-    //        radius: 8.0
-    //        samples: 17
-    //        color: "#8FFFFFFFF"
-    //        source: rectangle
-    //        visible: !raytracer.rendering
-    //    }
 
     Slider {
         id: slider
@@ -178,7 +258,7 @@ ApplicationWindow {
         antialiasing: true
         enabled: !raytracer.rendering
         onClicked: {
-            raytracer.setViewportSize(rectangle.width, rectangle.height)
+            raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
             raytracer.render()
         }
     }
@@ -226,7 +306,7 @@ ApplicationWindow {
         enabled: !raytracer.rendering
 
         onClicked: {
-            raytracer.setViewportSize(rectangle.width, rectangle.height)
+            raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
             raytracer.wireframe()
         }
     }
@@ -345,8 +425,8 @@ ApplicationWindow {
 
         Emitter {
             id: pulseEmitter1
-            x: liveImageItem.x + 25
-            y: liveImageItem.y + 25
+            x: grid.x + 25
+            y: grid.y + 25
             emitRate: 200
             lifeSpan: 4000
             enabled: false
@@ -357,8 +437,8 @@ ApplicationWindow {
 
         Emitter {
             id: pulseEmitter2
-            x: liveImageItem.x + liveImageItem.width + 30
-            y: liveImageItem.y + liveImageItem.height + 30
+            x: grid.x + grid.width + 30
+            y: grid.y + grid.height + 30
             emitRate: 200
             lifeSpan: 5000
             lifeSpanVariation: 500
@@ -369,8 +449,8 @@ ApplicationWindow {
         }
         Emitter {
             id: pulseEmitter3
-            x: liveImageItem.x + 30
-            y: liveImageItem.y + liveImageItem.height + 30
+            x: grid.x + 30
+            y: grid.y + grid.height + 30
             emitRate: 600
             lifeSpan: 5000
             lifeSpanVariation: 500
@@ -381,8 +461,8 @@ ApplicationWindow {
         }
         Emitter {
             id: pulseEmitter4
-            x: liveImageItem.x + liveImageItem.width + 30
-            y: liveImageItem.y + 30
+            x: grid.x + grid.width + 30
+            y: grid.y + 30
             emitRate: 400
             lifeSpan: 500
             lifeSpanVariation: 500

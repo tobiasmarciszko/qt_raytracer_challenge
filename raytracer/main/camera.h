@@ -6,7 +6,7 @@
 
 struct Camera {
 
-    Camera() = delete;
+    Camera() = default;
 
     Camera(
         double hsize_,

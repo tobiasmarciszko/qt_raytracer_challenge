@@ -25,7 +25,7 @@ RaytracerBackend::RaytracerBackend(QObject *parent) :
 
 void RaytracerBackend::progressValueChanged(int value)
 {
-    m_progress = value * 100 / m_canvas.pixels.size();
+    m_progress = value * 100 / m_canvas.pixels.count();
     emit progressChanged();
 }
 
@@ -33,13 +33,10 @@ void RaytracerBackend::setViewportSize(int width, int height) {
 
     if (width < 0 || height < 0) return;
 
-    m_width = width;
-    m_height = height;
-
-    m_camera = Camera(m_width, m_height, M_PI / 3.0);
+    m_camera = Camera(width, height, M_PI / 3.0);
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
-    m_framebuffer = QImage(m_width, m_height, QImage::Format_RGB32);
-    m_canvas = Canvas(m_width, m_height);
+    m_framebuffer = QImage(width, height, QImage::Format_RGB32);
+    m_canvas = Canvas(width, height);
 }
 
 void RaytracerBackend::render() {
@@ -72,10 +69,9 @@ void RaytracerBackend::materialPreview() {
     m_materialPreviewfutureWatcher.setFuture(QtConcurrent::map(m_previewCanvas.pixels, renderPixel));
 }
 
+void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
 
-void RaytracerBackend::wireframe() {
-    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
-    m_framebuffer.fill(QColor(100, 100, 100));
+    framebuffer.fill(QColor(100, 100, 100));
 
     for (auto& shape: m_world.shapes) {
         auto m = shape->transform();
@@ -88,9 +84,9 @@ void RaytracerBackend::wireframe() {
 
         // TODO: Refactoring into a color conversion method
         QColor qc;
-        const auto r = c.red < 1.0 ? c.red : 1.0;
-        const auto g = c.green < 1.0 ? c.green : 1.0;
-        const auto b = c.blue < 1.0 ? c.blue : 1.0;
+        const auto r = c.red < 1.0F ? c.red : 1.0F;
+        const auto g = c.green < 1.0F ? c.green : 1.0F;
+        const auto b = c.blue < 1.0F ? c.blue : 1.0F;
         qc.setRgbF(r, g, b);
         uint color = qRgb(qc.red(), qc.green(), qc.blue());
 
@@ -110,44 +106,67 @@ void RaytracerBackend::wireframe() {
         const auto zNeg = centerPoint.z-zScale;
 
         // Top points
-        const auto a1 = convertWorldToScreenPoint(Point(xPos, yPos, zNeg));
-        const auto a2 = convertWorldToScreenPoint(Point(xNeg, yPos, zNeg));
-        const auto a3 = convertWorldToScreenPoint(Point(xPos, yPos, zPos));
-        const auto a4 = convertWorldToScreenPoint(Point(xNeg, yPos, zPos));
+        const auto a1 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zNeg));
+        const auto a2 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zNeg));
+        const auto a3 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zPos));
+        const auto a4 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zPos));
 
         // Bottom points
-        const auto b1 = convertWorldToScreenPoint(Point(xPos, yNeg, zNeg));
-        const auto b2 = convertWorldToScreenPoint(Point(xNeg, yNeg, zNeg));
-        const auto b3 = convertWorldToScreenPoint(Point(xPos, yNeg, zPos));
-        const auto b4 = convertWorldToScreenPoint(Point(xNeg, yNeg, zPos));
+        const auto b1 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zNeg));
+        const auto b2 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zNeg));
+        const auto b3 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zPos));
+        const auto b4 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zPos));
 
         // Top square
-        drawLine(a1, a2, color);
-        drawLine(a3, a4, color);
-        drawLine(a1, a3, color);
-        drawLine(a2, a4, color);
+        drawLine(framebuffer, a1, a2, color);
+        drawLine(framebuffer, a3, a4, color);
+        drawLine(framebuffer, a1, a3, color);
+        drawLine(framebuffer, a2, a4, color);
 
         // Bottom square
-        drawLine(b1, b2, color);
-        drawLine(b3, b4, color);
-        drawLine(b1, b3, color);
-        drawLine(b2, b4, color);
+        drawLine(framebuffer, b1, b2, color);
+        drawLine(framebuffer, b3, b4, color);
+        drawLine(framebuffer, b1, b3, color);
+        drawLine(framebuffer, b2, b4, color);
 
         // Connect top and bottom
-        drawLine(a1, b1, color);
-        drawLine(a2, b2, color);
-        drawLine(a3, b3, color);
-        drawLine(a4, b4, color);
+        drawLine(framebuffer, a1, b1, color);
+        drawLine(framebuffer, a2, b2, color);
+        drawLine(framebuffer, a3, b3, color);
+        drawLine(framebuffer, a4, b4, color);
     }
+}
 
-    emit imageReady(m_framebuffer);
+
+void RaytracerBackend::wireframe() {
+
+    Camera front{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+    Camera left{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+    Camera right{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+
+    front.set_transform(view_transform(Point(0, 0, 2 * m_fromZ), Point(0, 0, 0), Vector(0, 1, 0)));
+    left.set_transform(view_transform(Point(-2 * m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
+    right.set_transform(view_transform(Point(2 * m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
+    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
+
+    QImage front_framebuffer{static_cast<int>(front.hsize), static_cast<int>(front.vsize), QImage::Format_RGB32};
+    QImage left_framebuffer{static_cast<int>(left.hsize), static_cast<int>(left.vsize), QImage::Format_RGB32};
+    QImage right_framebuffer{static_cast<int>(right.hsize), static_cast<int>(right.vsize), QImage::Format_RGB32};
+    QImage persp_framebuffer{static_cast<int>(m_camera.hsize), static_cast<int>(m_camera.vsize), QImage::Format_RGB32};
+
+    wireframe(front_framebuffer, front);
+    wireframe(left_framebuffer, left);
+    wireframe(right_framebuffer, right);
+    wireframe(persp_framebuffer, m_camera);
+
+    emit wireframesReady(front_framebuffer, left_framebuffer, right_framebuffer, persp_framebuffer);
 }
 
 void RaytracerBackend::renderFinished() {
     m_lastRenderTime = static_cast<int>(m_timer.elapsed());
     m_timer.start();
 
-    copyFrameBuffer();
+    copyFrameBuffer(m_canvas, m_framebuffer);
 
     qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
 
@@ -183,12 +202,12 @@ void RaytracerBackend::materialPreviewFinished() {
     emit materialPreviewReady(m_previewframebuffer);
 }
 
-void RaytracerBackend::copyFrameBuffer() {
+void RaytracerBackend::copyFrameBuffer(Canvas& from, QImage& to) {
     // Pointer to first pixel
-    QRgb *data = reinterpret_cast<QRgb *>(m_framebuffer.bits());
+    QRgb *data = reinterpret_cast<QRgb *>(to.bits());
     QColor color;
 
-    for (const Pixel& pixel: m_canvas.pixels) {
+    for (const Pixel& pixel: from.pixels) {
         const auto& red = pixel.color.red;
         const auto& green = pixel.color.green;
         const auto& blue = pixel.color.blue;
@@ -206,23 +225,23 @@ void RaytracerBackend::copyFrameBuffer() {
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
-Point RaytracerBackend::convertWorldToScreenPoint(const Point& point, uint color) {
+Point RaytracerBackend::convertWorldToScreenPoint(const Camera& camera, const Point& point, uint color) {
 
     // Transform point in world coordinate to camera
-    auto pCamera = m_camera.transform() * point;
+    auto pCamera = camera.transform() * point;
 
     // Ignore points behind the camera
     if (pCamera.z > 0) return {-1, -1, -1};
 
     // Perspective divide
-    auto pScreenx = pCamera.x / (pCamera.z);
-    auto pScreeny = pCamera.y / -(pCamera.z);
+    auto pScreenx = pCamera.x / pCamera.z;
+    auto pScreeny = pCamera.y / - pCamera.z;
 
     // Scale and offset acordingly according to the screen size
-    auto p1xoffset = m_camera.half_width + pScreenx;
-    auto p1yoffset = m_camera.half_height - pScreeny;
-    auto pRasterx = ((p1xoffset / m_camera.pixel_size) - 0.5);
-    auto pRastery = ((p1yoffset / m_camera.pixel_size) - 0.5);
+    auto p1xoffset = camera.half_width + pScreenx;
+    auto p1yoffset = camera.half_height - pScreeny;
+    auto pRasterx = ((p1xoffset / camera.pixel_size) - 0.5);
+    auto pRastery = ((p1yoffset / camera.pixel_size) - 0.5);
 
 // Enable to draw pixel instead of just converting the coordinates
 #if 0
@@ -239,7 +258,7 @@ Point RaytracerBackend::convertWorldToScreenPoint(const Point& point, uint color
     return Point(pRasterx, pRastery, 0);
 }
 
-void RaytracerBackend::setPixel(int x, int y, uint color) {
+void RaytracerBackend::setPixel(QImage& framebuffer, int x, int y, uint color) {
 
 // Raw access to pixel, I don't know if this is equivalent to using QPainter's "drawPoint"
 #if 0
@@ -247,14 +266,14 @@ void RaytracerBackend::setPixel(int x, int y, uint color) {
     pixel += x; // select column
     *pixel = color;
 #endif
-    QPainter p(&m_framebuffer);
+    QPainter p(&framebuffer);
     p.setPen(color);
     p.drawPoint(x, y);
 }
 
-void RaytracerBackend::drawLine(const Point& p1, const Point& p2, uint color) {
+void RaytracerBackend::drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color) {
     // drawLine(p1.x, p1.y, p2.x, p2.y, color);
-    QPainter p(&m_framebuffer);
+    QPainter p(&framebuffer);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(color);
     p.drawLine(p1.x, p1.y, p2.x, p2.y);
@@ -262,7 +281,7 @@ void RaytracerBackend::drawLine(const Point& p1, const Point& p2, uint color) {
 
 // Bresenham's line algorithm
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-void RaytracerBackend::drawLine(int x0, int y0, const int x1, const int y1, const uint color) {
+void RaytracerBackend::drawLine(QImage& framebuffer, int x0, int y0, const int x1, const int y1, const uint color) {
     const auto dx = abs(x1 - x0);
     const auto dy = abs(y1 - y0);
     const auto sx = (x0 < x1) ? 1 : -1;
@@ -272,9 +291,9 @@ void RaytracerBackend::drawLine(int x0, int y0, const int x1, const int y1, cons
     while (true) {
        if (x0 >= 0 &&
            y0 >= 0 &&
-           x0 < m_camera.hsize &&
-           y0 < m_camera.vsize) {
-            m_framebuffer.setPixel(x0, y0, color);
+           x0 < framebuffer.width() &&
+           y0 < framebuffer.height()) {
+            framebuffer.setPixel(x0, y0, color);
        }
 
        if ((x0 == x1) && (y0 == y1)) break;

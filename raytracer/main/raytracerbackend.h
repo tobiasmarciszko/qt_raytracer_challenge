@@ -49,6 +49,7 @@ public slots:
 
 signals:
     void imageReady(const QImage& image);
+    void wireframesReady(const QImage& top, const QImage& left, const QImage& right, const QImage& perspective);
     void materialPreviewReady(const QImage& image);
     void renderingChanged();
     void progressChanged();
@@ -63,22 +64,20 @@ private slots:
     void progressValueChanged(int value);
 
 private: // Variables
+
     // Camera
-    double m_fromX = 0;
-    double m_fromY = 1.5;
+    double m_fromX = 1;
+    double m_fromY = 1;
     double m_fromZ = -4;
 
     double m_toX = 0;
     double m_toY = 1;
     double m_toZ = 0;
 
-    // Viewport
-    int m_width = 640;
-    int m_height = 480;
-
-    Canvas m_canvas{640, 480};
-    Camera m_camera{640, 480, M_PI / 3.0};
-    QImage m_framebuffer{640, 480, QImage::Format_RGB32};
+    // For rendering
+    Canvas m_canvas;
+    Camera m_camera;
+    QImage m_framebuffer;
 
     World m_world;
     World m_previewWorld;
@@ -100,11 +99,12 @@ private: // Variables
     Material m_selectedMaterial;
 
 private: // Methods
-    void drawLine(int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
-    void drawLine(const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
-    Point convertWorldToScreenPoint(const Point& point, uint color = qRgb(255, 255, 255));
-    void setPixel(int x, int y, uint color = qRgb(255, 255, 255));
-    void copyFrameBuffer();
+    void drawLine(QImage& framebuffer, int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
+    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
+    Point convertWorldToScreenPoint(const Camera& camera, const Point& point, uint color = qRgb(255, 255, 255));
+    void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
+    void copyFrameBuffer(Canvas& from, QImage& to);
+    void wireframe(QImage& framebuffer, const Camera& camera);
 };
 
 #endif // RAYTRACER_H
