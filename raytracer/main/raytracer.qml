@@ -96,6 +96,16 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
+                onWidthChanged: {
+                    raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
+                    raytracer.wireframe()
+                }
+
+                onHeightChanged: {
+                    raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
+                    raytracer.wireframe()
+                }
+
                 Text {
                     text: "Front"
                     anchors.left: parent.left
