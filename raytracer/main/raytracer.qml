@@ -56,7 +56,7 @@ ApplicationWindow {
 
     Pane {
         id: rectangle
-        Material.background: "black"
+        Material.background: "gray"
         anchors.right: parent.right
         anchors.rightMargin: 87
         anchors.left: parent.left
@@ -65,7 +65,6 @@ ApplicationWindow {
         anchors.bottomMargin: 102
         anchors.top: parent.top
         anchors.topMargin: 20
-        clip: true
 
         GridLayout {
             id: grid
@@ -512,7 +511,8 @@ ApplicationWindow {
     }
     Label {
         id: rect
-        y: window.height-rect.height
+        x: window.width + rect.width
+        y: window.height - rect.height
         text: "Rendering"
 
         SequentialAnimation {
