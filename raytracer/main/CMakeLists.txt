@@ -56,6 +56,7 @@ add_executable(
         equal.h
         appsettings.h
         patterns.h
+        cube.h
 
         # cpp
         sphere.cpp
@@ -69,6 +70,7 @@ add_executable(
         imageitem.cpp
         shapeqmlbridge.cpp
         appsettings.cpp
+        cube.cpp
         )
 
 target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)

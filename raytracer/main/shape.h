@@ -9,10 +9,10 @@
 #include "vector.h"
 #include "matrix.h"
 #include "ray.h"
+#include "intersection.h"
 
 static unsigned int shape_count{0};
 
-struct Intersection;
 struct Shape
 {
     virtual ~Shape() = default;

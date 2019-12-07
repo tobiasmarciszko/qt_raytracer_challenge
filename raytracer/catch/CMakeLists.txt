@@ -27,6 +27,7 @@ add_executable(
         ../main/engine.cpp
         ../main/sphere.cpp
         ../main/appsettings.cpp
+        ../main/cube.cpp
 
         # test files
         main.cpp
@@ -41,6 +42,7 @@ add_executable(
         chapter9.cpp
         chapter10.cpp
         chapter11.cpp
+        chapter12.cpp
         )
 
 target_link_libraries(catchtests Qt5::Core)

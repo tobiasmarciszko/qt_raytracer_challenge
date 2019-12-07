@@ -4,8 +4,8 @@
 #include "world.h"
 #include "appsettings.h"
 
-#define fastRenderEnabled() AppSettings::get().fastRenderEnabled()
-// #define fastRenderEnabled() false
+//#define fastRenderEnabled() AppSettings::get().fastRenderEnabled()
+#define fastRenderEnabled() false
 
 namespace Raytracer::Engine {
 
