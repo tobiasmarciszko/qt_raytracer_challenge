@@ -8,6 +8,7 @@
 #include "engine.h"
 #include "equal.h"
 #include "intersection.h"
+#include "patterns.h"
 
 using namespace Raytracer::Engine;
 

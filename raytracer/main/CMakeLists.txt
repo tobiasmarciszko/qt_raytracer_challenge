@@ -55,6 +55,7 @@ add_executable(
         engine.h
         equal.h
         appsettings.h
+        patterns.h
 
         # cpp
         sphere.cpp

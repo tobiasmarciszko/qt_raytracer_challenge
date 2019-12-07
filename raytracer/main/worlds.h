@@ -6,6 +6,14 @@
 #include "materials.h"
 #include "light.h"
 #include "sphere.h"
+#include "patterns.h"
+
+inline Sphere glass_sphere() {
+    Sphere s;
+    s.set_transform(identity_matrix);
+    s.material = Materials::glass;
+    return s;
+}
 
 namespace Worlds  {
 
