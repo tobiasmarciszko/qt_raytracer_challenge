@@ -506,170 +506,32 @@ ApplicationWindow {
                     pulseEmitter4.pulse(110);
 
                     timer.start()
+                }
+            }
+        }
+    }
+    Label {
+        id: rect
+        y: window.height-rect.height
+        text: "Rendering"
 
+        SequentialAnimation {
+            id: anim
+            running: false
+            NumberAnimation { target: rect; property: "x"; easing.type: Easing.OutExpo; to:  window.width - rect.width; duration: 400 }
+            PauseAnimation { duration: 600 }
+            NumberAnimation { target: rect; property: "x"; to: window.width+rect.width; duration: 200 }
+        }
 
+        Connections {
+            target: raytracer
+            onRenderingChanged: {
+                if (raytracer.rendering) {
+                    rect.x = window.width + rect.width
+                    anim.start()
 
                 }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
