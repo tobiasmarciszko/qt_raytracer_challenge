@@ -1,6 +1,8 @@
 #include "cube.h"
 #include "intersection.h"
 #include "vector.h"
+#include <algorithm>
+#include <cmath>
 
 Vector Cube::local_normal_at(const Point& local_point) const {
     return local_point - Point(0, 0, 0);
@@ -8,20 +10,34 @@ Vector Cube::local_normal_at(const Point& local_point) const {
 
 std::vector<Intersection> Cube::local_intersect(const Ray& ray) const {
 
-    const Vector sphere_to_ray = ray.origin() - Point(0, 0, 0);
-    const float a = ray.direction().dot(ray.direction());
-    const float b = 2 * ray.direction().dot(sphere_to_ray);
-    const float c = sphere_to_ray.dot(sphere_to_ray) - 1.0f;
+    const auto [xtmin, xtmax] = check_axis(ray.origin().x, ray.direction().x);
+    const auto [ytmin, ytmax] = check_axis(ray.origin().y, ray.direction().y);
+    const auto [ztmin, ztmax] = check_axis(ray.origin().z, ray.direction().z);
 
-    const float discriminant = (b * b) - (4.0f * a * c);
+    const auto tmin = std::max({xtmin, ytmin, ztmin});
+    const auto tmax = std::min({xtmax, ytmax, ztmax});
 
-    // No hit
-    if (discriminant < 0) return {};
+    return {Intersection(tmin, this), Intersection(tmax, this)};
+}
 
-    // Hit, either two intersections (discriminant == 0)
-    // or one on the tanget
-    const float t1 = (-b - std::sqrt(discriminant)) / ( 2.0f * a);
-    const float t2 = (-b + std::sqrt(discriminant)) / ( 2.0f * a);
+std::tuple<float, float> Cube::check_axis(float origin, float direction) const {
+    float tmin;
+    float tmax;
 
-    return {Intersection(t1, this), Intersection(t2, this)};
+    const auto tmin_numerator = (-1 - origin);
+    const auto tmax_numerator = (1 - origin);
+
+    if (std::abs(direction) >= EPSILON) {
+        tmin = tmin_numerator / direction;
+        tmax = tmax_numerator / direction;
+    } else {
+        tmin = tmin_numerator * INFINITY;
+        tmax = tmax_numerator * INFINITY;
+    }
+
+    if (tmin > tmax) {
+        std::swap(tmin, tmax);
+    }
+
+    return std::make_tuple(tmin, tmax);
 }
