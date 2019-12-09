@@ -42,6 +42,74 @@ namespace Worlds  {
         return world;
     }
 
+    inline World cubes() {
+
+        World world;
+
+        Plane floor;
+        Material& m = floor.material;
+        m.color = Color(0, 0.3, 0);
+        m.reflective = 0.5;
+
+        Plane sky;
+        Material& m1 = sky.material;
+        m1.ambient = 1;
+        m1.diffuse = 1;
+        m1.pattern_ptr = cloud_pattern();
+        m1.pattern_ptr->set_transform(scaling(30, 30, 30));
+        sky.set_transform(translation(0, 1000, 0));
+
+        Plane wall;
+        Material& mwall = wall.material;
+        wall.set_transform(translation(0, 0, 5) * rotation_x(M_PI / 1.2));
+        mwall.color = Color(0, 0, 0);
+        //mwall.reflective = 0.8;
+        mwall.transparency = 0.7;
+        mwall.pattern_ptr = doomfire_pattern();
+        mwall.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
+
+
+        for (int i=-10; i<10; ++i) {
+            Cube right;
+            right.set_transform(translation(i, 1, 0) * scaling(0.5*std::abs(i)*0.1, 0.5, 0.5) * rotation_x(M_PI*(0.1*i) / 3));
+            //right.set_material(Materials::glass);
+            right.material.color = Color(std::abs(i)*0.1, 0.2, 0.2);
+            right.material.reflective = 0.1*std::abs(i);
+            world.shapes.emplace_back(std::make_shared<Cube>(right));
+        }
+
+        for (int i=-10; i<10; ++i) {
+            Cube right;
+            right.set_transform(translation(i, 3, 0) * scaling(0.5*std::abs(i)*0.1, 0.5, 0.5) * rotation_x(M_PI*(0.1*i) / 3));
+            right.set_material(Materials::glass);
+//            right.material.color = Color(0, 0 ,0);
+//            right.material.ambient = 0;
+//            right.material.diffuse = 0;
+//            right.material.specular = 1;
+//            right.material.transparency = 1;
+//            right.material.refractive_index = 0.2*std::abs(i);
+            world.shapes.emplace_back(std::make_shared<Cube>(right));
+        }
+
+        world.shapes.emplace_back(std::make_shared<Plane>(floor));
+        world.shapes.emplace_back(std::make_shared<Plane>(sky));
+
+        world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(0.9, 0.9, 0.9)));
+        //world.lights.emplace_back(PointLight(Point(15, 45, -200), Color(0.5, 0.5, 0.5)));
+        // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
+
+//        world.shapes = {
+//                std::make_shared<Sphere>(middle),
+//                std::make_shared<Cube>(right),
+//                std::make_shared<Cube>(left),
+//                std::make_shared<Plane>(floor),
+//                std::make_shared<Plane>(sky),
+//                std::make_shared<Plane>(wall)
+//        };
+
+        return world;
+    }
+
     inline World threeBallsOnAPlane() {
         Plane floor;
         Material& m = floor.material;
@@ -70,10 +138,12 @@ namespace Worlds  {
         middle.material = Materials::diamond;
 
         Cube right;
-        right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
+        right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5) * rotation_x(M_PI / 3));
         //right.set_material(Materials::glass);
         right.material.color = Color(0.7, 0.2, 0.2);
         right.material.reflective = 0.4;
+        right.material.pattern_ptr = doomfire_pattern();
+        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         Cube left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));

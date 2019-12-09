@@ -12,7 +12,7 @@ using namespace Raytracer::Engine;
 
 RaytracerBackend::RaytracerBackend(QObject *parent) :
     QObject(parent),
-    m_world(Worlds::threeBallsOnAPlane()),
+    m_world(Worlds::cubes()),
     m_previewWorld(Worlds::materialPreviewWorld())
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
@@ -45,9 +45,7 @@ void RaytracerBackend::render() {
     m_rendering = true;
     emit renderingChanged();
 
-    qDebug() << "Rendering" << m_camera.hsize << "x" << m_camera.vsize << "using" << QThread::idealThreadCount() << "threads";
-
-    std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
+    const auto renderPixel = [&](Pixel& pixel) {
         const Ray ray = ray_for_pixel(m_camera, pixel.x, pixel.y);
         pixel.color = color_at(m_world, ray, m_lighting, 5);
     };
@@ -90,28 +88,29 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         const auto yScale = m.get(1, 1);
         const auto zScale = m.get(2, 2);
 
-        const auto xPos = centerPoint.x + xScale;
-        const auto xNeg = centerPoint.x - xScale;
+        const auto top1 = m * Point(1, 1, -1);//centerPoint.x + xScale;
+        const auto top2 = m * Point(1, 1, 1); // centerPoint.x - xScale;
+        const auto top3 = m * Point(-1, 1, -1);// centerPoint.y + yScale;
+        const auto top4 = m * Point(-1, 1, 1);// centerPoint.y - yScale;
 
-        const auto yPos = centerPoint.y + yScale;
-        const auto yNeg = centerPoint.y - yScale;
-
-        const auto zPos = centerPoint.z + zScale;
-        const auto zNeg = centerPoint.z - zScale;
+        const auto bot1 = m * Point(1, -1, -1);//centerPoint.x + xScale;
+        const auto bot2 = m * Point(1, -1, 1); // centerPoint.x - xScale;
+        const auto bot3 = m * Point(-1, -1, -1);// centerPoint.y + yScale;
+        const auto bot4 = m * Point(-1, -1, 1);// centerPoint.y - yScale;
 
         if (dynamic_cast<Cube *>(shape.get())) {
 
             // Top points
-            const auto a1 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zNeg));
-            const auto a2 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zNeg));
-            const auto a3 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zPos));
-            const auto a4 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zPos));
+            const auto a1 = convertWorldToScreenPoint(camera, top1);
+            const auto a2 = convertWorldToScreenPoint(camera, top2);
+            const auto a3 = convertWorldToScreenPoint(camera, top3);
+            const auto a4 = convertWorldToScreenPoint(camera, top4);
 
             // Bottom points
-            const auto b1 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zNeg));
-            const auto b2 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zNeg));
-            const auto b3 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zPos));
-            const auto b4 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zPos));
+            const auto b1 = convertWorldToScreenPoint(camera, bot1);
+            const auto b2 = convertWorldToScreenPoint(camera, bot2);
+            const auto b3 = convertWorldToScreenPoint(camera, bot3);
+            const auto b4 = convertWorldToScreenPoint(camera, bot4);
 
             // Top square
             drawLine(framebuffer, a1, a2, color);
@@ -138,20 +137,20 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
             p.setRenderHints(QPainter::Antialiasing);
             p.setPen(color);
 
-            Point top{centerPoint.x, yPos, centerPoint.z};
-            Point bottom{centerPoint.x, yNeg, centerPoint.z};
+            Point top{centerPoint.x, centerPoint.y+yScale, centerPoint.z};
+            Point bottom{centerPoint.x, centerPoint.y-yScale, centerPoint.z};
 
             auto t = convertWorldToScreenPoint(camera, top);
             auto b = convertWorldToScreenPoint(camera, bottom);
 
-            Point front{centerPoint.x, centerPoint.y, zNeg};
-            Point back{centerPoint.x, centerPoint.y, zPos};
+            Point front{centerPoint.x, centerPoint.y, centerPoint.z-zScale};
+            Point back{centerPoint.x, centerPoint.y, centerPoint.z+zScale};
 
             auto fr = convertWorldToScreenPoint(camera, front);
             auto ba = convertWorldToScreenPoint(camera, back);
 
-            Point left{xNeg, centerPoint.y, centerPoint.z};
-            Point right{xPos, centerPoint.y, centerPoint.z};
+            Point left{centerPoint.x-xScale, centerPoint.y, centerPoint.z};
+            Point right{centerPoint.x+xScale, centerPoint.y, centerPoint.z};
 
             auto l = convertWorldToScreenPoint(camera, left);
             auto r = convertWorldToScreenPoint(camera, right);
@@ -170,9 +169,9 @@ void RaytracerBackend::wireframe() {
     Camera left{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
     Camera right{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
 
-    front.set_transform(view_transform(Point(0, 0, 2 * m_fromZ), Point(0, 0, 0), Vector(0, 1, 0)));
-    left.set_transform(view_transform(Point(-2 * m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
-    right.set_transform(view_transform(Point(2 * m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
+    front.set_transform(view_transform(Point(0, 1, m_fromZ), Point(0, 1, 0), Vector(0, 1, 0)));
+    left.set_transform(view_transform(Point(-m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
+    right.set_transform(view_transform(Point(m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ), Point(m_toX, m_toY, m_toZ), Vector(0, 1, 0)));
 
     QImage front_framebuffer{static_cast<int>(front.hsize), static_cast<int>(front.vsize), QImage::Format_RGB32};
@@ -194,16 +193,11 @@ void RaytracerBackend::renderFinished() {
 
     copyFrameBuffer(m_canvas, m_framebuffer);
 
-    qDebug() << "Framebuffer copied in" << m_timer.elapsed() << "ms";
-
     m_rendering = false;
     emit renderingChanged();
     emit imageReady(m_framebuffer);
     QString filename = "render" + QString::number(counter) + ".png";
     m_framebuffer.save(filename, "PNG", 100);
-
-    qDebug() << "Done";
-    qDebug() << "";
 }
 
 void RaytracerBackend::materialPreviewFinished() {
@@ -299,6 +293,10 @@ void RaytracerBackend::setPixel(QImage& framebuffer, int x, int y, uint color) {
 
 void RaytracerBackend::drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color) {
     // drawLine(p1.x, p1.y, p2.x, p2.y, color);
+
+    if (p1.x == -1 && p1.y == -1) return;
+    if (p2.x == -1 && p2.y == -1) return;
+
     QPainter p(&framebuffer);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(color);
