@@ -7,6 +7,7 @@
 #include "light.h"
 #include "sphere.h"
 #include "patterns.h"
+#include "cube.h"
 
 inline Sphere glass_sphere() {
     Sphere s;
@@ -60,7 +61,7 @@ namespace Worlds  {
         wall.set_transform(translation(0, 0, 5) * rotation_x(M_PI / 1.2));
         mwall.color = Color(0, 0, 0);
         //mwall.reflective = 0.8;
-        mwall.transparency = 0.5;
+        mwall.transparency = 0.7;
         mwall.pattern_ptr = doomfire_pattern();
         mwall.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
@@ -68,13 +69,16 @@ namespace Worlds  {
         middle.set_transform(translation(0, 1.2, 0));
         middle.material = Materials::diamond;
 
-        Sphere right;
+        Cube right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5));
-        right.set_material(Materials::glass);
+        //right.set_material(Materials::glass);
+        right.material.color = Color(0.7, 0.2, 0.2);
+        right.material.reflective = 0.4;
 
-        Sphere left;
+        Cube left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
-        left.set_material(Materials::glass);
+        //left.set_material(Materials::glass);
+        left.material.reflective = 0.5;
 
         World world;
 
@@ -84,8 +88,8 @@ namespace Worlds  {
 
         world.shapes = {
             std::make_shared<Sphere>(middle),
-            std::make_shared<Sphere>(right),
-            std::make_shared<Sphere>(left),
+            std::make_shared<Cube>(right),
+            std::make_shared<Cube>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
             std::make_shared<Plane>(wall)

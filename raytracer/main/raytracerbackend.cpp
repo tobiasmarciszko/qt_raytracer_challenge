@@ -77,12 +77,6 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         auto m = shape->transform();
         auto c = shape->material.color;
 
-        // Only draw the bounding boxes on Spheres
-        if (!dynamic_cast<Sphere*>(shape.get())) {
-            continue;
-        }
-
-        // TODO: Refactoring into a color conversion method
         QColor qc;
         const auto r = c.red < 1.0F ? c.red : 1.0F;
         const auto g = c.green < 1.0F ? c.green : 1.0F;
@@ -92,48 +86,80 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
 
         const auto centerPoint = m * Point(0, 0, 0);
 
-        const auto xScale = m.get(0,0);
-        const auto yScale = m.get(1,1);
-        const auto zScale = m.get(2,2);
+        const auto xScale = m.get(0, 0);
+        const auto yScale = m.get(1, 1);
+        const auto zScale = m.get(2, 2);
 
-        const auto xPos = centerPoint.x+xScale;
-        const auto xNeg = centerPoint.x-xScale;
+        const auto xPos = centerPoint.x + xScale;
+        const auto xNeg = centerPoint.x - xScale;
 
-        const auto yPos = centerPoint.y+yScale;
-        const auto yNeg = centerPoint.y-yScale;
+        const auto yPos = centerPoint.y + yScale;
+        const auto yNeg = centerPoint.y - yScale;
 
-        const auto zPos = centerPoint.z+zScale;
-        const auto zNeg = centerPoint.z-zScale;
+        const auto zPos = centerPoint.z + zScale;
+        const auto zNeg = centerPoint.z - zScale;
 
-        // Top points
-        const auto a1 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zNeg));
-        const auto a2 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zNeg));
-        const auto a3 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zPos));
-        const auto a4 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zPos));
+        if (dynamic_cast<Cube *>(shape.get())) {
 
-        // Bottom points
-        const auto b1 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zNeg));
-        const auto b2 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zNeg));
-        const auto b3 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zPos));
-        const auto b4 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zPos));
+            // Top points
+            const auto a1 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zNeg));
+            const auto a2 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zNeg));
+            const auto a3 = convertWorldToScreenPoint(camera, Point(xPos, yPos, zPos));
+            const auto a4 = convertWorldToScreenPoint(camera, Point(xNeg, yPos, zPos));
 
-        // Top square
-        drawLine(framebuffer, a1, a2, color);
-        drawLine(framebuffer, a3, a4, color);
-        drawLine(framebuffer, a1, a3, color);
-        drawLine(framebuffer, a2, a4, color);
+            // Bottom points
+            const auto b1 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zNeg));
+            const auto b2 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zNeg));
+            const auto b3 = convertWorldToScreenPoint(camera, Point(xPos, yNeg, zPos));
+            const auto b4 = convertWorldToScreenPoint(camera, Point(xNeg, yNeg, zPos));
 
-        // Bottom square
-        drawLine(framebuffer, b1, b2, color);
-        drawLine(framebuffer, b3, b4, color);
-        drawLine(framebuffer, b1, b3, color);
-        drawLine(framebuffer, b2, b4, color);
+            // Top square
+            drawLine(framebuffer, a1, a2, color);
+            drawLine(framebuffer, a3, a4, color);
+            drawLine(framebuffer, a1, a3, color);
+            drawLine(framebuffer, a2, a4, color);
 
-        // Connect top and bottom
-        drawLine(framebuffer, a1, b1, color);
-        drawLine(framebuffer, a2, b2, color);
-        drawLine(framebuffer, a3, b3, color);
-        drawLine(framebuffer, a4, b4, color);
+            // Bottom square
+            drawLine(framebuffer, b1, b2, color);
+            drawLine(framebuffer, b3, b4, color);
+            drawLine(framebuffer, b1, b3, color);
+            drawLine(framebuffer, b2, b4, color);
+
+            // Connect top and bottom
+            drawLine(framebuffer, a1, b1, color);
+            drawLine(framebuffer, a2, b2, color);
+            drawLine(framebuffer, a3, b3, color);
+            drawLine(framebuffer, a4, b4, color);
+        }
+
+        if (dynamic_cast<Sphere *>(shape.get())) {
+
+            QPainter p(&framebuffer);
+            p.setRenderHints(QPainter::Antialiasing);
+            p.setPen(color);
+
+            Point top{centerPoint.x, yPos, centerPoint.z};
+            Point bottom{centerPoint.x, yNeg, centerPoint.z};
+
+            auto t = convertWorldToScreenPoint(camera, top);
+            auto b = convertWorldToScreenPoint(camera, bottom);
+
+            Point front{centerPoint.x, centerPoint.y, zNeg};
+            Point back{centerPoint.x, centerPoint.y, zPos};
+
+            auto fr = convertWorldToScreenPoint(camera, front);
+            auto ba = convertWorldToScreenPoint(camera, back);
+
+            Point left{xNeg, centerPoint.y, centerPoint.z};
+            Point right{xPos, centerPoint.y, centerPoint.z};
+
+            auto l = convertWorldToScreenPoint(camera, left);
+            auto r = convertWorldToScreenPoint(camera, right);
+
+            p.drawLine(t.x, t.y, b.x, b.y);
+            p.drawLine(fr.x, fr.y, ba.x, ba.y);
+            p.drawLine(l.x, l.y, r.x, r.y);
+        }
     }
 }
 
