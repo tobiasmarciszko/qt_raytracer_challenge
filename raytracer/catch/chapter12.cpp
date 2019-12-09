@@ -13,7 +13,7 @@ TEST_CASE("A ray intersects a cube")
         {Point{0.5, 0, 5},  Vector{0, 0, -1}, 4, 6}, // +z
         {Point{0.5, 0, -5}, Vector{0, 0, 1},  4, 6}, // -z
         {Point{0, 0.5, 0},  Vector{0, 0, 1}, -1, 1}  // inside
-        };
+    };
 
     Cube c;
     for (const auto& [origin, direction, t1, t2]: data) {
@@ -23,4 +23,24 @@ TEST_CASE("A ray intersects a cube")
         REQUIRE(equal(xs.at(0).t, t1));
         REQUIRE(equal(xs.at(1).t, t2));
     }
+}
+
+TEST_CASE("A ray misses a cube")
+{
+    const std::vector<std::tuple<Point, Vector>> data{
+        {Point{-2, 0,  0}, Vector{0.2673, 0.5345, 0.8018}},
+        {Point{0, -2,  0}, Vector{0.8018, 0.2673, 0.5345}},
+        {Point{0,  0, -2}, Vector{0.5345 ,0.8018, 0.2673}},
+        {Point{2,  0,  2}, Vector{0, 0, -1}},
+        {Point{0,  2,  2}, Vector{0, -1, 0}},
+        {Point{2,  2,  0}, Vector{-1, 0, 0}},
+    };
+
+    Cube c;
+    for (const auto& [origin, direction]: data) {
+        Ray r{origin, direction};
+        auto xs = c.local_intersect(r);
+        REQUIRE(xs.size() == 0);
+    }
+
 }

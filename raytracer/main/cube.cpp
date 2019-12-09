@@ -17,6 +17,8 @@ std::vector<Intersection> Cube::local_intersect(const Ray& ray) const {
     const auto tmin = std::max({xtmin, ytmin, ztmin});
     const auto tmax = std::min({xtmax, ytmax, ztmax});
 
+    if (tmin > tmax) return {};
+
     return {Intersection(tmin, this), Intersection(tmax, this)};
 }
 
