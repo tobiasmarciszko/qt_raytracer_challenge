@@ -75,7 +75,7 @@ ApplicationWindow {
             rowSpacing: 10
 
             Component.onCompleted: {
-                raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
+                raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                 raytracer.wireframe()
             }
 
@@ -94,6 +94,7 @@ ApplicationWindow {
                 fillColor: "#FFFFFF"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                visible: !settings.fullscreenEnabled
 
                 onWidthChanged: {
                     raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
@@ -137,6 +138,7 @@ ApplicationWindow {
                 fillColor: "#FFFFFF"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                visible: !settings.fullscreenEnabled
 
                 Text {
                     text: "Left"
@@ -160,6 +162,7 @@ ApplicationWindow {
                 fillColor: "#FFFFFF"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                visible: !settings.fullscreenEnabled
 
                 Text {
                     text: "Right"
@@ -183,6 +186,16 @@ ApplicationWindow {
                 fillColor: "#FFFFFF"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+
+                onWidthChanged: {
+                    raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
+                    raytracer.wireframe()
+                }
+
+                onHeightChanged: {
+                    raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
+                    raytracer.wireframe()
+                }
 
                 Connections {
                     target: raytracer
@@ -267,7 +280,7 @@ ApplicationWindow {
         antialiasing: true
         enabled: !raytracer.rendering
         onClicked: {
-            raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
+            raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
             raytracer.render()
         }
     }
@@ -315,7 +328,7 @@ ApplicationWindow {
         enabled: !raytracer.rendering
 
         onClicked: {
-            raytracer.setViewportSize(liveImageItem.width, liveImageItem.height)
+            raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
             raytracer.wireframe()
         }
     }

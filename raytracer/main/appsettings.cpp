@@ -30,7 +30,7 @@ void AppSettings::setFireworksEnabled(bool isEnabled) {
     emit fireworksEnabledChanged();
 }
 
-// AntiAliasin
+// AntiAliasing
 bool AppSettings::aaEnabled() const {
     return isEnabled(SettingKeys::AntiAliasing);
 }
@@ -38,6 +38,16 @@ bool AppSettings::aaEnabled() const {
 void AppSettings::setAaEnabled(bool isEnabled) {
     setEnabled(SettingKeys::AntiAliasing, isEnabled);
     emit aaEnabledChanged();
+}
+
+// Fullscreen perspective
+bool AppSettings::fullscreenEnabled() const {
+    return isEnabled(SettingKeys::Fullscreen);
+}
+
+void AppSettings::setFullscreenEnabled(bool isEnabled) {
+    setEnabled(SettingKeys::Fullscreen, isEnabled);
+    emit fullscreenEnabledChanged();
 }
 
 /// Boilerplate methods

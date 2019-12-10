@@ -98,8 +98,13 @@ ApplicationWindow {
                 }
 
                 Switch {
-                    text: qsTr("Setting")
+                    text: qsTr("Fullscreen")
                     anchors.verticalCenter: parent.verticalCenter
+                    checked: settings.fullscreenEnabled
+
+                    onClicked: {
+                        settings.fullscreenEnabled = checked
+                    }
                 }
             }
 

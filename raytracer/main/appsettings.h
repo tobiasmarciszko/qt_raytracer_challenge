@@ -17,7 +17,8 @@ public:
         Invalid = 0,
         FastRender,
         Fireworks,
-        AntiAliasing
+        AntiAliasing,
+        Fullscreen
     };
     Q_ENUM(SettingKeys)
 
@@ -63,11 +64,17 @@ public:
     bool aaEnabled() const;
     void setAaEnabled(bool isEnabled);
 
+    // Fullscreen perspective
+    Q_PROPERTY(bool fullscreenEnabled READ fullscreenEnabled WRITE setFullscreenEnabled NOTIFY fullscreenEnabledChanged)
+    bool fullscreenEnabled() const;
+    void setFullscreenEnabled(bool isEnabled);
+
 
 signals:
     void fastRenderEnabledChanged();
     void fireworksEnabledChanged();
     void aaEnabledChanged();
+    void fullscreenEnabledChanged();
 
 private:
     AppSettings();
