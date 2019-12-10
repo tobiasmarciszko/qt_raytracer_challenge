@@ -35,7 +35,7 @@ private:
     Vector m_direction;
 };
 
-inline Ray ray_for_pixel(const Camera& camera, unsigned int px, unsigned int py) {
+inline Ray ray_for_pixel(const Camera& camera, float px, float py) {
 
     // the offset from the edge of the canvas to the pixel's center
     const auto xoffset = (px + 0.5) * camera.pixel_size;

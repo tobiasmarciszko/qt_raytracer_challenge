@@ -77,8 +77,13 @@ ApplicationWindow {
                 }
 
                 Switch {
-                    text: qsTr("Setting")
+                    text: qsTr("AntiAliasing")
+                    checked: settings.aaEnabled
                     anchors.verticalCenter: parent.verticalCenter
+
+                    onClicked: {
+                        settings.aaEnabled = checked
+                    }
                 }
             }
 

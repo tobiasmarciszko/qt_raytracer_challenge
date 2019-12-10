@@ -30,6 +30,16 @@ void AppSettings::setFireworksEnabled(bool isEnabled) {
     emit fireworksEnabledChanged();
 }
 
+// AntiAliasin
+bool AppSettings::aaEnabled() const {
+    return isEnabled(SettingKeys::AntiAliasing);
+}
+
+void AppSettings::setAaEnabled(bool isEnabled) {
+    setEnabled(SettingKeys::AntiAliasing, isEnabled);
+    emit aaEnabledChanged();
+}
+
 /// Boilerplate methods
 
 bool AppSettings::isEnabled(const SettingKeys& key) const {

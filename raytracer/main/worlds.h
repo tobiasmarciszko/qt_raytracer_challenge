@@ -70,42 +70,24 @@ namespace Worlds  {
 
 
         for (int i=-10; i<10; ++i) {
-            Cube right;
-            right.set_transform(translation(i, 1, 0) * scaling(0.5*std::abs(i)*0.1, 0.5, 0.5) * rotation_x(M_PI*(0.1*i) / 3));
-            //right.set_material(Materials::glass);
-            right.material.color = Color(std::abs(i)*0.1, 0.2, 0.2);
-            right.material.reflective = 0.1*std::abs(i);
-            world.shapes.emplace_back(std::make_shared<Cube>(right));
+            Cube cube;
+            cube.set_transform(translation(i, 1, 0) * scaling(0.5 * std::abs(i) * 0.1, 0.5, 0.5) * rotation_x(M_PI * (0.1 * i) / 3));
+            cube.material.color = Color(std::abs(i) * 0.1, 0.2, 0.2);
+            cube.material.reflective = 0.1 * std::abs(i);
+            world.shapes.emplace_back(std::make_shared<Cube>(cube));
         }
 
         for (int i=-10; i<10; ++i) {
-            Cube right;
-            right.set_transform(translation(i, 3, 0) * scaling(0.5*std::abs(i)*0.1, 0.5, 0.5) * rotation_x(M_PI*(0.1*i) / 3));
-            right.set_material(Materials::glass);
-//            right.material.color = Color(0, 0 ,0);
-//            right.material.ambient = 0;
-//            right.material.diffuse = 0;
-//            right.material.specular = 1;
-//            right.material.transparency = 1;
-//            right.material.refractive_index = 0.2*std::abs(i);
-            world.shapes.emplace_back(std::make_shared<Cube>(right));
+            Cube cube;
+            cube.set_transform(translation(i, 3, 0) * scaling(0.5 * std::abs(i) * 0.1, 0.5, 0.5) * rotation_x(M_PI * (0.1 * i) / 3));
+            cube.set_material(Materials::glass);
+            world.shapes.emplace_back(std::make_shared<Cube>(cube));
         }
 
         world.shapes.emplace_back(std::make_shared<Plane>(floor));
         world.shapes.emplace_back(std::make_shared<Plane>(sky));
 
         world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(0.9, 0.9, 0.9)));
-        //world.lights.emplace_back(PointLight(Point(15, 45, -200), Color(0.5, 0.5, 0.5)));
-        // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
-
-//        world.shapes = {
-//                std::make_shared<Sphere>(middle),
-//                std::make_shared<Cube>(right),
-//                std::make_shared<Cube>(left),
-//                std::make_shared<Plane>(floor),
-//                std::make_shared<Plane>(sky),
-//                std::make_shared<Plane>(wall)
-//        };
 
         return world;
     }

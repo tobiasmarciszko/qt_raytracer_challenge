@@ -1,5 +1,6 @@
 #include "raytracerbackend.h"
 #include "worlds.h"
+#include "appsettings.h"
 
 #include <QRgb>
 #include <QDebug>
@@ -45,9 +46,31 @@ void RaytracerBackend::render() {
     m_rendering = true;
     emit renderingChanged();
 
-    const auto renderPixel = [&](Pixel& pixel) {
-        const Ray ray = ray_for_pixel(m_camera, pixel.x, pixel.y);
-        pixel.color = color_at(m_world, ray, m_lighting, 5);
+    bool aaEnabled = AppSettings::get().aaEnabled();
+
+    const auto renderPixel = [&, aaEnabled](Pixel& pixel) {
+
+        const Ray ray1 = ray_for_pixel(m_camera, pixel.x, pixel.y);
+        const auto color1 = color_at(m_world, ray1, m_lighting, 5);
+
+        if (aaEnabled) {
+            // anti alias attempt
+            const float size = 0.33;
+
+            const Ray ray2 = ray_for_pixel(m_camera, pixel.x+size, pixel.y+size);
+            const Ray ray3 = ray_for_pixel(m_camera, pixel.x+size, pixel.y-size);
+            const Ray ray4 = ray_for_pixel(m_camera, pixel.x-size, pixel.y-size);
+            const Ray ray5 = ray_for_pixel(m_camera, pixel.x-size, pixel.y+size);
+
+            const auto color2 = color_at(m_world, ray2, m_lighting, 5);
+            const auto color3 = color_at(m_world, ray3, m_lighting, 5);
+            const auto color4 = color_at(m_world, ray4, m_lighting, 5);
+            const auto color5 = color_at(m_world, ray5, m_lighting, 5);
+
+            pixel.color = (color1 + color2 + color3 + color4 + color5) / 5;
+        } else {
+            pixel.color = color1;
+        }
     };
 
     m_timer.start();

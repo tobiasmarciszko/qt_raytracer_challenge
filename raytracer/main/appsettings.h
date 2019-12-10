@@ -16,7 +16,8 @@ public:
     enum class SettingKeys {
         Invalid = 0,
         FastRender,
-        Fireworks
+        Fireworks,
+        AntiAliasing
     };
     Q_ENUM(SettingKeys)
 
@@ -57,9 +58,16 @@ public:
     bool fireworksEnabled() const;
     void setFireworksEnabled(bool isEnabled);
 
+    // AntiAliasing
+    Q_PROPERTY(bool aaEnabled READ aaEnabled WRITE setAaEnabled NOTIFY aaEnabledChanged)
+    bool aaEnabled() const;
+    void setAaEnabled(bool isEnabled);
+
+
 signals:
     void fastRenderEnabledChanged();
     void fireworksEnabledChanged();
+    void aaEnabledChanged();
 
 private:
     AppSettings();
