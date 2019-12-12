@@ -204,12 +204,48 @@ ApplicationWindow {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: raytracer.selectObject(mouseX, mouseY)
+                    onDoubleClicked: raytracer.selectObject(mouseX, mouseY)
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
                         raytracer.wireframe()
                     }
+
+                    property int startX
+                    property int startY
+
+                    onPressed: {
+                        startX = mouseX
+                        startY = mouseY
+                    }
+
+                    onPositionChanged: {
+
+                        if (selectedObject == null) return
+
+                        cursorShape = Qt.PointingHandCursor
+                        let deltaX =  mouse.x - startX
+                        let deltaY =  mouse.y - startY
+
+                        var z = 0
+                        var y = -deltaY * 0.01
+
+                        if (mouse.modifiers & Qt.ShiftModifier) {
+                            z = -deltaY * 0.01
+                            y = 0
+                        }
+
+                        raytracer.translate(selectedObject.id, deltaX * 0.01, y, z)
+                        raytracer.wireframe()
+
+                        startX = mouse.x
+                        startY = mouse.y
+                    }
+
+                    onReleased: {
+                        cursorShape = Qt.ArrowCursor
+                    }
+
                 }
 
                 ColorOverlay {

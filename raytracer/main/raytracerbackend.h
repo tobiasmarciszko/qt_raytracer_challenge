@@ -42,10 +42,14 @@ public slots:
         if (h.has_value()) {
             createShapeQmlBridge(m_shapeBridge, h.value().object);
             m_selectedMaterial = h.value().object->material;
+            m_selectedId = h.value().object->id;
+            wireframe();
         }
 
         emit objectSelected(&m_shapeBridge);
     }
+
+    void translate(int id, float x, float y, float z);
 
 signals:
     void imageReady(const QImage& image);
@@ -97,6 +101,7 @@ private: // Variables
     Camera m_previewCamera{140, 140, M_PI / 3.0};
     QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
     Material m_selectedMaterial;
+    unsigned int m_selectedId;
 
 private: // Methods
     void drawLine(QImage& framebuffer, int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));

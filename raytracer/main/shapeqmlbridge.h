@@ -13,6 +13,7 @@ class ShapeQmlBridge : public QObject
     Q_OBJECT
     Q_PROPERTY(QColor color MEMBER color)
     Q_PROPERTY(QMatrix4x4 transform MEMBER transform)
+    Q_PROPERTY(uint id MEMBER id)
 
 public:
     explicit ShapeQmlBridge(QObject *parent = nullptr);
@@ -20,6 +21,7 @@ public:
 public:
     QMatrix4x4 transform;
     QColor color;
+    uint id;
 };
 
 inline void createShapeQmlBridge(ShapeQmlBridge& bridge, const Shape* shape_ptr) {
@@ -47,5 +49,6 @@ inline void createShapeQmlBridge(ShapeQmlBridge& bridge, const Shape* shape_ptr)
 
     bridge.color = qcolor;
     bridge.transform = matrix;
+    bridge.id = shape_ptr->id;
 }
 #endif // SHAPEQMLBRIDGE_H

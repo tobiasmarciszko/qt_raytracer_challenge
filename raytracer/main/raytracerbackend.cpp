@@ -121,6 +121,10 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         qc.setRgbF(r, g, b);
         uint color = qRgb(qc.red(), qc.green(), qc.blue());
 
+        if (m_selectedId == shape->id) {
+            color = qRgb(0, 255, 255);
+        }
+
         const auto centerPoint = m * Point(0, 0, 0);
 
         const auto xScale = m.get(0, 0);
@@ -391,5 +395,15 @@ void RaytracerBackend::switchChanged() {
 
     } else if (m_lighting == LightingModel::BlinnPhong) {
         m_lighting = LightingModel::Phong;
+    }
+}
+
+void RaytracerBackend::translate(int id, float x, float y, float z) {
+    for(auto& shape: m_world.shapes) {
+        if (shape->id == id) {
+            auto transform = shape->transform();
+            shape->set_transform(translation(x, y, z) * transform);
+            return;
+        }
     }
 }
