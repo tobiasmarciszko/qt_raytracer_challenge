@@ -9,6 +9,8 @@
 #include "patterns.h"
 #include "cube.h"
 
+#include <QRandomGenerator>
+
 inline Sphere glass_sphere() {
     Sphere s;
     s.set_transform(identity_matrix);
@@ -175,6 +177,77 @@ namespace Worlds  {
         wall->set_material(m2);
 
         world.shapes = {sphere1, floor, wall};
+        return world;
+    }
+
+    inline World randomCubes() {
+
+        World world;
+
+        Plane floor;
+        Material& m = floor.material;
+        floor.set_transform(translation(0, -10, 0));
+        m.color = Color(0.5, 0.5, 0.5);
+        m.ambient = 1;
+        m.diffuse = 1;
+        m.specular = 0.9;
+        m.reflective = 0.2;
+
+        Plane sky;
+        Material& m1 = sky.material;
+        m1.ambient = 1;
+        m1.diffuse = 1;
+        m1.pattern_ptr = cloud_pattern();
+        m1.pattern_ptr->set_transform(scaling(15, 15, 15));
+        sky.set_transform(translation(0, 200, 0));
+
+        QRandomGenerator rd;
+
+        auto numCubes = 400; //rd.bounded(20, 60);
+
+        for (int i=0; i<numCubes; ++i) {
+
+            auto x = rd.bounded(0, 100) - 50;
+            auto y = rd.bounded(0, 100) - 10;
+            auto z = rd.bounded(0, 400);
+            auto color_r = rd.bounded(1.0F);
+            auto color_g = rd.bounded(1.0F);
+            auto color_b = rd.bounded(1.0F);
+
+            auto ambient = rd.bounded(0.8F);
+            auto diffuse = rd.bounded(0.8F);
+            auto specular = rd.bounded(1.0F);
+
+            auto transparency = rd.bounded(1.0F);
+            auto reflective = rd.bounded(0.5F);
+            auto refractive_index = rd.bounded(5.0F);
+
+            auto scale_x = rd.bounded(2.0F) + 0.1F;
+            auto scale_y = rd.bounded(2.0F) + 0.1F;
+            auto scale_z = rd.bounded(2.0F) + 0.1F;
+
+            auto rot_x = rd.bounded(M_2_PI);
+            auto rot_y = rd.bounded(M_2_PI);
+            auto rot_z = rd.bounded(M_2_PI);
+
+            Cube cube;
+            cube.set_transform(translation(x, y, z) * rotation_x(rot_x) * rotation_y(rot_y) * rotation_z(rot_z) * scaling(scale_x, scale_y, scale_z));
+            cube.material.color = Color(color_r, color_g, color_b);
+            cube.material.ambient = ambient;
+            cube.material.diffuse = diffuse;
+            cube.material.specular = specular;
+            cube.material.reflective = reflective;
+//            cube.material.transparency = transparency;
+//            cube.material.refractive_index = refractive_index;
+
+            world.shapes.emplace_back(std::make_shared<Cube>(cube));
+        }
+
+        world.shapes.emplace_back(std::make_shared<Plane>(floor));
+        world.shapes.emplace_back(std::make_shared<Plane>(sky));
+
+        world.lights.emplace_back(PointLight(Point(30, 50, -100), Color(0.85, 0.85, 0.85)));
+
         return world;
     }
 }

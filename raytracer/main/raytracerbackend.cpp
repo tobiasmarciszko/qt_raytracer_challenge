@@ -13,7 +13,7 @@ using namespace Raytracer::Engine;
 
 RaytracerBackend::RaytracerBackend(QObject *parent) :
     QObject(parent),
-    m_world(Worlds::cubes()),
+    m_world(Worlds::threeBallsOnAPlane()),
     m_previewWorld(Worlds::materialPreviewWorld())
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
@@ -82,9 +82,25 @@ void RaytracerBackend::materialPreview() {
     m_materialPreviewfutureWatcher.cancel();
     m_previewWorld.shapes.at(0)->set_material(m_selectedMaterial);
 
-    std::function<void(Pixel&)> renderPixel = [&](Pixel &pixel) {
-        const Ray ray = ray_for_pixel(m_previewCamera, pixel.x, pixel.y);
-        pixel.color = color_at(m_previewWorld, ray, m_lighting);
+    const auto renderPixel = [&](Pixel& pixel) {
+
+        const Ray ray1 = ray_for_pixel(m_previewCamera, pixel.x, pixel.y);
+        const auto color1 = color_at(m_previewWorld, ray1, m_lighting, 5);
+
+        // anti alias attempt
+        const float size = 0.33;
+
+        const Ray ray2 = ray_for_pixel(m_previewCamera, pixel.x+size, pixel.y+size);
+        const Ray ray3 = ray_for_pixel(m_previewCamera, pixel.x+size, pixel.y-size);
+        const Ray ray4 = ray_for_pixel(m_previewCamera, pixel.x-size, pixel.y-size);
+        const Ray ray5 = ray_for_pixel(m_previewCamera, pixel.x-size, pixel.y+size);
+
+        const auto color2 = color_at(m_previewWorld, ray2, m_lighting, 5);
+        const auto color3 = color_at(m_previewWorld, ray3, m_lighting, 5);
+        const auto color4 = color_at(m_previewWorld, ray4, m_lighting, 5);
+        const auto color5 = color_at(m_previewWorld, ray5, m_lighting, 5);
+
+        pixel.color = (color1 + color2 + color3 + color4 + color5) / 5;
     };
 
     m_materialPreviewfutureWatcher.setFuture(QtConcurrent::map(m_previewCanvas.pixels, renderPixel));
@@ -121,7 +137,7 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         const auto bot3 = m * Point(-1, -1, -1);// centerPoint.y + yScale;
         const auto bot4 = m * Point(-1, -1, 1);// centerPoint.y - yScale;
 
-        if (dynamic_cast<Cube *>(shape.get())) {
+        if (dynamic_cast<Cube*>(shape.get())) {
 
             // Top points
             const auto a1 = convertWorldToScreenPoint(camera, top1);
@@ -154,7 +170,7 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
             drawLine(framebuffer, a4, b4, color);
         }
 
-        if (dynamic_cast<Sphere *>(shape.get())) {
+        if (dynamic_cast<Sphere*>(shape.get())) {
 
             QPainter p(&framebuffer);
             p.setRenderHints(QPainter::Antialiasing);
@@ -182,6 +198,25 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
             p.drawLine(fr.x, fr.y, ba.x, ba.y);
             p.drawLine(l.x, l.y, r.x, r.y);
         }
+
+         if (dynamic_cast<Plane*>(shape.get())) {
+
+             auto a2 = convertWorldToScreenPoint(camera, m * Point(1, 0, 0));
+             auto a3 = convertWorldToScreenPoint(camera, m * Point(-1, 0, 0));
+             auto a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -1));
+             auto a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 1));
+
+             drawLine(framebuffer, a2, a3, color);
+             drawLine(framebuffer, a4, a5, color);
+
+             a2 = convertWorldToScreenPoint(camera, m * Point(10, 0, 0));
+             a3 = convertWorldToScreenPoint(camera, m * Point(-10, 0, 0));
+             a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -10));
+             a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 10));
+
+             drawLine(framebuffer, a2, a3, color);
+             drawLine(framebuffer, a4, a5, color);
+         }
     }
 }
 
