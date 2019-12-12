@@ -108,14 +108,12 @@ namespace Worlds  {
         m1.pattern_ptr->set_transform(scaling(30, 30, 30));
         sky.set_transform(translation(0, 1000, 0));
 
-        Plane wall;
+        Cube wall;
         Material& mwall = wall.material;
-        wall.set_transform(translation(0, 0, 5) * rotation_x(M_PI / 1.2));
+        wall.set_transform(translation(0, 1.5, 5) * scaling(10, 2, 0.01));
         mwall.color = Color(0, 0, 0);
-        //mwall.reflective = 0.8;
-        mwall.transparency = 0.7;
         mwall.pattern_ptr = doomfire_pattern();
-        mwall.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
+        mwall.pattern_ptr->set_transform(translation(0, -1, 0) * scaling(0.002, 0.015, 0.02));
 
         Sphere middle;
         middle.set_transform(translation(0, 1.2, 0));
@@ -123,11 +121,11 @@ namespace Worlds  {
 
         Cube right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5) * rotation_x(M_PI / 3));
-        //right.set_material(Materials::glass);
-        right.material.color = Color(0.7, 0.2, 0.2);
-        right.material.reflective = 0.4;
-        right.material.pattern_ptr = doomfire_pattern();
-        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
+        right.set_material(Materials::glass);
+//        right.material.color = Color(0.7, 0.2, 0.2);
+//        right.material.reflective = 0.4;
+//        right.material.pattern_ptr = doomfire_pattern();
+//        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         Cube left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
@@ -146,7 +144,7 @@ namespace Worlds  {
             std::make_shared<Cube>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
-            std::make_shared<Plane>(wall)
+            std::make_shared<Cube>(wall)
         };
 
         return world;
