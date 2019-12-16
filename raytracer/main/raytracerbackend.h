@@ -40,16 +40,17 @@ public slots:
         const auto is = Raytracer::Engine::intersect_world(m_world, ray);
         const auto h = Raytracer::Engine::hit(is);
         if (h.has_value()) {
-            createShapeQmlBridge(m_shapeBridge, h.value().object);
+            createShapeQmlBridge(m_selectedObject, h.value().object);
             m_selectedMaterial = h.value().object->material;
             m_selectedId = h.value().object->id;
             wireframe();
         }
 
-        emit objectSelected(&m_shapeBridge);
+        emit objectSelected(&m_selectedObject);
     }
 
-    void translate(int id, float x, float y, float z);
+    void translate(unsigned int id, float x, float y, float z);
+    void scale(unsigned int id, float x, float y, float z);
 
 signals:
     void imageReady(const QImage& image);
@@ -90,7 +91,7 @@ private: // Variables
     bool m_rendering = false;
     int m_progress{0};
     int m_lastRenderTime{0};
-    ShapeQmlBridge m_shapeBridge;
+    ShapeQmlBridge m_selectedObject;
 
     QFutureWatcher<void> m_futureWatcher;
     QFutureWatcher<void> m_materialPreviewfutureWatcher;

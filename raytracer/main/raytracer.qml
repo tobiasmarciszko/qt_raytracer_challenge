@@ -235,7 +235,12 @@ ApplicationWindow {
                             y = 0
                         }
 
-                        raytracer.translate(selectedObject.id, deltaX * 0.01, y, z)
+                        if (informationWindow.moveButton.checked) {
+                            raytracer.translate(selectedObject.id, deltaX * 0.01, y, z)
+                        } else if (informationWindow.scaleButton.checked) {
+                            raytracer.scale(selectedObject.id, 1 + deltaX * 0.01, 1 + y, 1 + z)
+                        }
+
                         raytracer.wireframe()
 
                         startX = mouse.x
@@ -394,7 +399,7 @@ ApplicationWindow {
     InformationWindow {
         id: informationWindow
         y: window.y
-        x: window.x-250
+        x: window.x-informationWindow.width
         height: window.height
         font.family: aircraft.name
     }
@@ -424,7 +429,7 @@ ApplicationWindow {
     SettingsWindow {
         id: settingsWindow
         y: window.y
-        x: window.x-250
+        x: window.x-settingsWindow.width
         height: window.height
         font.family: aircraft.name
     }
@@ -461,6 +466,7 @@ ApplicationWindow {
         if (selectedObject !== null) {
 
             informationWindow.text += "Object Selection\n\n"
+            informationWindow.text += "Id: " + selectedObject.id + "\n"
             informationWindow.text += "Color: " + selectedObject.color + "\n"
             informationWindow.text += "Transform: \n"
             informationWindow.text += selectedObject.transform.row(0) + "\n"
