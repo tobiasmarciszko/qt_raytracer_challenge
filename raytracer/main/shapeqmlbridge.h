@@ -55,31 +55,4 @@ private:
     }
 };
 
-//inline void createShapeQmlBridge(ShapeQmlBridge& bridge, std::shared_ptr<Shape> ptr) {
-
-//    QColor qcolor;
-//    const QMatrix4x4 matrix(shape_ptr->transform().get(0,0),
-//                      shape_ptr->transform().get(0,1),
-//                      shape_ptr->transform().get(0,2),
-//                      shape_ptr->transform().get(0,3),
-//                      shape_ptr->transform().get(1,0),
-//                      shape_ptr->transform().get(1,1),
-//                      shape_ptr->transform().get(1,2),
-//                      shape_ptr->transform().get(1,3),
-//                      shape_ptr->transform().get(2,0),
-//                      shape_ptr->transform().get(2,1),
-//                      shape_ptr->transform().get(2,2),
-//                      shape_ptr->transform().get(2,3),
-//                      shape_ptr->transform().get(3,0),
-//                      shape_ptr->transform().get(3,1),
-//                      shape_ptr->transform().get(3,2),
-//                      shape_ptr->transform().get(3,3));
-
-//    Color color = shape_ptr->material.color;
-//    qcolor.setRgbF(color.red, color.green, color.blue);
-
-//    bridge.color = qcolor;
-//    bridge.transform = matrix;
-//    bridge.id = shape_ptr->id;
-//}
 #endif // SHAPEQMLBRIDGE_H
