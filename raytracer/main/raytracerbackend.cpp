@@ -399,25 +399,22 @@ void RaytracerBackend::switchChanged() {
 }
 
 void RaytracerBackend::translate(unsigned int id, float x, float y, float z) {
-    for(auto& shape: m_world.shapes) {
-        if (shape->id == id) {
-            auto transform = shape->transform();
-            shape->set_transform(translation(x, y, z) * transform);
-            createShapeQmlBridge(m_selectedObject, shape.get());
-            emit objectSelected(&m_selectedObject);
-            return;
-        }
-    }
+
+    auto shape_ptr = m_world.getShapePtrFromId(id);
+
+    auto transform = shape_ptr->transform();
+    shape_ptr->set_transform(translation(x, y, z) * transform);
+    m_selectedObject.setShapePointer(shape_ptr);
+    emit objectSelected(&m_selectedObject);
+
 }
 
 void RaytracerBackend::scale(unsigned int id, float x, float y, float z) {
-    for(auto& shape: m_world.shapes) {
-        if (shape->id == id) {
-            auto transform = shape->transform();
-            shape->set_transform(transform * scaling(x, y, z));
-            createShapeQmlBridge(m_selectedObject, shape.get());
-            emit objectSelected(&m_selectedObject);
-            return;
-        }
-    }
+    auto shape_ptr = m_world.getShapePtrFromId(id);
+
+    auto transform = shape_ptr->transform();
+
+    shape_ptr->set_transform(transform * scaling(x, y, z));
+    m_selectedObject.setShapePointer(shape_ptr);
+    emit objectSelected(&m_selectedObject);
 }
