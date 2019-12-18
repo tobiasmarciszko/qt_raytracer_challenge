@@ -125,7 +125,7 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         qc.setRgbF(r, g, b);
         uint color = qRgb(qc.red(), qc.green(), qc.blue());
 
-        if (m_selectedId == shape->id) {
+        if (m_selectedObject.getId() == shape->id) {
             color = qRgb(0, 255, 255);
         }
 
@@ -409,8 +409,7 @@ void RaytracerBackend::translate(unsigned int id, float x, float y, float z) {
     auto transform = shape_ptr->transform();
     shape_ptr->set_transform(translation(x, y, z) * transform);
     m_selectedObject.setShapePointer(shape_ptr);
-    emit objectSelected(&m_selectedObject);
-
+    emit selectedObjectChanged();
 }
 
 void RaytracerBackend::scale(unsigned int id, float x, float y, float z) {
@@ -420,5 +419,5 @@ void RaytracerBackend::scale(unsigned int id, float x, float y, float z) {
 
     shape_ptr->set_transform(transform * scaling(x, y, z));
     m_selectedObject.setShapePointer(shape_ptr);
-    emit objectSelected(&m_selectedObject);
+    emit selectedObjectChanged();
 }

@@ -18,6 +18,14 @@ ApplicationWindow {
     color: "black"
     title: "Freeside Raytracer"
 
+    Connections {
+        target: raytracer
+
+        onSelectedObjectChanged: {
+            informationWindow.visible = true
+        }
+    }
+
     Component.onCompleted: {
         x = Screen.width / 2 - width / 2
         y = Screen.height / 2 - height / 2
@@ -121,14 +129,6 @@ ApplicationWindow {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
                         raytracer.wireframe()
                     }
-
-                    Connections {
-                        target: raytracer
-                        onObjectSelected: {
-                            selectedObject = shapeBridge
-                            raytracer.materialPreview()
-                        }
-                    }
                 }
             }
 
@@ -220,7 +220,7 @@ ApplicationWindow {
 
                     onPositionChanged: {
 
-                        if (selectedObject == null) return
+                        if (raytracer.selectedObject.id <= 0) return
 
                         cursorShape = Qt.PointingHandCursor
                         let deltaX =  mouse.x - startX
@@ -235,9 +235,9 @@ ApplicationWindow {
                         }
 
                         if (informationWindow.moveButton.checked) {
-                            raytracer.translate(selectedObject.id, deltaX * 0.01, y, z)
+                            raytracer.translate(raytracer.selectedObject.id, deltaX * 0.01, y, z)
                         } else if (informationWindow.scaleButton.checked) {
-                            raytracer.scale(selectedObject.id, 1 + deltaX * 0.01, 1 + y, 1 + z)
+                            raytracer.scale(raytracer.selectedObject.id, 1 + deltaX * 0.01, 1 + y, 1 + z)
                         }
 
                         raytracer.wireframe()
@@ -399,7 +399,6 @@ ApplicationWindow {
         x: window.x-informationWindow.width
         height: window.height
         font.family: aircraft.name
-        selectedObject: window.selectedObject
     }
 
     RoundButton {
@@ -451,8 +450,6 @@ ApplicationWindow {
             }
         }
     }
-
-    property ShapeBridge selectedObject
 
     ParticleSystem {
         id: particles

@@ -8,13 +8,6 @@
 
 int main(int argc, char *argv[])
 {
-    // This is the item that draw the QImage from the Raytracer
-    qmlRegisterType<ImageItem>("myextension", 1, 0, "ImageItem");
-
-    // Experimenting with exposing pure C++ classes through to QML
-    // by using bridge/container classes. Is this a good idea?
-    qmlRegisterType<ShapeQmlBridge>("myextension", 1, 0, "ShapeBridge");
-
     // App settings
     // qmlRegisterType<AppSettings>("myextension", 1, 0, "AppSettings");
 
@@ -34,8 +27,15 @@ int main(int argc, char *argv[])
 
     RaytracerBackend raytracer;
     engine.rootContext()->setContextProperty("raytracer", &raytracer);
-
     engine.rootContext()->setContextProperty("settings", &AppSettings::get());
+
+    // This is the item that draw the QImage from the Raytracer
+    qmlRegisterType<ImageItem>("myextension", 1, 0, "ImageItem");
+
+    // Experimenting with exposing pure C++ classes through to QML
+    // by using bridge/container classes. Is this a good idea?
+    qmlRegisterType<ShapeQmlBridge>("myextension", 1, 0, "ShapeQmlBridge");
+
     engine.load(url);
 
     return QGuiApplication::exec();

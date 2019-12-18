@@ -20,6 +20,10 @@ class RaytracerBackend : public QObject
 public:
     RaytracerBackend(QObject *parent = nullptr);
 
+    ShapeQmlBridge* getSelectedObject() {
+        return &m_selectedObject;
+    }
+
 public:
     Q_PROPERTY(int progress MEMBER m_progress NOTIFY progressChanged)
     Q_PROPERTY(bool rendering MEMBER m_rendering NOTIFY renderingChanged)
@@ -27,6 +31,7 @@ public:
     Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)
     Q_PROPERTY(double fromZ MEMBER m_fromZ NOTIFY fromZChanged)
     Q_PROPERTY(double lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
+    Q_PROPERTY(ShapeQmlBridge* selectedObject READ getSelectedObject NOTIFY selectedObjectChanged)
 
 public slots:
     void render();
@@ -42,12 +47,11 @@ public slots:
         if (h.has_value()) {
             auto shape_ptr = m_world.getShapePtrFromId(h.value().object->id);
             m_selectedObject.setShapePointer(shape_ptr);
-            m_selectedMaterial = h.value().object->material;
-            m_selectedId = h.value().object->id;
             wireframe();
-        }
+            materialPreview();
 
-        emit objectSelected(&m_selectedObject);
+            emit selectedObjectChanged();
+        }
     }
 
     void translate(unsigned int id, float x, float y, float z);
@@ -62,7 +66,7 @@ signals:
     void fromXChanged();
     void fromYChanged();
     void fromZChanged();
-    void objectSelected(ShapeQmlBridge* shapeBridge);
+    void selectedObjectChanged();
 
 private slots:
     void renderFinished();
@@ -102,8 +106,6 @@ private: // Variables
     Canvas m_previewCanvas{140, 140};
     Camera m_previewCamera{140, 140, M_PI / 3.0};
     QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
-    Material m_selectedMaterial;
-    unsigned int m_selectedId;
 
 private: // Methods
     void drawLine(QImage& framebuffer, int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));

@@ -12,8 +12,6 @@ ApplicationWindow {
     color: "black"
     flags: Qt.FramelessWindowHint
 
-    property var selectedObject
-
     property alias moveButton: moveButton
     property alias scaleButton: scaleButton
     property alias colorDialog: colorDialog
@@ -23,74 +21,75 @@ ApplicationWindow {
 
     GroupBox {
         id: groupBox1
-        title: qsTr("Information")
+        title: qsTr("Object Manipulation")
         anchors.fill: parent
         anchors.margins: 10
 
-        GroupBox {
-            id: groupBox
-            x: 0
-            width: 256
-            height: 336
+        Button {
+            id: scaleButton
+            x: 70
+            text: qsTr("Scale")
             anchors.top: parent.top
-            anchors.topMargin: 15
-            title: qsTr("Tools")
+            anchors.topMargin: 0
+            checkable: true
 
-            Button {
-                id: scaleButton
-                x: 70
-                text: qsTr("Scale")
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                checkable: true
-
-                onCheckedChanged: {
-                    if (checked) {
-                        moveButton.checked = false
-                    }
+            onCheckedChanged: {
+                if (checked) {
+                    moveButton.checked = false
                 }
             }
+        }
 
-            Button {
-                id: moveButton
-                x: 0
-                text: qsTr("Move")
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                checked: true
-                checkable: true
+        Button {
+            id: moveButton
+            x: 0
+            text: qsTr("Move")
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            checked: true
+            checkable: true
 
-                onCheckedChanged: {
-                    if (checked) {
-                        scaleButton.checked = false
-                    }
+            onCheckedChanged: {
+                if (checked) {
+                    scaleButton.checked = false
                 }
             }
+        }
 
-            Button {
-                id: colorButton
-                x: 0
-                y: -8
-                text: qsTr("Color")
-                anchors.topMargin: 54
-                checkable: false
-                anchors.top: parent.top
+        Button {
+            id: colorButton
+            x: 140
+            y: -8
+            text: qsTr("Color")
+            anchors.topMargin: 0
+            checkable: false
+            anchors.top: parent.top
 
-                onClicked: {
-                    colorDialog.color = selectedObject.color
-                    colorDialog.open()
-                }
+            onClicked: {
+                colorDialog.color = raytracer.selectedObject.color
+                colorDialog.open()
             }
+        }
 
-            ColorDialog {
-                id: colorDialog
-                title: "Please choose a color"
+        ColorDialog {
+            id: colorDialog
+            title: "Please choose a color"
 
-                onCurrentColorChanged: {
-                    selectedObject.color = colorDialog.currentColor
-                    raytracer.materialPreview()
-                }
+            onCurrentColorChanged: {
+                raytracer.selectedObject.color = colorDialog.currentColor
+                raytracer.materialPreview()
             }
+        }
+
+        Column {
+            anchors.bottom: rectangle.top
+            anchors.bottomMargin: 0
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.top: scaleButton.bottom
+            anchors.topMargin: 10
 
             Slider {
                 id: ambientSlider
@@ -99,22 +98,22 @@ ApplicationWindow {
                 width: 230
                 height: 48
                 stepSize: 0.01
-                value: 0.5
+                value: raytracer.selectedObject.ambient
 
                 Label {
                     text: "ambient"
                     anchors.left: parent.left
                 }
 
-                 Label {
-                     text: parent.value.toFixed(2)
-                     anchors.horizontalCenter: parent.horizontalCenter
-                 }
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
 
-                 onMoved: {
-                     informationWindow.selectedObject.ambient = value
-                     raytracer.materialPreview()
-                 }
+                onMoved: {
+                    raytracer.selectedObject.ambient = value
+                    raytracer.materialPreview()
+                }
             }
 
             Slider {
@@ -124,22 +123,22 @@ ApplicationWindow {
                 width: 230
                 height: 48
                 stepSize: 0.01
-                value: 0.5
+                value: raytracer.selectedObject.diffuse
 
                 Label {
                     text: "diffuse"
                     anchors.left: parent.left
                 }
 
-                 Label {
-                     text: parent.value.toFixed(2)
-                     anchors.horizontalCenter: parent.horizontalCenter
-                 }
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
 
-                 onMoved: {
-                     informationWindow.selectedObject.diffuse = value
-                     raytracer.materialPreview()
-                 }
+                onMoved: {
+                    raytracer.selectedObject.diffuse = value
+                    raytracer.materialPreview()
+                }
             }
 
             Slider {
@@ -149,28 +148,128 @@ ApplicationWindow {
                 width: 230
                 height: 48
                 stepSize: 0.01
-                value: 0.5
+                value: raytracer.selectedObject.specular
 
                 Label {
                     text: "specular"
                     anchors.left: parent.left
                 }
 
-                 Label {
-                     text: parent.value.toFixed(2)
-                     anchors.horizontalCenter: parent.horizontalCenter
-                 }
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
 
-                 onMoved: {
-                     informationWindow.selectedObject.diffuse = value
-                     raytracer.materialPreview()
-                 }
+                onMoved: {
+                    raytracer.selectedObject.specular = value
+                    raytracer.materialPreview()
+                }
+            }
+
+            Slider {
+                id: reflectiveSlider
+                x: 2
+                y: 250
+                width: 230
+                height: 48
+                stepSize: 0.01
+                value: raytracer.selectedObject.reflective
+                Label {
+                    text: "reflective"
+                    anchors.left: parent.left
+                }
+
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                onMoved: {
+                    raytracer.selectedObject.reflective = value
+                    raytracer.materialPreview()
+                }
+            }
+
+            Slider {
+                id: transparencySlider
+                x: 2
+                y: 290
+                width: 230
+                height: 48
+                stepSize: 0.01
+                value: raytracer.selectedObject.transparency
+                Label {
+                    text: "transp."
+                    anchors.left: parent.left
+                }
+
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                onMoved: {
+                    raytracer.selectedObject.transparency = value
+                    raytracer.materialPreview()
+                }
+            }
+
+            Slider {
+                id: rIndexSlider
+                x: 2
+                y: 330
+                width: 230
+                height: 48
+                to: 5
+                stepSize: 0.01
+                value: raytracer.selectedObject.rindex
+                Label {
+                    text: "r-index"
+                    anchors.left: parent.left
+                }
+
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                onMoved: {
+                    raytracer.selectedObject.rindex = value
+                    raytracer.materialPreview()
+                }
+            }
+
+            Slider {
+                id: shininessSlider
+                x: 2
+                y: 370
+                width: 230
+                height: 48
+                from: 0
+                to: 500
+                stepSize: 1
+                value: raytracer.selectedObject.shininess
+                Label {
+                    text: "shininess"
+                    anchors.left: parent.left
+                }
+
+                Label {
+                    text: parent.value.toFixed(2)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                onMoved: {
+                    raytracer.selectedObject.shininess = value
+                    raytracer.materialPreview()
+                }
             }
         }
 
         Rectangle {
             id: rectangle
-            y: 398
+            x: 58
+            y: 538
             width: 140
             height: 140
             color: "#ffffff"
@@ -200,6 +299,6 @@ ApplicationWindow {
 
 /*##^##
 Designer {
-    D{i:3;anchors_y:18}D{i:4;anchors_y:18}D{i:5;anchors_y:18}D{i:2;anchors_y:30}
+    D{i:2;anchors_y:30}D{i:3;anchors_y:18}D{i:4;anchors_y:18}D{i:5;anchors_y:18}D{i:6;anchors_height:462}
 }
 ##^##*/
