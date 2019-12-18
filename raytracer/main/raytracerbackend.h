@@ -71,12 +71,12 @@ private slots:
 private: // Variables
 
     // Camera
-    double m_fromX = 1;
-    double m_fromY = 1;
-    double m_fromZ = -4;
+    double m_fromX = 0;
+    double m_fromY = 0;
+    double m_fromZ = -14;
 
     double m_toX = 0;
-    double m_toY = 1;
+    double m_toY = 0;
     double m_toZ = 0;
 
     // For rendering

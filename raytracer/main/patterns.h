@@ -27,6 +27,25 @@ inline std::shared_ptr<Pattern> cloud_pattern() {
     return std::make_shared<CloudPattern>(CloudPattern());
 }
 
+///////////////// Winter Pattern /////////////////////
+struct WinterPattern : public Pattern {
+
+    QImage *winter = new QImage(":/winter");
+
+    Color pattern_at(const Point& p) const override {
+        int y = winter->height() - (abs(int(p.y)) % winter->height());
+        int x = (abs(int(p.x))) % winter->width();
+
+        const QColor color = winter->pixelColor(x, y);
+        return Color(color.redF(), color.greenF(), color.blueF());
+    }
+};
+
+
+inline std::shared_ptr<Pattern> winter_pattern() {
+    return std::make_shared<WinterPattern>(WinterPattern());
+}
+
 
 ///////////////// Test Pattern /////////////////////
 struct TestPattern : public Pattern {

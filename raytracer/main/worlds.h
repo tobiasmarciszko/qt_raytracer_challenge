@@ -20,6 +20,268 @@ inline Sphere glass_sphere() {
 
 namespace Worlds  {
 
+    inline World freeside_raytracer()
+    {
+        World world;
+
+        // Lights
+        const auto light = PointLight(Point(-10, 10, -10), Color(0.9, 0.9, 0.9));
+        world.lights = {light};
+
+        // Background
+        auto wall = std::make_shared<Cube>(Cube());
+        Material& mwall = wall->material;
+        wall->set_transform(translation(0, 0, 5) * scaling(15, 10, 0.01));
+        mwall.color = Color(0, 0, 0);
+        mwall.ambient = 0.5;
+        mwall.diffuse = 0.5;
+        mwall.specular = 0;
+        mwall.pattern_ptr = winter_pattern();
+        mwall.pattern_ptr->set_transform(translation(-7.5, -5, 0) * scaling(0.0005, 0.0005, 1));
+        world.shapes.emplace_back(wall);
+
+        auto wall2 = std::make_shared<Cube>(Cube());
+        wall2->set_material(mwall);
+        wall2->set_transform(translation(0, 0, -20) * scaling(30, 20, 0.01));
+        world.shapes.emplace_back(wall2);
+
+
+        QRandomGenerator rd = QRandomGenerator::securelySeeded();
+
+        auto numObjects = 10; //rd.bounded(20, 60);
+
+        for (int i=0; i<numObjects; ++i) {
+
+            auto x = rd.bounded(0, 20) - 10;
+            auto y = rd.bounded(0, 20) - 10;
+            auto z = rd.bounded(2, 4);
+
+            auto scale = rd.bounded(1.0) * 1.5;
+
+            auto outer = std::make_shared<Sphere>(Sphere());
+            outer->set_material(Materials::glass);
+            outer->material.color = Color(0.8, 0.1, 0.1);
+            outer->material.ambient = 0.1;
+            outer->material.diffuse = 0.1;
+            outer->set_transform(translation(x, y, z) * scaling(scale, scale, scale));
+
+            world.shapes.emplace_back(outer);
+        }
+
+        for (int i=0; i<numObjects; ++i) {
+
+            auto x = rd.bounded(0, 20) - 10;
+            auto y = rd.bounded(0, 20) - 10;
+            auto z = rd.bounded(2, 4);
+
+            auto scale = rd.bounded(1.0) * 1.5;
+
+            auto outer = std::make_shared<Sphere>(Sphere());
+            outer->set_material(Materials::glass);
+            outer->material.color = Color(0.1, 0.7, 0.1);
+            outer->material.ambient = 0.1;
+            outer->material.diffuse = 0.1;
+            outer->set_transform(translation(x, y, z) * scaling(scale, scale, scale));
+
+            world.shapes.emplace_back(outer);
+        }
+
+        for (int i=0; i<numObjects/2; ++i) {
+
+            auto x = rd.bounded(0, 20) - 10;
+            auto y = rd.bounded(0, 20) - 10;
+            auto z = rd.bounded(2, 4);
+
+            auto scale = rd.bounded(1.0) * 1.5;
+
+            auto outer = std::make_shared<Sphere>(Sphere());
+            outer->material.color = Color(0.1, 0.51, 0.1);
+            outer->material.ambient = 0.5;
+            outer->material.diffuse = 0.9;
+            outer->material.reflective = 0.1;
+            outer->set_transform(translation(x, y, z) * scaling(scale, scale, scale));
+
+            world.shapes.emplace_back(outer);
+        }
+
+        for (int i=0; i<numObjects/2; ++i) {
+
+            auto x = rd.bounded(0, 20) - 10;
+            auto y = rd.bounded(0, 20) - 10;
+            auto z = rd.bounded(2, 4);
+
+            auto scale = rd.bounded(1.0) * 1.5;
+
+            auto outer = std::make_shared<Sphere>(Sphere());
+            outer->material.color = Color(0.51, 0.1, 0.1);
+            outer->material.ambient = 0.5;
+            outer->material.diffuse = 0.9;
+            outer->material.reflective = 0.1;
+            outer->set_transform(translation(x, y, z) * scaling(scale, scale, scale));
+
+            world.shapes.emplace_back(outer);
+        }
+
+
+//        auto x_start = -0.5;
+//        auto y_start = 0;
+//        auto z = 0;
+
+//        const auto f_color = Color(0.9, 0, 0);
+
+//        Material f_material;
+//        f_material.color = f_color;
+//        f_material.diffuse = 0.5;
+//        f_material.ambient = 0.5;
+//        f_material.specular = 0.9;
+//        f_material.shininess = 200;
+//        f_material.reflective = 0.2;
+
+//        // f_material = Materials::glass;
+
+//        // F
+//        // ***
+//        // *
+//        // **
+//        // *
+//        // *
+//        //
+//        auto f1 = std::make_shared<Cube>(Cube());
+//        auto f2 = std::make_shared<Cube>(Cube());
+//        auto f3 = std::make_shared<Cube>(Cube());
+//        auto f4 = std::make_shared<Cube>(Cube());
+//        auto f5 = std::make_shared<Cube>(Cube());
+//        auto f6 = std::make_shared<Cube>(Cube());
+//        auto f7 = std::make_shared<Cube>(Cube());
+//        auto f8 = std::make_shared<Cube>(Cube());
+
+//        f1->set_transform(translation(x_start + 0, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        f1->set_material(f_material);
+//        world.shapes.emplace_back(f1);
+
+//        f2->set_transform(translation(x_start + 0.2, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        f2->set_material(f_material);
+//        world.shapes.emplace_back(f2);
+
+//        f3->set_transform(translation(x_start + 0.4, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        f3->set_material(f_material);
+//        world.shapes.emplace_back(f3);
+
+//        f4->set_transform(translation(x_start + 0, y_start + 0.6, z) * scaling(0.1, 0.1, 0.1));
+//        f4->set_material(f_material);
+//        world.shapes.emplace_back(f4);
+
+//        f5->set_transform(translation(x_start + 0, y_start + 0.4, z) * scaling(0.1, 0.1, 0.1));
+//        f5->set_material(f_material);
+//        world.shapes.emplace_back(f5);
+
+//        f6->set_transform(translation(x_start + 0.2, y_start + 0.4, z) * scaling(0.1, 0.1, 0.1));
+//        f6->set_material(f_material);
+//        world.shapes.emplace_back(f6);
+
+//        f7->set_transform(translation(x_start + 0, y_start + 0.2, z) * scaling(0.1, 0.1, 0.1));
+//        f7->set_material(f_material);
+//        world.shapes.emplace_back(f7);
+
+//        f8->set_transform(translation(x_start + 0, y_start + 0, z) * scaling(0.1, 0.1, 0.1));
+//        f8->set_material(f_material);
+//        world.shapes.emplace_back(f8);
+
+//        // R
+////        ***
+////        *  *
+////        ***
+////        * *
+////        *  *
+
+//        x_start += 1;
+
+//        auto r_color = Color(0, 0.9, 0);
+
+//        Material r_material;
+//        r_material.color = r_color;
+//        r_material.diffuse = 0.5;
+//        r_material.ambient = 0.5;
+//        r_material.specular = 0.9;
+//        r_material.shininess = 200;
+//        r_material.reflective = 0.2;
+
+//        auto r1 = std::make_shared<Cube>(Cube());
+//        auto r2 = std::make_shared<Cube>(Cube());
+//        auto r3 = std::make_shared<Cube>(Cube());
+//        auto r4 = std::make_shared<Cube>(Cube());
+//        auto r5 = std::make_shared<Cube>(Cube());
+//        auto r6 = std::make_shared<Cube>(Cube());
+//        auto r7 = std::make_shared<Cube>(Cube());
+//        auto r8 = std::make_shared<Cube>(Cube());
+//        auto r9 = std::make_shared<Cube>(Cube());
+//        auto r10 = std::make_shared<Cube>(Cube());
+//        auto r11 = std::make_shared<Cube>(Cube());
+//        auto r12 = std::make_shared<Cube>(Cube());
+
+//        r1->set_transform(translation(x_start + 0, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        r1->set_material(r_material);
+//        world.shapes.emplace_back(r1);
+
+//        r2->set_transform(translation(x_start + 0.2, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        r2->set_material(r_material);
+//        world.shapes.emplace_back(r2);
+
+//        r3->set_transform(translation(x_start + 0.4, y_start + 0.8, z) * scaling(0.1, 0.1, 0.1));
+//        r3->set_material(r_material);
+//        world.shapes.emplace_back(r3);
+
+//        r4->set_transform(translation(x_start + 0, y_start + 0.6, z) * scaling(0.1, 0.1, 0.1));
+//        r4->set_material(r_material);
+//        world.shapes.emplace_back(r4);
+
+//        r5->set_transform(translation(x_start + 0.6, y_start + 0.6, z) * scaling(0.1, 0.1, 0.1));
+//        r5->set_material(r_material);
+//        world.shapes.emplace_back(r5);
+
+//        r6->set_transform(translation(x_start + 0, y_start + 0.4, z) * scaling(0.1, 0.1, 0.1));
+//        r6->set_material(r_material);
+//        world.shapes.emplace_back(r6);
+
+//        r7->set_transform(translation(x_start + 0.2, y_start + 0.4, z) * scaling(0.1, 0.1, 0.1));
+//        r7->set_material(r_material);
+//        world.shapes.emplace_back(r7);
+
+//        r8->set_transform(translation(x_start + 0.4, y_start + 0.4, z) * scaling(0.1, 0.1, 0.1));
+//        r8->set_material(r_material);
+//        world.shapes.emplace_back(r8);
+
+//        r9->set_transform(translation(x_start + 0, y_start + 0.2, z) * scaling(0.1, 0.1, 0.1));
+//        r9->set_material(r_material);
+//        world.shapes.emplace_back(r9);
+
+//        r10->set_transform(translation(x_start + 0.4, y_start + 0.2, z) * scaling(0.1, 0.1, 0.1));
+//        r10->set_material(r_material);
+//        world.shapes.emplace_back(r10);
+
+//        r11->set_transform(translation(x_start + 0, y_start + 0, z) * scaling(0.1, 0.1, 0.1));
+//        r11->set_material(r_material);
+//        world.shapes.emplace_back(r11);
+
+//        r12->set_transform(translation(x_start + 0.6, y_start + 0, z) * scaling(0.1, 0.1, 0.1));
+//        r12->set_material(r_material);
+//        world.shapes.emplace_back(r12);
+
+//        // E
+
+////        ****
+////        *
+////        ***
+////        *
+////        ****
+
+
+
+
+
+        return world;
+    }
+
     inline World default_world()
     {
         World world;

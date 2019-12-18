@@ -135,7 +135,6 @@ namespace Raytracer::Engine {
 
     Color reflected_color(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining)
     {
-
         // Prevent infinite recursion
         if (remaining <= 0) {
             return black;
@@ -213,7 +212,6 @@ namespace Raytracer::Engine {
 
     Color refracted_color(const World& world, const Computations& comps, const LightingModel& lightingModel, int remaining)
     {
-
         // Prevent infinite recursion
         if (remaining <= 0) {
             return black;

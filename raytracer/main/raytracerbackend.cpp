@@ -13,7 +13,7 @@ using namespace Raytracer::Engine;
 
 RaytracerBackend::RaytracerBackend(QObject *parent) :
     QObject(parent),
-    m_world(Worlds::threeBallsOnAPlane()),
+    m_world(Worlds::freeside_raytracer()),
     m_previewWorld(Worlds::materialPreviewWorld())
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
