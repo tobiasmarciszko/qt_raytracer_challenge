@@ -11,9 +11,12 @@
 class ShapeQmlBridge : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QColor color READ getColor)
+    Q_PROPERTY(QColor color READ getColor WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QMatrix4x4 transform READ getTransform)
     Q_PROPERTY(uint id READ getId)
+    Q_PROPERTY(float ambient READ getAmbient WRITE setAmbient NOTIFY ambientChanged)
+    Q_PROPERTY(float diffuse READ getDiffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(float specular READ getSpecular WRITE setSpecular NOTIFY specularChanged)
 
 public:
     explicit ShapeQmlBridge(QObject *parent = nullptr);
@@ -21,8 +24,25 @@ public:
         m_shape_ptr = ptr;
     }
 
-private:
-    std::shared_ptr<Shape> m_shape_ptr{nullptr};
+    void setColor(QColor color) {
+        m_shape_ptr->material.color = Color(color.redF(), color.greenF(), color.blueF());
+        emit colorChanged();
+    }
+
+    void setAmbient(float value) {
+        m_shape_ptr->material.ambient = value;
+        emit ambientChanged();
+    }
+
+    void setDiffuse(float value) {
+        m_shape_ptr->material.diffuse = value;
+        emit diffuseChanged();
+    }
+
+    void setSpecular(float value) {
+        m_shape_ptr->material.specular = value;
+        emit specularChanged();
+    }
 
     uint getId() const {
         return m_shape_ptr->id;
@@ -53,6 +73,29 @@ private:
                           m_shape_ptr->transform().get(3,2),
                           m_shape_ptr->transform().get(3,3));
     }
+
+    float getAmbient() const {
+        return m_shape_ptr->material.ambient;
+    }
+
+    float getDiffuse() const {
+        return m_shape_ptr->material.diffuse;
+    }
+
+    float getSpecular() const {
+        return m_shape_ptr->material.specular;
+    }
+
+signals:
+    void colorChanged();
+    void ambientChanged();
+    void diffuseChanged();
+    void specularChanged();
+
+private:
+    std::shared_ptr<Shape> m_shape_ptr{nullptr};
+
+
 };
 
 #endif // SHAPEQMLBRIDGE_H

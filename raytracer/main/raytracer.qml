@@ -127,7 +127,6 @@ ApplicationWindow {
                         onObjectSelected: {
                             selectedObject = shapeBridge
                             raytracer.materialPreview()
-                            updateTextbox()
                         }
                     }
                 }
@@ -277,7 +276,6 @@ ApplicationWindow {
         value: raytracer.fromX
 
         onMoved: {
-            updateTextbox()
             raytracer.fromX = slider.value
             raytracer.wireframe()
         }
@@ -298,7 +296,6 @@ ApplicationWindow {
         from: -10
 
         onMoved: {
-            updateTextbox()
             raytracer.fromY = slider1.value
             raytracer.wireframe()
         }
@@ -402,6 +399,7 @@ ApplicationWindow {
         x: window.x-informationWindow.width
         height: window.height
         font.family: aircraft.name
+        selectedObject: window.selectedObject
     }
 
     RoundButton {
@@ -417,7 +415,6 @@ ApplicationWindow {
 
         onPressed: {
             if (informationWindow.visibility === Window.Hidden) {
-                updateTextbox()
                 informationWindow.show()
                 settingsWindow.close()
             } else if (informationWindow.visibility !== Window.Hidden) {
@@ -456,25 +453,6 @@ ApplicationWindow {
     }
 
     property ShapeBridge selectedObject
-    function updateTextbox() {
-
-        informationWindow.text = "Camera Position: \n"
-        informationWindow.text += "x: " + raytracer.fromX.toFixed(1) + "\n"
-        informationWindow.text += "y: " + raytracer.fromY.toFixed(1) + "\n"
-        informationWindow.text += "z: " + raytracer.fromZ.toFixed(1) + "\n\n"
-
-        if (selectedObject !== null) {
-
-            informationWindow.text += "Object Selection\n\n"
-            informationWindow.text += "Id: " + selectedObject.id + "\n"
-            informationWindow.text += "Color: " + selectedObject.color + "\n"
-            informationWindow.text += "Transform: \n"
-            informationWindow.text += selectedObject.transform.row(0) + "\n"
-            informationWindow.text += selectedObject.transform.row(1) + "\n"
-            informationWindow.text += selectedObject.transform.row(2) + "\n"
-            informationWindow.text += selectedObject.transform.row(3) + "\n"
-        }
-    }
 
     ParticleSystem {
         id: particles

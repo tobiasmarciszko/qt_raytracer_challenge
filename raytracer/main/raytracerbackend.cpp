@@ -80,7 +80,11 @@ void RaytracerBackend::render() {
 void RaytracerBackend::materialPreview() {
 
     m_materialPreviewfutureWatcher.cancel();
-    m_previewWorld.shapes.at(0)->set_material(m_selectedMaterial);
+
+    auto id = m_selectedObject.getId();
+
+    auto material = m_world.getShapePtrFromId(id)->material;
+    m_previewWorld.shapes.at(0)->set_material(material);
 
     const auto renderPixel = [&](Pixel& pixel) {
 
