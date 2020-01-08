@@ -14,7 +14,9 @@ Vector Cube::local_normal_at(const Point& local_point) const {
 
     if (equal(maxc, absx)) {
         return Vector{local_point.x, 0, 0};
-    } else if (equal(maxc, absy)) {
+    }
+
+    if (equal(maxc, absy)) {
         return Vector{0, local_point.y, 0};
     }
 

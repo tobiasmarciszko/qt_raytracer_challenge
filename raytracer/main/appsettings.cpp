@@ -74,16 +74,19 @@ void AppSettings::setEnabled(const SettingKeys& key, const SettingValues& value)
 }
 
 void AppSettings::flush() {
-    for (const auto& key: m_cache.keys()) {
-        const auto k = enumToString<SettingKeys>(key);
-        const auto v = enumToString<SettingValues>(m_cache.value(key));
+
+    for (auto i = m_cache.constBegin(); i != m_cache.constEnd(); ++i) {
+        const auto k = enumToString<SettingKeys>(i.key());
+        const auto v = enumToString<SettingValues>(m_cache.value(i.key()));
         m_settings.setValue(k, v);
     }
+
     m_settings.sync();
 }
 
 void AppSettings::load() {
-    for (const auto& key: m_settings.allKeys()) {
+
+    foreach (const auto& key, m_settings.allKeys()) {
         const auto k = stringToEnum<SettingKeys>(key);
         const auto v = stringToEnum<SettingValues>(m_settings.value(key));
         m_cache[k] = v;

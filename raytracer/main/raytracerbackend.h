@@ -108,9 +108,9 @@ private: // Variables
     QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
 
 private: // Methods
-    void drawLine(QImage& framebuffer, int x1, int y1, int x2, int y2, uint color = qRgb(255, 255, 255));
+    void drawLine(QImage& framebuffer, int x0, int y0, int x1, int y1, uint color = qRgb(255, 255, 255));
     void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
-    Point convertWorldToScreenPoint(const Camera& camera, const Point& point, uint color = qRgb(255, 255, 255));
+    Point convertWorldToScreenPoint(const Camera& camera, const Point& point);
     void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
     void copyFrameBuffer(Canvas& from, QImage& to);
     void wireframe(QImage& framebuffer, const Camera& camera);

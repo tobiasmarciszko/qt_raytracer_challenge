@@ -311,7 +311,7 @@ void RaytracerBackend::copyFrameBuffer(Canvas& from, QImage& to) {
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
-Point RaytracerBackend::convertWorldToScreenPoint(const Camera& camera, const Point& point, uint color) {
+Point RaytracerBackend::convertWorldToScreenPoint(const Camera& camera, const Point& point) {
 
     // Transform point in world coordinate to camera
     auto pCamera = camera.transform() * point;
