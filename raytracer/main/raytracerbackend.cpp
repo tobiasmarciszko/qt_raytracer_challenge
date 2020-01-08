@@ -317,7 +317,7 @@ Point RaytracerBackend::convertWorldToScreenPoint(const Camera& camera, const Po
     auto pCamera = camera.transform() * point;
 
     // Ignore points behind the camera
-    if (pCamera.z > 0) return {-1, -1, -1};
+    if (pCamera.z >= 0) return {-1, -1, -1};
 
     // Perspective divide
     auto pScreenx = pCamera.x / pCamera.z;
