@@ -4,13 +4,10 @@ import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.2
 import myextension 1.0
 
-ApplicationWindow {
+Item {
     id: informationWindow
-    title: "Information"
     height: 700
     width: 300
-    color: "black"
-    flags: Qt.FramelessWindowHint
 
     property alias moveButton: moveButton
     property alias scaleButton: scaleButton

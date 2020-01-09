@@ -11,13 +11,13 @@
 ///////////////// Cloud Pattern /////////////////////
 struct CloudPattern : public Pattern {
 
-    QImage *clouds = new QImage(":/clouds");
+    QImage clouds{":/clouds"};
 
     Color pattern_at(const Point& p) const override {
-        int y = (abs(int(p.z))) % clouds->height();
-        int x = (abs(int(p.x))) % clouds->width();
+        int y = (abs(int(p.z))) % clouds.height();
+        int x = (abs(int(p.x))) % clouds.width();
 
-        const QColor color = clouds->pixelColor(x, y);
+        const QColor color = clouds.pixelColor(x, y);
         return Color(color.redF(), color.greenF(), color.blueF());
     }
 };

@@ -4,11 +4,9 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.12
 import myextension 1.0
 
-ApplicationWindow {
+Item {
     height: 700
     width: 250
-    color: "black"
-    flags: Qt.FramelessWindowHint
 
     FontLoader {
         id: glyphs
