@@ -13,9 +13,7 @@ struct Intersection
 
     inline bool operator==(const Intersection& i1) const {
         if (!(equal(i1.t, t))) return false;
-        if (!(i1.object == object)) return false;
-
-        return true;
+        return i1.object == object;
     }
 
     float t;
