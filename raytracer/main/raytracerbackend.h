@@ -18,29 +18,32 @@ class RaytracerBackend : public QObject
     Q_OBJECT
 
 public:
-    RaytracerBackend(QObject *parent = nullptr);
+    explicit RaytracerBackend(QObject *parent = nullptr);
 
     ShapeQmlBridge* getSelectedObject() {
         return &m_selectedObject;
     }
 
-public:
     Q_PROPERTY(int progress MEMBER m_progress NOTIFY progressChanged)
     Q_PROPERTY(bool rendering MEMBER m_rendering NOTIFY renderingChanged)
-    Q_PROPERTY(double fromX MEMBER m_fromX NOTIFY fromXChanged)
-    Q_PROPERTY(double fromY MEMBER m_fromY NOTIFY fromYChanged)
-    Q_PROPERTY(double fromZ MEMBER m_fromZ NOTIFY fromZChanged)
-    Q_PROPERTY(double lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
+    Q_PROPERTY(float fromX MEMBER m_fromX NOTIFY fromXChanged)
+    Q_PROPERTY(float fromY MEMBER m_fromY NOTIFY fromYChanged)
+    Q_PROPERTY(float fromZ MEMBER m_fromZ NOTIFY fromZChanged)
+    Q_PROPERTY(float lastRenderTime MEMBER m_lastRenderTime NOTIFY imageReady)
     Q_PROPERTY(ShapeQmlBridge* selectedObject READ getSelectedObject NOTIFY selectedObjectChanged)
 
 public slots:
+// disable diagnostics for unused methods, if slot are only called from QML
+// they are treated as unused which is incorrect (and a bit of a pain...)
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
     void render();
     void wireframe();
     void materialPreview();
     void switchChanged();
     void setViewportSize(int width, int height);
 
-    void selectObject(unsigned int x, unsigned int y ) {
+    void selectObject(float x, float y) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
         const auto is = Raytracer::Engine::intersect_world(m_world, ray);
         const auto h = Raytracer::Engine::hit(is);
@@ -56,6 +59,9 @@ public slots:
 
     void translate(unsigned int id, float x, float y, float z);
     void scale(unsigned int id, float x, float y, float z);
+
+#pragma clang diagnostic pop
+// end slots
 
 signals:
     void imageReady(const QImage& image);
@@ -73,16 +79,21 @@ private slots:
     void materialPreviewFinished();
     void progressValueChanged(int value);
 
-private: // Variables
+private:
+    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
+    Point convertWorldToScreenPoint(const Camera& camera, const Point& point);
+    void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
+    void copyFrameBuffer(Canvas& from, QImage& to);
+    void wireframe(QImage& framebuffer, const Camera& camera);
 
     // Camera
-    double m_fromX = 1;
-    double m_fromY = 1;
-    double m_fromZ = -4;
+    float m_fromX = 1;
+    float m_fromY = 1;
+    float m_fromZ = -4;
 
-    double m_toX = 0;
-    double m_toY = 1;
-    double m_toZ = 0;
+    float m_toX = 0;
+    float m_toY = 1;
+    float m_toZ = 0;
 
     // For rendering
     Canvas m_canvas;
@@ -99,21 +110,13 @@ private: // Variables
     ShapeQmlBridge m_selectedObject{this};
 
     QFutureWatcher<void> m_futureWatcher;
-    QFutureWatcher<void> m_materialPreviewfutureWatcher;
+    QFutureWatcher<void> m_materialPreviewFutureWatcher;
     QElapsedTimer m_timer;
 
     // Material preview
     Canvas m_previewCanvas{140, 140};
     Camera m_previewCamera{140, 140, M_PI / 3.0};
     QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
-
-private: // Methods
-    void drawLine(QImage& framebuffer, int x0, int y0, int x1, int y1, uint color = qRgb(255, 255, 255));
-    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
-    Point convertWorldToScreenPoint(const Camera& camera, const Point& point);
-    void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
-    void copyFrameBuffer(Canvas& from, QImage& to);
-    void wireframe(QImage& framebuffer, const Camera& camera);
 };
 
 #endif // RAYTRACER_H

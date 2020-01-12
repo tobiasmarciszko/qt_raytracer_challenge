@@ -17,7 +17,7 @@ RaytracerBackend::RaytracerBackend(QObject *parent) :
     m_previewWorld(Worlds::materialPreviewWorld())
 {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
-    connect(&m_materialPreviewfutureWatcher, SIGNAL(finished()), this, SLOT(materialPreviewFinished()));
+    connect(&m_materialPreviewFutureWatcher, SIGNAL(finished()), this, SLOT(materialPreviewFinished()));
     connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), this, SLOT(progressValueChanged(int)));
 
     // Material preview
@@ -79,7 +79,7 @@ void RaytracerBackend::render() {
 
 void RaytracerBackend::materialPreview() {
 
-    m_materialPreviewfutureWatcher.cancel();
+    m_materialPreviewFutureWatcher.cancel();
 
     auto id = m_selectedObject.getId();
 
@@ -107,7 +107,7 @@ void RaytracerBackend::materialPreview() {
         pixel.color = (color1 + color2 + color3 + color4 + color5) / 5;
     };
 
-    m_materialPreviewfutureWatcher.setFuture(QtConcurrent::map(m_previewCanvas.pixels, renderPixel));
+    m_materialPreviewFutureWatcher.setFuture(QtConcurrent::map(m_previewCanvas.pixels, renderPixel));
 }
 
 void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
@@ -119,15 +119,20 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
         auto c = shape->material.color;
 
         QColor qc;
+        uint color;
+      {
         const auto r = c.red < 1.0F ? c.red : 1.0F;
         const auto g = c.green < 1.0F ? c.green : 1.0F;
         const auto b = c.blue < 1.0F ? c.blue : 1.0F;
         qc.setRgbF(r, g, b);
-        uint color = qRgb(qc.red(), qc.green(), qc.blue());
+        color = qRgb(qc.red(), qc.green(), qc.blue());
 
         if (m_selectedObject.getId() == shape->id) {
-            color = qRgb(0, 255, 255);
+          color = qRgb(0, 255, 255);
         }
+
+      }
+
 
         const auto centerPoint = m * Point(0, 0, 0);
 
@@ -367,30 +372,6 @@ void RaytracerBackend::drawLine(QImage& framebuffer, const Point& p1, const Poin
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(color);
     p.drawLine(p1.x, p1.y, p2.x, p2.y);
-}
-
-// Bresenham's line algorithm
-// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-void RaytracerBackend::drawLine(QImage& framebuffer, int x0, int y0, const int x1, const int y1, const uint color) {
-    const auto dx = abs(x1 - x0);
-    const auto dy = abs(y1 - y0);
-    const auto sx = (x0 < x1) ? 1 : -1;
-    const auto sy = (y0 < y1) ? 1 : -1;
-    auto err = dx - dy;
-
-    while (true) {
-       if (x0 >= 0 &&
-           y0 >= 0 &&
-           x0 < framebuffer.width() &&
-           y0 < framebuffer.height()) {
-            framebuffer.setPixel(x0, y0, color);
-       }
-
-       if ((x0 == x1) && (y0 == y1)) break;
-       const auto e2 = 2 * err;
-       if (e2 > -dy) { err -= dy; x0 += sx; }
-       if (e2 < dx) { err += dx; y0 += sy; }
-    }
 }
 
 void RaytracerBackend::switchChanged() {

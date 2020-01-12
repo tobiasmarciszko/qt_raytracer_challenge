@@ -7,10 +7,10 @@ import QtQuick.Particles 2.12
 import QtQuick.Layouts 1.13
 import QtGraphicalEffects 1.0
 
-Window {
+ApplicationWindow {
     property alias glyphFont: glyphs.name
 
-    // font.family: aircraft.name
+    font.family: aircraft.name
     id: window
     visible: true
     color: "black"
@@ -27,8 +27,7 @@ Window {
     }
 
     Component.onCompleted: {
-        x = Screen.width / 2 - width / 2
-        y = Screen.height / 2 - height / 2
+        window.showMaximized()
     }
 
     FontLoader {
