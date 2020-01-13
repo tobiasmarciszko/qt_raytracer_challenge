@@ -40,6 +40,9 @@ std::vector<Intersection> Cylinder::local_intersect(const Ray& ray) const {
   // No hit
   if (discriminant < 0) return {};
 
+  const float t0 = (-b - std::sqrt(discriminant)) / ( 2.0F * a);
+  const float t1 = (-b + std::sqrt(discriminant)) / ( 2.0F * a);
+
   // Hit
-  return {Intersection(1, this)};
+  return {Intersection(t0, this), Intersection(t1, this)};
 }
