@@ -4,15 +4,15 @@
 #include "shape.h"
 #include <vector>
 
-struct Vector;
+class Vector;
 
 struct Cube : public Shape
 {
-    Vector local_normal_at(const Point& local_point) const override;
-    std::vector<Intersection> local_intersect(const Ray& ray) const override;
+    [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+    [[nodiscard]] std::vector<Intersection> local_intersect(const Ray& ray) const override;
 
 private:
-    std::tuple<float,float> check_axis(float origin, float direction) const;
+    [[nodiscard]] std::tuple<float,float> check_axis(float origin, float direction) const;
 };
 
 #endif // CUBE_H

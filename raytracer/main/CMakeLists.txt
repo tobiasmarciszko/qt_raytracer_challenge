@@ -58,6 +58,7 @@ add_executable(
         appsettings.h
         patterns.h
         cube.h
+        cylinder.h
 
         # cpp
         sphere.cpp
@@ -72,7 +73,8 @@ add_executable(
         shapeqmlbridge.cpp
         appsettings.cpp
         cube.cpp
-        )
+        cylinder.cpp
+)
 
 target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 

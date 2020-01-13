@@ -7,8 +7,8 @@
 // Hiding this functionality within a macro to be able to disable it while running tests
 // since AppSettings will differ and the setting won't be properly checked
 
-#define FAST_RENDER_ENABLED AppSettings::get().fastRenderEnabled()
-//#define fastRenderEnabled() false
+//#define FAST_RENDER_ENABLED AppSettings::get().fastRenderEnabled()
+#define FAST_RENDER_ENABLED false
 
 namespace Raytracer::Engine {
 
