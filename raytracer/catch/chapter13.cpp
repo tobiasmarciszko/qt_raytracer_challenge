@@ -43,3 +43,21 @@ TEST_CASE("A ray strikes a cylinder")
     REQUIRE(equal(xs.at(1).t, t1));
   }
 }
+
+
+TEST_CASE("Normal vector on a cylinder")
+{
+  Cylinder cyl;
+
+  const std::vector<std::tuple<Point, Vector>> data{
+      {Point{1, 0,  0},  Vector{1, 0, 0}},
+      {Point{0, 5,  -1}, Vector{0, 0, -1}},
+      {Point{0, -2, 1},  Vector{0, 0, 1}},
+      {Point{-1, 1, 0},  Vector{-1, 0, 0}}
+  };
+
+  for (const auto& [point, normal]: data) {
+    const auto n = cyl.local_normal_at(point);
+    REQUIRE(n == normal);
+  }
+}

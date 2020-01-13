@@ -5,22 +5,7 @@
 #include <cmath>
 
 Vector Cylinder::local_normal_at(const Point& local_point) const {
-
-  const auto absx = std::abs(local_point.x);
-  const auto absy = std::abs(local_point.y);
-  const auto absz = std::abs(local_point.z);
-
-  const auto maxc = std::max({absx, absy, absz});
-
-  if (equal(maxc, absx)) {
-    return Vector{local_point.x, 0, 0};
-  }
-
-  if (equal(maxc, absy)) {
-    return Vector{0, local_point.y, 0};
-  }
-
-  return Vector{0, 0, local_point.z};
+  return Vector{local_point.x, 0, local_point.z};
 }
 
 std::vector<Intersection> Cylinder::local_intersect(const Ray& ray) const {
