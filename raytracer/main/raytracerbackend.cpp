@@ -183,7 +183,7 @@ void RaytracerBackend::wireframe(QImage& framebuffer, const Camera& camera) {
             drawLine(framebuffer, a4, b4, color);
         }
 
-        if (dynamic_cast<Sphere*>(shape.get())) {
+        if (dynamic_cast<Sphere*>(shape.get()) || dynamic_cast<Cylinder*>(shape.get())) {
 
             QPainter p(&framebuffer);
             p.setRenderHints(QPainter::Antialiasing);

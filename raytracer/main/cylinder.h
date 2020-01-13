@@ -1,5 +1,5 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 
 #include "shape.h"
 #include <vector>
@@ -12,4 +12,4 @@ struct Cylinder : public Shape
   [[nodiscard]] std::vector<Intersection> local_intersect(const Ray& ray) const override;
 };
 
-#endif // CUBE_H
+#endif // CYLINDER_H

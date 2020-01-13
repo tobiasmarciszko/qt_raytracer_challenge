@@ -8,6 +8,7 @@
 #include "sphere.h"
 #include "patterns.h"
 #include "cube.h"
+#include "cylinder.h"
 
 #include <QRandomGenerator>
 
@@ -115,11 +116,11 @@ namespace Worlds  {
         mwall.pattern_ptr = doomfire_pattern();
         mwall.pattern_ptr->set_transform(translation(0, -1, 0) * scaling(0.002, 0.015, 0.02));
 
-        Sphere middle;
+        Cylinder middle;
         middle.set_transform(translation(0, 1.2, 0));
         middle.material = Materials::diamond;
 
-        Cube right;
+        Cylinder right;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5) * rotation_x(M_PI / 3));
         right.set_material(Materials::glass);
 //        right.material.color = Color(0.7, 0.2, 0.2);
@@ -127,7 +128,7 @@ namespace Worlds  {
 //        right.material.pattern_ptr = doomfire_pattern();
 //        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
-        Cube left;
+        Cylinder left;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
         //left.set_material(Materials::glass);
         left.material.reflective = 0.5;
@@ -139,9 +140,9 @@ namespace Worlds  {
         // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
         world.shapes = {
-            std::make_shared<Sphere>(middle),
-            std::make_shared<Cube>(right),
-            std::make_shared<Cube>(left),
+            std::make_shared<Cylinder>(middle),
+            std::make_shared<Cylinder>(right),
+            std::make_shared<Cylinder>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
             std::make_shared<Cube>(wall)
