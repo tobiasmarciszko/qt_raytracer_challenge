@@ -119,14 +119,16 @@ namespace Worlds  {
         Cylinder middle;
         middle.minimum = 0;
         middle.maximum = 3;
+        middle.closed = true;
         middle.set_transform(translation(0, 1.2, 0));
         middle.material = Materials::diamond;
 
         Cylinder right;
         right.minimum = -2;
         right.maximum = 5;
+        right.closed = true;
         right.set_transform(translation(1.5, 1, -0.5) * scaling(0.5, 0.5, 0.5) * rotation_x(M_PI / 3));
-        right.set_material(Materials::glass);
+        //right.set_material(Materials::glass);
 //        right.material.color = Color(0.7, 0.2, 0.2);
 //        right.material.reflective = 0.4;
 //        right.material.pattern_ptr = doomfire_pattern();
@@ -135,6 +137,7 @@ namespace Worlds  {
         Cylinder left;
         left.minimum = 0;
         left.maximum = 1;
+        left.closed = true;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
         //left.set_material(Materials::glass);
         left.material.reflective = 0.5;

@@ -13,6 +13,13 @@ struct Cylinder : public Shape
 
   float minimum{-INFINITY};
   float maximum{INFINITY};
+
+  bool closed{false};
+
+private:
+  [[nodiscard]] bool check_cap(const Ray& ray, float t) const;
+  void intersect_caps(const Ray& ray, std::vector<Intersection>& xs) const;
+
 };
 
 #endif // CYLINDER_H
