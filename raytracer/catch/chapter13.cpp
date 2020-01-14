@@ -61,3 +61,37 @@ TEST_CASE("Normal vector on a cylinder")
     REQUIRE(n == normal);
   }
 }
+
+
+TEST_CASE("The default minimum and maximum for a cylinder")
+{
+  Cylinder cyl;
+
+  REQUIRE(cyl.minimum == -INFINITY);
+  REQUIRE(cyl.maximum == INFINITY);
+}
+
+TEST_CASE("Intersecting a constrained cylinder")
+{
+  Cylinder cyl;
+  cyl.minimum = 1;
+  cyl.maximum = 2;
+
+  const std::vector<std::tuple<Point, Vector, size_t>> data{
+      {Point{0, 1.5, 0}, Vector{0.1, 1, 0}, 0},
+      {Point{0, 3,  -5}, Vector{0, 0, 1}, 0},
+      {Point{0, 0, -5}, Vector{0, 0, 1}, 0},
+      {Point{0, 2, -5}, Vector{0, 0, 1}, 0},
+      {Point{0, 1, -5}, Vector{0, 0, 1}, 0},
+      {Point{0, 1.5, -2}, Vector{0, 0, 1}, 2}
+  };
+
+  for (const auto& [point, direction, count]: data) {
+    const auto dir = direction.normalize();
+    const auto r = Ray{point, dir};
+    const auto xs = cyl.local_intersect(r);
+
+    REQUIRE(xs.size() == count);
+  }
+}
+

@@ -25,9 +25,23 @@ std::vector<Intersection> Cylinder::local_intersect(const Ray& ray) const {
   // No hit
   if (discriminant < 0) return {};
 
-  const float t0 = (-b - std::sqrt(discriminant)) / ( 2.0F * a);
-  const float t1 = (-b + std::sqrt(discriminant)) / ( 2.0F * a);
+  float t0 = (-b - std::sqrt(discriminant)) / ( 2.0F * a);
+  float t1 = (-b + std::sqrt(discriminant)) / ( 2.0F * a);
 
-  // Hit
-  return {Intersection(t0, this), Intersection(t1, this)};
+  if (t0 > t1) std::swap(t0, t1);
+
+  // Bounds checking
+  std::vector<Intersection> xs{};
+
+  const auto y0 = ray.origin().y + t0 * ray.direction().y;
+  if (minimum < y0 && y0 < maximum) {
+    xs.emplace_back(Intersection(t0, this));
+  }
+
+  const auto y1 = ray.origin().y + t1 * ray.direction().y;
+  if (minimum < y1 && y1 < maximum) {
+    xs.emplace_back(Intersection(t1, this));
+  }
+
+  return xs;
 }
