@@ -62,8 +62,8 @@ ApplicationWindow {
         width: window.width - (leftRectangle.visible ? leftRectangle.width : 0) - (rightRectangle.visible ? rightRectangle.width : 0)
         height: window.height
 
-        property real viewportWidth: (settings.fullscreenEnabled ? middlePane.width : middlePane.width / 2) - 20
-        property real viewportheight: (settings.fullscreenEnabled ? middlePane.height : middlePane.height / 2) - 20
+        property int viewportWidth: Math.floor(settings.fullscreenEnabled ? middlePane.width : middlePane.width / 2) - 20
+        property int viewportheight: Math.floor(settings.fullscreenEnabled ? middlePane.height : middlePane.height / 2) - 20
 
         BusyIndicator {
             id: busyIndicator
@@ -201,7 +201,7 @@ ApplicationWindow {
                 height: middleRectangle.viewportheight
 
                 function updateWireframe() {
-                    if (liveImageItem4.width < 0 || liveImageItem4.height < 0) return;
+                    if (width < 0 || height < 0) return;
 
                     raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                     raytracer.wireframe()
@@ -274,7 +274,7 @@ ApplicationWindow {
                 ColorOverlay {
                     anchors.fill: parent
                     source: parent
-                    color: "#80800000"
+                    color: "#80400000"
                     visible: raytracer.rendering
                 }
             }
