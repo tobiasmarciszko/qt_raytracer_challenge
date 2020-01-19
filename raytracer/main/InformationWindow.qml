@@ -11,6 +11,10 @@ Item {
 
     property alias moveButton: moveButton
     property alias scaleButton: scaleButton
+    property alias rotXButton: rotateXButton
+    property alias rotYButton: rotateYButton
+    property alias rotZButton: rotateZButton
+
     property alias colorDialog: colorDialog
     property alias ambientSlider: ambientSlider
     property alias diffuseSlider: diffuseSlider
@@ -33,6 +37,9 @@ Item {
             onCheckedChanged: {
                 if (checked) {
                     moveButton.checked = false
+                    rotateXButton.checked = false
+                    rotateYButton.checked = false
+                    rotateZButton.checked = false
                 }
             }
         }
@@ -49,6 +56,9 @@ Item {
             onCheckedChanged: {
                 if (checked) {
                     scaleButton.checked = false
+                    rotateXButton.checked = false
+                    rotateYButton.checked = false
+                    rotateZButton.checked = false
                 }
             }
         }
@@ -86,7 +96,7 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 0
             anchors.top: scaleButton.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: 64
 
             Slider {
                 id: ambientSlider
@@ -291,11 +301,68 @@ Item {
             }
         }
 
+        Button {
+            id: rotateXButton
+            x: 0
+            y: -8
+            text: qsTr("Rot X")
+            anchors.topMargin: 49
+            anchors.top: parent.top
+            checkable: true
+
+            onCheckedChanged: {
+                if (checked) {
+                    moveButton.checked = false
+                    scaleButton.checked = false
+                    rotateYButton.checked = false
+                    rotateZButton.checked = false
+                }
+            }
+        }
+
+        Button {
+            id: rotateYButton
+            x: 70
+            y: 0
+            text: qsTr("Rot Y")
+            anchors.topMargin: 49
+            anchors.top: parent.top
+            checkable: true
+
+            onCheckedChanged: {
+                if (checked) {
+                    moveButton.checked = false
+                    scaleButton.checked = false
+                    rotateXButton.checked = false
+                    rotateZButton.checked = false
+                }
+            }
+        }
+
+        Button {
+            id: rotateZButton
+            x: 140
+            y: -6
+            text: qsTr("Rot Z")
+            anchors.topMargin: 49
+            anchors.top: parent.top
+            checkable: true
+
+            onCheckedChanged: {
+                if (checked) {
+                    moveButton.checked = false
+                    scaleButton.checked = false
+                    rotateXButton.checked = false
+                    rotateYButton.checked = false
+                }
+            }
+        }
     }
 }
 
 /*##^##
 Designer {
     D{i:2;anchors_y:30}D{i:3;anchors_y:18}D{i:4;anchors_y:18}D{i:5;anchors_y:18}D{i:6;anchors_height:462}
+D{i:31;anchors_y:30}D{i:32;anchors_y:30}D{i:33;anchors_y:30}
 }
 ##^##*/

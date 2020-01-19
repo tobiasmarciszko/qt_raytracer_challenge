@@ -59,6 +59,9 @@ public slots:
 
     void translate(unsigned int id, float x, float y, float z);
     void scale(unsigned int id, float x, float y, float z);
+    void rotate_x(unsigned int id, float angle);
+    void rotate_y(unsigned int id, float angle);
+    void rotate_z(unsigned int id, float angle);
 
 #pragma clang diagnostic pop
 // end slots
