@@ -518,22 +518,22 @@ void RaytracerBackend::rotate_x(unsigned int id, float angle) {
 
 void RaytracerBackend::rotate_y(unsigned int id, float angle) {
 
-  auto shape_ptr = m_world.getShapePtrFromId(id);
+    auto shape_ptr = m_world.getShapePtrFromId(id);
 
-  auto transform = shape_ptr->transform();
+    auto transform = shape_ptr->transform();
 
-  shape_ptr->set_transform(transform * rotation_y(angle));
-  m_selectedObject.setShapePointer(shape_ptr);
-  emit selectedObjectChanged();
+    shape_ptr->set_transform(transform * rotation_y(angle));
+    m_selectedObject.setShapePointer(shape_ptr);
+    emit selectedObjectChanged();
 }
 
 void RaytracerBackend::rotate_z(unsigned int id, float angle) {
 
-  auto shape_ptr = m_world.getShapePtrFromId(id);
+    auto shape_ptr = m_world.getShapePtrFromId(id);
 
-  auto transform = shape_ptr->transform();
+    auto transform = shape_ptr->transform();
 
-  shape_ptr->set_transform(transform * rotation_z(angle));
-  m_selectedObject.setShapePointer(shape_ptr);
-  emit selectedObjectChanged();
+    shape_ptr->set_transform(transform * rotation_z(angle));
+    m_selectedObject.setShapePointer(shape_ptr);
+    emit selectedObjectChanged();
 }

@@ -3,16 +3,12 @@
 #include "vector.h"
 #include "equal.h"
 
-#include <QDebug>
-#include <cmath>
-
 Tuple::Tuple(float x_, float y_, float z_, float w_) :
     x(x_),
     y(y_),
     z(z_),
     w(w_)
 {
-    // qDebug() << "Created Tuple. x:" << x << " y:" << y << " z:" << z << " w:" << w;
 }
 
 bool Tuple::isPoint() const {
@@ -23,15 +19,15 @@ bool Tuple::isVector() const {
     return equal(w, 0.0);
 }
 
-Tuple Tuple::operator-() const {
-    return {-x, -y, -z, -w};
+Tuple operator-(const Tuple& t) {
+    return {-t.x, -t.y, -t.z, -t.w};
 }
 
-Tuple Tuple::operator+(const Tuple& tuple) const {
-    const float newx = x + tuple.x;
-    const float newy = y + tuple.y;
-    const float newz = z + tuple.z;
-    const float neww = w + tuple.w;
+Tuple operator+(const Tuple& lhs, const Tuple& rhs) {
+    const float newx = lhs.x + rhs.x;
+    const float newy = lhs.y + rhs.y;
+    const float newz = lhs.z + rhs.z;
+    const float neww = lhs.w + rhs.w;
 
     if (equal(neww, 0)) {
         return Vector(newx, newy, newz);
@@ -40,23 +36,21 @@ Tuple Tuple::operator+(const Tuple& tuple) const {
     return Point(newx, newy, newz);
 }
 
-Tuple Tuple::operator-(const Tuple& t) const {
-    return {x - t.x, y - t.y, z - t.z, w -  t.w};
+Tuple operator-(const Tuple& lhs, const Tuple& rhs) {
+    return {lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z, lhs.w - rhs.w};
 }
 
-Tuple Tuple::operator*(const float& m) const {
-    return {x * m, y * m, z * m, w * m};
+Tuple operator*(const Tuple& t, const float m) {
+    return {t.x * m, t.y * m, t.z * m, t.w * m};
 }
 
-Tuple Tuple::operator/(const float& d) const {
-    return {x / d, y / d, z / d, w / d};
+Tuple operator/(const Tuple& t, const float d) {
+    return {t.x / d, t.y / d, t.z / d, t.w / d};
 }
 
-bool Tuple::operator==(const Tuple& tuple) const {
-    if (!equal(x, tuple.x)) return false;
-    if (!equal(y, tuple.y)) return false;
-    if (!equal(z, tuple.z)) return false;
-    if (!equal(w, tuple.w)) return false;
-
-    return true;
+bool operator==(const Tuple& lhs, const Tuple& rhs) {
+    return equal(lhs.x, rhs.x) &&
+           equal(lhs.y, rhs.y) &&
+           equal(lhs.z, rhs.z) &&
+           equal(lhs.w, rhs.w);
 }
