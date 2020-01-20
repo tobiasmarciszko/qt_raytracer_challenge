@@ -254,15 +254,15 @@ ApplicationWindow {
                         }
 
                         if (informationWindow.moveButton.checked) {
-                            raytracer.translate(raytracer.selectedObject.id, deltaX * 0.01, y, z)
+                            raytracer.translate(deltaX * 0.01, y, z)
                         } else if (informationWindow.scaleButton.checked) {
-                            raytracer.scale(raytracer.selectedObject.id, 1 + deltaX * 0.01, 1 + y, 1 + z)
+                            raytracer.scale(1 + deltaX * 0.01, 1 + y, 1 + z)
                         } else if (informationWindow.rotXButton.checked) {
-                            raytracer.rotate_x(raytracer.selectedObject.id, deltaY * 0.01)
+                            raytracer.rotate_x(deltaY * 0.01)
                         } else if (informationWindow.rotYButton.checked) {
-                            raytracer.rotate_y(raytracer.selectedObject.id, deltaX * 0.01)
+                            raytracer.rotate_y(deltaX * 0.01)
                         }else if (informationWindow.rotZButton.checked) {
-                            raytracer.rotate_z(raytracer.selectedObject.id, deltaX * 0.01)
+                            raytracer.rotate_z(deltaX * 0.01)
                         }
 
                         raytracer.wireframe()

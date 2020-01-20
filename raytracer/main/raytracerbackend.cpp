@@ -486,29 +486,31 @@ void RaytracerBackend::switchChanged() {
     }
 }
 
-void RaytracerBackend::translate(unsigned int id, float x, float y, float z) {
+void RaytracerBackend::translate(float x, float y, float z) {
     const bool prepend = true;
     appendTransform(translation(x, y, z), prepend);
 }
 
-void RaytracerBackend::scale(unsigned int id, float x, float y, float z) {
+void RaytracerBackend::scale(float x, float y, float z) {
     appendTransform(scaling(x, y, z));
 }
 
-void RaytracerBackend::rotate_x(unsigned int id, float angle) {
+void RaytracerBackend::rotate_x(float angle) {
     appendTransform(rotation_x(angle));
 }
 
-void RaytracerBackend::rotate_y(unsigned int id, float angle) {
+void RaytracerBackend::rotate_y(float angle) {
     appendTransform(rotation_y(angle));
 }
 
-void RaytracerBackend::rotate_z(unsigned int id, float angle) {
+void RaytracerBackend::rotate_z(float angle) {
     appendTransform(rotation_z(angle));
 }
 
 void RaytracerBackend::appendTransform(const Matrix<4, 4> &t,
                                        bool prepend) {
+
+    if (m_selectedObject.getId() == -1) return;
 
     auto shape_ptr = m_world.getShapePtrFromId(m_selectedObject.getId());
     auto transform = shape_ptr->transform();

@@ -25,36 +25,11 @@ class ShapeQmlBridge : public QObject
 public:
     explicit ShapeQmlBridge(QObject *parent = nullptr);
 
-//    ShapeQmlBridge(const ShapeQmlBridge& other) : m_shape_ptr(other.m_shape_ptr){
-//        qDebug() << "copy ctor";
-//    }
-
-//    ShapeQmlBridge(const ShapeQmlBridge*) {
-//        qDebug() << "copy ctor *";
-//    }
-
-
-//    ShapeQmlBridge& operator=(const ShapeQmlBridge& other) {
-//        qDebug() << "copy &";
-//        m_shape_ptr = other.m_shape_ptr;
-//        return *this;
-//    };
-
-//    ShapeQmlBridge& operator=(ShapeQmlBridge*) {
-//        qDebug() << "copy *";
-//        return *this;
-//    };
-
-//    bool operator!=(const ShapeQmlBridge& other) {
-//        qDebug() << "!=";
-//        return getId() != other.getId();
-//    }
-
-    void setShapePointer(std::shared_ptr<Shape> ptr) {
+    void setShapePointer(const std::shared_ptr<Shape>& ptr) {
         m_shape_ptr = ptr;
     }
 
-    void setColor(QColor color) {
+    void setColor(const QColor& color) {
         m_shape_ptr->material.color = Color(color.redF(), color.greenF(), color.blueF());
         emit colorChanged();
     }
@@ -94,12 +69,12 @@ public:
         emit shininessChanged();
     }
 
-    int getId() const {
+    [[nodiscard]] int getId() const {
         if (m_shape_ptr == nullptr) return -1;
         return m_shape_ptr->id;
     }
 
-    QColor getColor() const {
+    [[nodiscard]] QColor getColor() const {
         if (m_shape_ptr == nullptr) return nullptr;
         QColor qcolor;
         Color color = m_shape_ptr->material.color;
@@ -107,7 +82,7 @@ public:
         return qcolor;
     }
 
-    QMatrix4x4 getTransform() const {
+    [[nodiscard]] QMatrix4x4 getTransform() const {
         if (m_shape_ptr == nullptr) return QMatrix4x4();
         return QMatrix4x4(m_shape_ptr->transform().get(0,0),
                           m_shape_ptr->transform().get(0,1),
@@ -127,37 +102,37 @@ public:
                           m_shape_ptr->transform().get(3,3));
     }
 
-    float getAmbient() const {
+    [[nodiscard]] float getAmbient() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.ambient;
     }
 
-    float getDiffuse() const {
+    [[nodiscard]] float getDiffuse() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.diffuse;
     }
 
-    float getSpecular() const {
+    [[nodiscard]] float getSpecular() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.specular;
     }
 
-    float getReflective() const {
+    [[nodiscard]] float getReflective() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.reflective;
     }
 
-    float getTransparency() const {
+    [[nodiscard]] float getTransparency() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.transparency;
     }
 
-    float getRIndex() const {
+    [[nodiscard]] float getRIndex() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.refractive_index;
     }
 
-    float getShininess() const {
+    [[nodiscard]] float getShininess() const {
         if (m_shape_ptr == nullptr) return 0;
         return m_shape_ptr->material.shininess;
     }
