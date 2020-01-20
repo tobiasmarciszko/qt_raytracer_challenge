@@ -29,6 +29,7 @@ add_executable(
         ../main/appsettings.cpp
         ../main/cube.cpp
         ../main/cylinder.cpp
+        ../main/vector.cpp
 
         # test files
         main.cpp
@@ -44,6 +45,7 @@ add_executable(
         chapter10.cpp
         chapter11.cpp
         chapter12.cpp
-        chapter13.cpp)
+        chapter13.cpp
+)
 
 target_link_libraries(catchtests Qt5::Core)

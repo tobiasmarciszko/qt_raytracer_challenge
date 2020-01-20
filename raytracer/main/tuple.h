@@ -5,7 +5,7 @@
 
 struct Tuple
 {
-    Tuple() = delete;
+    Tuple() = default;
     Tuple(float x, float y, float z, float w);
 
     friend Tuple operator-(const Tuple& t);
@@ -22,10 +22,10 @@ struct Tuple
         return os << (t.isVector() ? "Vector" : "Point") << "(" << t.x << ", " << t.y << ", " << t.z << ")";
     }
 
-    float x;
-    float y;
-    float z;
-    float w;
+    float x{0};
+    float y{0};
+    float z{0};
+    float w{0};
 };
 
 #endif // TUPLE_H

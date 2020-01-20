@@ -27,7 +27,7 @@ public:
     }
 
     inline Ray transform(const Matrix<4,4>& matrix) const {
-        return {matrix * m_origin, matrix * m_direction};
+        return {Point{matrix * m_origin}, Vector{matrix * m_direction}};
     }
 
 private:

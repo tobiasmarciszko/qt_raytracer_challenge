@@ -74,7 +74,7 @@ add_executable(
         appsettings.cpp
         cube.cpp
         cylinder.cpp
-)
+        vector.cpp)
 
 target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
