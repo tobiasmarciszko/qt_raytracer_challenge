@@ -88,6 +88,7 @@ private:
     void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
     void copyFrameBuffer(Canvas& from, QImage& to);
     void wireframe(QImage& framebuffer, const Camera& camera);
+    void appendTransform(const Matrix<4,4>& transform, bool prepend = false);
 
     // Camera
     float m_fromX = 1;

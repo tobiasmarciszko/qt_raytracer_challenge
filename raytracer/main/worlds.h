@@ -135,7 +135,7 @@ namespace Worlds  {
 //        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
         Cylinder left;
-        left.minimum = 0;
+        left.minimum = -1;
         left.maximum = 1;
         left.closed = true;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));

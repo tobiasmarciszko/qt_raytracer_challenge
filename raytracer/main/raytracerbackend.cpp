@@ -487,53 +487,39 @@ void RaytracerBackend::switchChanged() {
 }
 
 void RaytracerBackend::translate(unsigned int id, float x, float y, float z) {
-
-    auto shape_ptr = m_world.getShapePtrFromId(id);
-
-    auto transform = shape_ptr->transform();
-    shape_ptr->set_transform(translation(x, y, z) * transform);
-    m_selectedObject.setShapePointer(shape_ptr);
-    emit selectedObjectChanged();
+    const bool prepend = true;
+    appendTransform(translation(x, y, z), prepend);
 }
 
 void RaytracerBackend::scale(unsigned int id, float x, float y, float z) {
-    auto shape_ptr = m_world.getShapePtrFromId(id);
-
-    auto transform = shape_ptr->transform();
-
-    shape_ptr->set_transform(transform * scaling(x, y, z));
-    m_selectedObject.setShapePointer(shape_ptr);
-    emit selectedObjectChanged();
+    appendTransform(scaling(x, y, z));
 }
+
 void RaytracerBackend::rotate_x(unsigned int id, float angle) {
-
-    auto shape_ptr = m_world.getShapePtrFromId(id);
-
-    auto transform = shape_ptr->transform();
-
-    shape_ptr->set_transform(transform * rotation_x(angle));
-    m_selectedObject.setShapePointer(shape_ptr);
-    emit selectedObjectChanged();
+    appendTransform(rotation_x(angle));
 }
 
 void RaytracerBackend::rotate_y(unsigned int id, float angle) {
-
-    auto shape_ptr = m_world.getShapePtrFromId(id);
-
-    auto transform = shape_ptr->transform();
-
-    shape_ptr->set_transform(transform * rotation_y(angle));
-    m_selectedObject.setShapePointer(shape_ptr);
-    emit selectedObjectChanged();
+    appendTransform(rotation_y(angle));
 }
 
 void RaytracerBackend::rotate_z(unsigned int id, float angle) {
+    appendTransform(rotation_z(angle));
+}
 
-    auto shape_ptr = m_world.getShapePtrFromId(id);
+void RaytracerBackend::appendTransform(const Matrix<4, 4> &t,
+                                       bool prepend) {
 
+    auto shape_ptr = m_world.getShapePtrFromId(m_selectedObject.getId());
     auto transform = shape_ptr->transform();
 
-    shape_ptr->set_transform(transform * rotation_z(angle));
+    if (prepend) {
+        transform = t * transform;
+    } else {
+        transform = transform * t;
+    }
+
+    shape_ptr->set_transform(transform);
     m_selectedObject.setShapePointer(shape_ptr);
     emit selectedObjectChanged();
 }
