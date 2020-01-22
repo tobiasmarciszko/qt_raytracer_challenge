@@ -85,6 +85,7 @@ Item {
             onCurrentColorChanged: {
                 raytracer.selectedObject.color = colorDialog.currentColor
                 raytracer.materialPreview()
+                raytracer.wireframe()
             }
         }
 

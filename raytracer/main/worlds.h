@@ -134,10 +134,10 @@ namespace Worlds  {
 //        right.material.pattern_ptr = doomfire_pattern();
 //        right.material.pattern_ptr->set_transform(translation(0, 0, 0) * scaling(0.02, 0.04, 0.02) * rotation_x(M_PI_2));
 
-        Cylinder left;
-        left.minimum = -1;
-        left.maximum = 1;
-        left.closed = true;
+        Cube left;
+        // left.minimum = -1;
+        // left.maximum = 1;
+        // left.closed = true;
         left.set_transform(translation(-1.5, 0.5, -0.75) * scaling(0.33, 0.33, 0.33));
         //left.set_material(Materials::glass);
         left.material.reflective = 0.5;
@@ -151,7 +151,7 @@ namespace Worlds  {
         world.shapes = {
             std::make_shared<Cylinder>(middle),
             std::make_shared<Cylinder>(right),
-            std::make_shared<Cylinder>(left),
+            std::make_shared<Cube>(left),
             std::make_shared<Plane>(floor),
             std::make_shared<Plane>(sky),
             std::make_shared<Cube>(wall)

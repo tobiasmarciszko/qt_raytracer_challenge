@@ -172,23 +172,49 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
             const auto b3 = convertWorldToScreenPoint(camera, bot3);
             const auto b4 = convertWorldToScreenPoint(camera, bot4);
 
-            // Top square
-            drawLine(framebuffer, a1, a2, color);
-            drawLine(framebuffer, a3, a4, color);
-            drawLine(framebuffer, a1, a3, color);
-            drawLine(framebuffer, a2, a4, color);
+            QPainter p(&framebuffer);
+            p.setRenderHints(QPainter::Antialiasing);
+            p.setPen("black");
+            qc.setAlpha(125);
+            p.setBrush(QBrush(qc));
 
-            // Bottom square
-            drawLine(framebuffer, b1, b2, color);
-            drawLine(framebuffer, b3, b4, color);
-            drawLine(framebuffer, b1, b3, color);
-            drawLine(framebuffer, b2, b4, color);
+            const QPointF top[4] = {{a1.x, a1.y},
+                                    {a2.x, a2.y},
+                                    {a4.x, a4.y},
+                                    {a3.x, a3.y}};
 
-            // Connect top and bottom
-            drawLine(framebuffer, a1, b1, color);
-            drawLine(framebuffer, a2, b2, color);
-            drawLine(framebuffer, a3, b3, color);
-            drawLine(framebuffer, a4, b4, color);
+            const QPointF bottom[4] = {{b1.x, b1.y},
+                                       {b2.x, b2.y},
+                                       {b4.x, b4.y},
+                                       {b3.x, b3.y}};
+
+            const QPointF left[4] = {{a1.x, a1.y},
+                                     {a2.x, a2.y},
+                                     {b2.x, b2.y},
+                                     {b1.x, b1.y}};
+
+            const QPointF right[4] = {{a3.x, a3.y},
+                                     {a4.x, a4.y},
+                                     {b4.x, b4.y},
+                                     {b3.x, b3.y}};
+
+            const QPointF front[4] = {{a1.x, a1.y},
+                                     {a3.x, a3.y},
+                                     {b3.x, b3.y},
+                                     {b1.x, b1.y}};
+
+            const QPointF back[4] = {{a2.x, a2.y},
+                                     {a4.x, a4.y},
+                                     {b4.x, b4.y},
+                                     {b2.x, b2.y}};
+
+            p.drawPolygon(top, 4);
+            p.drawPolygon(bottom, 4);
+            p.drawPolygon(left, 4);
+            p.drawPolygon(right, 4);
+            p.drawPolygon(front, 4);
+            p.drawPolygon(back, 4);
+            p.end();
         }
 
         if (const auto cyl = dynamic_cast<Cylinder *>(shape.get())) {
