@@ -91,9 +91,9 @@ public:
     Matrix<rows,cols>() = default;
 
     inline void set(unsigned int row, unsigned int col, float value) { m_data[cols * row + col] = value; }
-    constexpr inline float get(unsigned int row, unsigned int col) const { return m_data[cols * row + col]; }
-    constexpr inline size_t getRowCount() const { return m_rows; }
-    constexpr inline size_t getColCount() const { return m_cols; }
+    [[nodiscard]] constexpr inline float get(unsigned int row, unsigned int col) const { return m_data[cols * row + col]; }
+    [[nodiscard]] constexpr inline size_t getRowCount() const { return m_rows; }
+    [[nodiscard]] constexpr inline size_t getColCount() const { return m_cols; }
 
     inline bool operator==(const Matrix<rows, cols>& matrix) const {
 
@@ -116,7 +116,7 @@ public:
     inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
     inline Tuple operator*(const Tuple& tuple) const;
 
-    inline Matrix<rows, cols> transpose() const {
+    [[nodiscard]] inline Matrix<rows, cols> transpose() const {
         Matrix<rows, cols> result;
 
         for (size_t i = 0; i < rows; i++) {
@@ -131,7 +131,7 @@ public:
         return result;
     }
 
-    inline float determinant() const {
+    [[nodiscard]] inline float determinant() const {
         float det = 0;
         for (size_t i = 0; i < cols; i++) {
             const int col = static_cast<int>(i);
@@ -141,7 +141,7 @@ public:
         return det;
     }
 
-    inline Matrix<rows-1, cols-1> submatrix(const unsigned int rowToRemove, const unsigned int colToRemove) const {
+    [[nodiscard]] inline Matrix<rows-1, cols-1> submatrix(const unsigned int rowToRemove, const unsigned int colToRemove) const {
         Matrix<rows-1, cols-1> result;
 
         unsigned int sourceRow = 0;
@@ -167,12 +167,12 @@ public:
     }
 
     #undef minor
-    inline float minor(const unsigned int row, const unsigned int column) const {
+    [[nodiscard]] inline float minor(const unsigned int row, const unsigned int column) const {
         const auto sub = submatrix(row, column);
         return sub.determinant();
     }
 
-    inline float cofactor(const unsigned int row, const unsigned int column) const {
+    [[nodiscard]] inline float cofactor(const unsigned int row, const unsigned int column) const {
         auto minorValue = minor(row, column);
 
         // Cofactor is the same as the minor expected:
@@ -185,11 +185,11 @@ public:
         return minorValue;
     }
 
-    inline bool invertible() const {
+    [[nodiscard]] inline bool invertible() const {
         return determinant() != 0;
     }
 
-    inline Matrix<rows, cols> inverse() const {
+    [[nodiscard]] inline Matrix<rows, cols> inverse() const {
         Matrix<rows, cols> result;
         const auto det = determinant();
 
@@ -231,7 +231,7 @@ inline float Matrix<2, 2>::determinant() const {
 // 4x4 specializations
 template<>
 inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
-    std::array<float, 4> result;
+    std::array<float, 4> result{};
     for (unsigned int i = 0; i < 4; i++) {
             result[i] = get(i, 0) * tuple.x +
                         get(i, 1) * tuple.y +

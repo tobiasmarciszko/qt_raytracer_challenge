@@ -12,11 +12,11 @@ public:
         m_intensity(intensity)
     {}
 
-    inline auto intensity() const {
+    [[nodiscard]] inline auto intensity() const {
         return m_intensity;
     }
 
-    inline auto position() const {
+    [[nodiscard]] inline auto position() const {
         return m_position;
     }
 

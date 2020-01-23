@@ -23,7 +23,7 @@ public:
         pixels[m_width * y + x] = pixel;
     }
 
-    Pixel pixel_at(int x, int y) const {
+    [[nodiscard]] Pixel pixel_at(int x, int y) const {
         return pixels[m_width * y + x];
     }
 
@@ -38,8 +38,8 @@ public:
     QVector<Pixel> pixels;
 
 private:
-    int m_width;
-    int m_height;
+    int m_width{};
+    int m_height{};
 };
 
 #endif // CANVAS_H

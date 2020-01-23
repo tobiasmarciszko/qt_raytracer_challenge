@@ -13,12 +13,12 @@
 
 struct Plane : public Shape
 {
-    inline Vector local_normal_at(const Point& local_point) const override {
+    [[nodiscard]] inline Vector local_normal_at(const Point& local_point) const override {
         (void)local_point;
         return {0, 1, 0};
     }
 
-    inline std::vector<Intersection> local_intersect(const Ray& ray) const override {
+    [[nodiscard]] inline std::vector<Intersection> local_intersect(const Ray& ray) const override {
         // Ray is parallel to the plane
         if (std::abs(ray.direction().y) < EPSILON) {
             return {};

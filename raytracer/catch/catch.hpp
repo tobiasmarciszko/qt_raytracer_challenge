@@ -468,7 +468,7 @@ namespace Catch {
         SourceLineInfo( SourceLineInfo&& )              noexcept = default;
         SourceLineInfo& operator = ( SourceLineInfo&& ) noexcept = default;
 
-        bool empty() const noexcept;
+        [[nodiscard]] bool empty() const noexcept;
         bool operator == ( SourceLineInfo const& other ) const noexcept;
         bool operator < ( SourceLineInfo const& other ) const noexcept;
 
@@ -534,8 +534,8 @@ namespace Catch {
 
     struct ITestCaseRegistry {
         virtual ~ITestCaseRegistry();
-        virtual std::vector<TestCase> const& getAllTests() const = 0;
-        virtual std::vector<TestCase> const& getAllTestsSorted( IConfig const& config ) const = 0;
+        [[nodiscard]] virtual std::vector<TestCase> const& getAllTests() const = 0;
+        [[nodiscard]] virtual std::vector<TestCase> const& getAllTestsSorted( IConfig const& config ) const = 0;
     };
 
     bool isThrowSafe( TestCase const& testCase, IConfig const& config );
@@ -630,26 +630,26 @@ namespace Catch {
         auto operator[] ( size_type index ) const noexcept -> char;
 
     public: // named queries
-        auto empty() const noexcept -> bool {
+        [[nodiscard]] auto empty() const noexcept -> bool {
             return m_size == 0;
         }
-        auto size() const noexcept -> size_type {
+        [[nodiscard]] auto size() const noexcept -> size_type {
             return m_size;
         }
 
-        auto numberOfCharacters() const noexcept -> size_type;
-        auto c_str() const -> char const*;
+        [[nodiscard]] auto numberOfCharacters() const noexcept -> size_type;
+        [[nodiscard]] auto c_str() const -> char const*;
 
     public: // substrings and searches
-        auto substr( size_type start, size_type size ) const noexcept -> StringRef;
+        [[nodiscard]] auto substr( size_type start, size_type size ) const noexcept -> StringRef;
 
         // Returns the current start pointer.
         // Note that the pointer can change when if the StringRef is a substring
-        auto currentData() const noexcept -> char const*;
+        [[nodiscard]] auto currentData() const noexcept -> char const*;
 
     private: // ownership queries - may not be consistent between calls
-        auto isOwned() const noexcept -> bool;
-        auto isSubstring() const noexcept -> bool;
+        [[nodiscard]] auto isOwned() const noexcept -> bool;
+        [[nodiscard]] auto isSubstring() const noexcept -> bool;
     };
 
     auto operator + ( StringRef const& lhs, StringRef const& rhs ) -> std::string;
@@ -1410,7 +1410,7 @@ namespace Catch {
 
     struct IStream {
         virtual ~IStream();
-        virtual std::ostream& stream() const = 0;
+        [[nodiscard]] virtual std::ostream& stream() const = 0;
     };
 
     auto makeStream( StringRef const &filename ) -> IStream const*;
@@ -1422,7 +1422,7 @@ namespace Catch {
         ReusableStringStream();
         ~ReusableStringStream();
 
-        auto str() const -> std::string;
+        [[nodiscard]] auto str() const -> std::string;
 
         template<typename T>
         auto operator << ( T const& value ) -> ReusableStringStream& {
@@ -1447,7 +1447,7 @@ namespace Catch {
 
             ~EnumInfo();
 
-            StringRef lookup( int value ) const;
+            [[nodiscard]] StringRef lookup( int value ) const;
         };
     } // namespace Detail
 
@@ -2170,8 +2170,8 @@ namespace Catch { \
 namespace Catch {
 
     struct ITransientExpression {
-        auto isBinaryExpression() const -> bool { return m_isBinaryExpression; }
-        auto getResult() const -> bool { return m_result; }
+        [[nodiscard]] auto isBinaryExpression() const -> bool { return m_isBinaryExpression; }
+        [[nodiscard]] auto getResult() const -> bool { return m_result; }
         virtual void streamReconstructedExpression( std::ostream &os ) const = 0;
 
         ITransientExpression( bool isBinaryExpression, bool result )
@@ -2357,7 +2357,7 @@ namespace Catch {
             "wrap the expression inside parentheses, or decompose it");
         }
 
-        auto makeUnaryExpr() const -> UnaryExpr<LhsT> {
+        [[nodiscard]] auto makeUnaryExpr() const -> UnaryExpr<LhsT> {
             return UnaryExpr<LhsT>{ m_lhs };
         }
     };
@@ -2465,8 +2465,8 @@ namespace Catch {
         virtual void assertionPassed() = 0;
 
         // Deprecated, do not use:
-        virtual std::string getCurrentTestName() const = 0;
-        virtual const AssertionResult* getLastResult() const = 0;
+        [[nodiscard]] virtual std::string getCurrentTestName() const = 0;
+        [[nodiscard]] virtual const AssertionResult* getLastResult() const = 0;
         virtual void exceptionEarlyReported() = 0;
     };
 
@@ -2539,7 +2539,7 @@ namespace Catch {
         void setCompleted();
 
         // query
-        auto allowThrows() const -> bool;
+        [[nodiscard]] auto allowThrows() const -> bool;
     };
 
     void handleExceptionMatchExpr( AssertionHandler& handler, std::string const& str, StringRef const& matcherString );
@@ -2787,9 +2787,9 @@ namespace Catch {
         Counts operator - ( Counts const& other ) const;
         Counts& operator += ( Counts const& other );
 
-        std::size_t total() const;
-        bool allPassed() const;
-        bool allOk() const;
+        [[nodiscard]] std::size_t total() const;
+        [[nodiscard]] bool allPassed() const;
+        [[nodiscard]] bool allOk() const;
 
         std::size_t passed = 0;
         std::size_t failed = 0;
@@ -2801,7 +2801,7 @@ namespace Catch {
         Totals operator - ( Totals const& other ) const;
         Totals& operator += ( Totals const& other );
 
-        Totals delta( Totals const& prevTotals ) const;
+        [[nodiscard]] Totals delta( Totals const& prevTotals ) const;
 
         int error = 0;
         Counts assertions;
@@ -2852,10 +2852,10 @@ namespace Catch {
         uint64_t m_nanoseconds = 0;
     public:
         void start();
-        auto getElapsedNanoseconds() const -> uint64_t;
-        auto getElapsedMicroseconds() const -> uint64_t;
-        auto getElapsedMilliseconds() const -> unsigned int;
-        auto getElapsedSeconds() const -> double;
+        [[nodiscard]] auto getElapsedNanoseconds() const -> uint64_t;
+        [[nodiscard]] auto getElapsedMicroseconds() const -> uint64_t;
+        [[nodiscard]] auto getElapsedMilliseconds() const -> unsigned int;
+        [[nodiscard]] auto getElapsedSeconds() const -> double;
     };
 
 } // namespace Catch
@@ -2920,12 +2920,12 @@ namespace Catch {
     struct IRegistryHub {
         virtual ~IRegistryHub();
 
-        virtual IReporterRegistry const& getReporterRegistry() const = 0;
-        virtual ITestCaseRegistry const& getTestCaseRegistry() const = 0;
-        virtual ITagAliasRegistry const& getTagAliasRegistry() const = 0;
-        virtual IExceptionTranslatorRegistry const& getExceptionTranslatorRegistry() const = 0;
+        [[nodiscard]] virtual IReporterRegistry const& getReporterRegistry() const = 0;
+        [[nodiscard]] virtual ITestCaseRegistry const& getTestCaseRegistry() const = 0;
+        [[nodiscard]] virtual ITagAliasRegistry const& getTagAliasRegistry() const = 0;
+        [[nodiscard]] virtual IExceptionTranslatorRegistry const& getExceptionTranslatorRegistry() const = 0;
 
-        virtual StartupExceptionRegistry const& getStartupExceptionRegistry() const = 0;
+        [[nodiscard]] virtual StartupExceptionRegistry const& getStartupExceptionRegistry() const = 0;
     };
 
     struct IMutableRegistryHub {
@@ -2964,13 +2964,13 @@ namespace Catch {
 
     struct IExceptionTranslator {
         virtual ~IExceptionTranslator();
-        virtual std::string translate( ExceptionTranslators::const_iterator it, ExceptionTranslators::const_iterator itEnd ) const = 0;
+        [[nodiscard]] virtual std::string translate( ExceptionTranslators::const_iterator it, ExceptionTranslators::const_iterator itEnd ) const = 0;
     };
 
     struct IExceptionTranslatorRegistry {
         virtual ~IExceptionTranslatorRegistry();
 
-        virtual std::string translateActiveException() const = 0;
+        [[nodiscard]] virtual std::string translateActiveException() const = 0;
     };
 
     class ExceptionTranslatorRegistrar {
@@ -2982,7 +2982,7 @@ namespace Catch {
             : m_translateFunction( translateFunction )
             {}
 
-            std::string translate( ExceptionTranslators::const_iterator it, ExceptionTranslators::const_iterator itEnd ) const override {
+            [[nodiscard]] std::string translate( ExceptionTranslators::const_iterator it, ExceptionTranslators::const_iterator itEnd ) const override {
                 try {
                     if( it == itEnd )
                         std::rethrow_exception(std::current_exception());
@@ -3027,7 +3027,7 @@ namespace Detail {
 
     class Approx {
     private:
-        bool equalityComparisonImpl(double other) const;
+        [[nodiscard]] bool equalityComparisonImpl(double other) const;
         // Validates the new margin (margin >= 0)
         // out-of-line to avoid including stdexcept in the header
         void setMargin(double margin);
@@ -3116,7 +3116,7 @@ namespace Detail {
             return *this;
         }
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
 
     private:
         double m_epsilon;
@@ -3207,7 +3207,7 @@ namespace Matchers {
 
         template<typename ObjectT>
         struct MatcherMethod {
-            virtual bool match( ObjectT const& arg ) const = 0;
+            [[nodiscard]] virtual bool match( ObjectT const& arg ) const = 0;
         };
 
 #if defined(__OBJC__)
@@ -3240,7 +3240,7 @@ namespace Matchers {
                 }
                 return true;
             }
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 std::string description;
                 description.reserve( 4 + m_matchers.size()*32 );
                 description += "( ";
@@ -3273,7 +3273,7 @@ namespace Matchers {
                 }
                 return false;
             }
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 std::string description;
                 description.reserve( 4 + m_matchers.size()*32 );
                 description += "( ";
@@ -3306,7 +3306,7 @@ namespace Matchers {
                 return !m_underlyingMatcher.match( arg );
             }
 
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 return "not " + m_underlyingMatcher.toString();
             }
             MatcherBase<ArgT> const& m_underlyingMatcher;
@@ -3406,7 +3406,7 @@ public:
         return m_predicate(item);
     }
 
-    std::string describe() const override {
+    [[nodiscard]] std::string describe() const override {
         return m_description;
     }
 };
@@ -3438,8 +3438,8 @@ namespace Matchers {
         struct CasedString
         {
             CasedString( std::string const& str, CaseSensitive::Choice caseSensitivity );
-            std::string adjustString( std::string const& str ) const;
-            std::string caseSensitivitySuffix() const;
+            [[nodiscard]] std::string adjustString( std::string const& str ) const;
+            [[nodiscard]] std::string caseSensitivitySuffix() const;
 
             CaseSensitive::Choice m_caseSensitivity;
             std::string m_str;
@@ -3517,7 +3517,7 @@ namespace Matchers {
                 return false;
             }
 
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 return "Contains: " + ::Catch::Detail::stringify( m_comparator );
             }
 
@@ -3547,7 +3547,7 @@ namespace Matchers {
                 }
                 return true;
             }
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 return "Contains: " + ::Catch::Detail::stringify( m_comparator );
             }
 
@@ -3571,7 +3571,7 @@ namespace Matchers {
                         return false;
                 return true;
             }
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 return "Equals: " + ::Catch::Detail::stringify( m_comparator );
             }
             std::vector<T> const& m_comparator;
@@ -3625,7 +3625,7 @@ namespace Matchers {
                 return std::is_permutation(m_target.begin(), m_target.end(), vec.begin());
             }
 
-            std::string describe() const override {
+            [[nodiscard]] std::string describe() const override {
                 return "UnorderedEquals: " + ::Catch::Detail::stringify(m_target);
             }
         private:
@@ -3760,8 +3760,8 @@ namespace Catch {
 
     struct IGeneratorTracker {
         virtual ~IGeneratorTracker();
-        virtual auto hasGenerator() const -> bool = 0;
-        virtual auto getGenerator() const -> Generators::GeneratorBasePtr const& = 0;
+        [[nodiscard]] virtual auto hasGenerator() const -> bool = 0;
+        [[nodiscard]] virtual auto getGenerator() const -> Generators::GeneratorBasePtr const& = 0;
         virtual void setGenerator( Generators::GeneratorBasePtr&& generator ) = 0;
     };
 
@@ -3826,7 +3826,7 @@ public:
         m_msg(msg)
     {}
 
-    const char* what() const noexcept override final;
+    [[nodiscard]] const char* what() const noexcept override final;
 };
 
 namespace Generators {
@@ -4264,7 +4264,7 @@ namespace Catch {
 
         virtual IResultCapture* getResultCapture() = 0;
         virtual IRunner* getRunner() = 0;
-        virtual IConfigPtr const& getConfig() const = 0;
+        [[nodiscard]] virtual IConfigPtr const& getConfig() const = 0;
     };
 
     struct IMutableContext : IContext
@@ -4348,8 +4348,8 @@ namespace Catch {
             return nullableValue ? *nullableValue : defaultValue;
         }
 
-        bool some() const { return nullableValue != nullptr; }
-        bool none() const { return nullableValue == nullptr; }
+        [[nodiscard]] bool some() const { return nullableValue != nullptr; }
+        [[nodiscard]] bool none() const { return nullableValue == nullptr; }
 
         bool operator !() const { return nullableValue == nullptr; }
         explicit operator bool() const {
@@ -4411,29 +4411,29 @@ namespace Catch {
 
         virtual ~IConfig();
 
-        virtual bool allowThrows() const = 0;
-        virtual std::ostream& stream() const = 0;
-        virtual std::string name() const = 0;
-        virtual bool includeSuccessfulResults() const = 0;
-        virtual bool shouldDebugBreak() const = 0;
-        virtual bool warnAboutMissingAssertions() const = 0;
-        virtual bool warnAboutNoTests() const = 0;
-        virtual int abortAfter() const = 0;
-        virtual bool showInvisibles() const = 0;
-        virtual ShowDurations::OrNot showDurations() const = 0;
-        virtual TestSpec const& testSpec() const = 0;
-        virtual bool hasTestFilters() const = 0;
-        virtual std::vector<std::string> const& getTestsOrTags() const = 0;
-        virtual RunTests::InWhatOrder runOrder() const = 0;
-        virtual unsigned int rngSeed() const = 0;
-        virtual UseColour::YesOrNo useColour() const = 0;
-        virtual std::vector<std::string> const& getSectionsToRun() const = 0;
-        virtual Verbosity verbosity() const = 0;
+        [[nodiscard]] virtual bool allowThrows() const = 0;
+        [[nodiscard]] virtual std::ostream& stream() const = 0;
+        [[nodiscard]] virtual std::string name() const = 0;
+        [[nodiscard]] virtual bool includeSuccessfulResults() const = 0;
+        [[nodiscard]] virtual bool shouldDebugBreak() const = 0;
+        [[nodiscard]] virtual bool warnAboutMissingAssertions() const = 0;
+        [[nodiscard]] virtual bool warnAboutNoTests() const = 0;
+        [[nodiscard]] virtual int abortAfter() const = 0;
+        [[nodiscard]] virtual bool showInvisibles() const = 0;
+        [[nodiscard]] virtual ShowDurations::OrNot showDurations() const = 0;
+        [[nodiscard]] virtual TestSpec const& testSpec() const = 0;
+        [[nodiscard]] virtual bool hasTestFilters() const = 0;
+        [[nodiscard]] virtual std::vector<std::string> const& getTestsOrTags() const = 0;
+        [[nodiscard]] virtual RunTests::InWhatOrder runOrder() const = 0;
+        [[nodiscard]] virtual unsigned int rngSeed() const = 0;
+        [[nodiscard]] virtual UseColour::YesOrNo useColour() const = 0;
+        [[nodiscard]] virtual std::vector<std::string> const& getSectionsToRun() const = 0;
+        [[nodiscard]] virtual Verbosity verbosity() const = 0;
 
-        virtual bool benchmarkNoAnalysis() const = 0;
-        virtual int benchmarkSamples() const = 0;
-        virtual double benchmarkConfidenceInterval() const = 0;
-        virtual unsigned int benchmarkResamples() const = 0;
+        [[nodiscard]] virtual bool benchmarkNoAnalysis() const = 0;
+        [[nodiscard]] virtual int benchmarkSamples() const = 0;
+        [[nodiscard]] virtual double benchmarkConfidenceInterval() const = 0;
+        [[nodiscard]] virtual unsigned int benchmarkResamples() const = 0;
     };
 
     using IConfigPtr = std::shared_ptr<IConfig const>;
@@ -4596,12 +4596,12 @@ namespace Catch {
 
         friend void setTags( TestCaseInfo& testCaseInfo, std::vector<std::string> tags );
 
-        bool isHidden() const;
-        bool throws() const;
-        bool okToFail() const;
-        bool expectedToFail() const;
+        [[nodiscard]] bool isHidden() const;
+        [[nodiscard]] bool throws() const;
+        [[nodiscard]] bool okToFail() const;
+        [[nodiscard]] bool expectedToFail() const;
 
-        std::string tagsAsString() const;
+        [[nodiscard]] std::string tagsAsString() const;
 
         std::string name;
         std::string className;
@@ -4617,11 +4617,11 @@ namespace Catch {
 
         TestCase( ITestInvoker* testCase, TestCaseInfo&& info );
 
-        TestCase withName( std::string const& _newName ) const;
+        [[nodiscard]] TestCase withName( std::string const& _newName ) const;
 
         void invoke() const;
 
-        TestCaseInfo const& getTestCaseInfo() const;
+        [[nodiscard]] TestCaseInfo const& getTestCaseInfo() const;
 
         bool operator == ( TestCase const& other ) const;
         bool operator < ( TestCase const& other ) const;
@@ -4647,7 +4647,7 @@ namespace Catch {
 
     struct IRunner {
         virtual ~IRunner();
-        virtual bool aborting() const = 0;
+        [[nodiscard]] virtual bool aborting() const = 0;
     };
 }
 

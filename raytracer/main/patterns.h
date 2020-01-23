@@ -13,7 +13,7 @@ struct CloudPattern : public Pattern {
 
     QImage clouds{":/clouds"};
 
-    Color pattern_at(const Point& p) const override {
+    [[nodiscard]] Color pattern_at(const Point& p) const override {
         int y = (abs(int(p.z))) % clouds.height();
         int x = (abs(int(p.x))) % clouds.width();
 
@@ -30,7 +30,7 @@ inline std::shared_ptr<Pattern> cloud_pattern() {
 
 ///////////////// Test Pattern /////////////////////
 struct TestPattern : public Pattern {
-    Color pattern_at(const Point& p) const override {
+    [[nodiscard]] Color pattern_at(const Point& p) const override {
         return Color(p.x, p.y, p.z);
     }
 };
@@ -49,7 +49,7 @@ struct StripePattern : public Pattern {
     Color a;
     Color b;
 
-    Color pattern_at(const Point& p) const override {
+    [[nodiscard]] Color pattern_at(const Point& p) const override {
         if (static_cast<int>(std::floor(p.x)) % 2 == 0) {
             return a;
         }
@@ -65,7 +65,7 @@ inline std::shared_ptr<Pattern> stripe_pattern(const Color& a, const Color &b) {
 
 struct XORPattern : public Pattern {
 
-    Color pattern_at(const Point& p) const override {
+    [[nodiscard]] Color pattern_at(const Point& p) const override {
         int c = (int)p.x^(int)p.y^(int)p.z;
         c = abs(c) % 256;
 
@@ -162,7 +162,7 @@ struct DoomFirePattern : public Pattern {
         }
     }
 
-    Color pattern_at(const Point& p) const override {
+    [[nodiscard]] Color pattern_at(const Point& p) const override {
         int y = (220-abs(static_cast<int>(p.y)));
         int x = abs(static_cast<int>(p.x)) % 320;
 

@@ -40,7 +40,7 @@ TEST_CASE("A ray misses a cube")
     for (const auto& [origin, direction]: data) {
         Ray r{origin, direction};
         auto xs = c.local_intersect(r);
-        REQUIRE(xs.size() == 0);
+        REQUIRE(xs.empty());
     }
 }
 

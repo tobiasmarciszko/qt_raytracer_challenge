@@ -275,8 +275,8 @@ float schlick(const Computations& comps)
         cos = cos_t;
     }
 
-    const auto r0 = std::pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
-    return r0 + (1 - r0) * std::pow((1 - cos), 5);
+    const float r0 = std::pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
+    return r0 + (1.0F - r0) * std::pow((1.0F - cos), 5.0F);
 }
 
 Color lighting(
@@ -335,7 +335,7 @@ Color lighting(
         } else {
             // compute the specular contribution
 
-            float factor;
+            float factor{};
 
             if (lightingModel == LightingModel::Phong) {
                 factor = std::pow(reflect_dot_eye, material.shininess);

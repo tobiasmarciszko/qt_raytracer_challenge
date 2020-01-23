@@ -14,19 +14,19 @@ public:
         m_origin(origin),
         m_direction(direction) {}
 
-    inline Point origin() const {
+    [[nodiscard]] inline Point origin() const {
         return m_origin;
     }
 
-    inline Vector direction() const {
+    [[nodiscard]] inline Vector direction() const {
         return m_direction;
     }
 
-    inline Point position(const float t) const {
+    [[nodiscard]] inline Point position(const float t) const {
         return m_origin + m_direction * t;
     }
 
-    inline Ray transform(const Matrix<4,4>& matrix) const {
+    [[nodiscard]] inline Ray transform(const Matrix<4,4>& matrix) const {
         return {Point{matrix * m_origin}, Vector{matrix * m_direction}};
     }
 

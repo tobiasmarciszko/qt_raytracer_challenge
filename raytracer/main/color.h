@@ -20,16 +20,16 @@ struct Color
         return os << "(" << c.red << ", " << c.green << ", " << c.blue << ")";
     }
 
-    float red{0};
-    float green{0};
-    float blue{0};
+    float red{};
+    float green{};
+    float blue{};
 };
 
 struct Pixel
 {
     Color color;
-    int x{0};
-    int y{0};
+    float x{};
+    float y{};
 };
 
 #endif // COLOR_H

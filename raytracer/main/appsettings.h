@@ -29,7 +29,7 @@ public:
     };
     Q_ENUM(SettingValues)
 
-    ~AppSettings();
+    ~AppSettings() override;
 
     static AppSettings& get()
     {
@@ -44,29 +44,29 @@ public:
     void flush();
 
     // Generic access to settings
-    bool isEnabled(const SettingKeys& key) const;
+    [[nodiscard]] bool isEnabled(const SettingKeys& key) const;
     void setEnabled(const SettingKeys& key, bool isEnabled);
     void setEnabled(const SettingKeys& key, const SettingValues& value);
 
     // Explicit access to setting properties
     // FastRender
     Q_PROPERTY(bool fastRenderEnabled READ fastRenderEnabled WRITE setFastRenderEnabled NOTIFY fastRenderEnabledChanged)
-    bool fastRenderEnabled() const;
+    [[nodiscard]] bool fastRenderEnabled() const;
     void setFastRenderEnabled(bool isEnabled);
 
     // FastRender
     Q_PROPERTY(bool fireworksEnabled READ fireworksEnabled WRITE setFireworksEnabled NOTIFY fireworksEnabledChanged)
-    bool fireworksEnabled() const;
+    [[nodiscard]] bool fireworksEnabled() const;
     void setFireworksEnabled(bool isEnabled);
 
     // AntiAliasing
     Q_PROPERTY(bool aaEnabled READ aaEnabled WRITE setAaEnabled NOTIFY aaEnabledChanged)
-    bool aaEnabled() const;
+    [[nodiscard]] bool aaEnabled() const;
     void setAaEnabled(bool isEnabled);
 
     // Fullscreen perspective
     Q_PROPERTY(bool fullscreenEnabled READ fullscreenEnabled WRITE setFullscreenEnabled NOTIFY fullscreenEnabledChanged)
-    bool fullscreenEnabled() const;
+    [[nodiscard]] bool fullscreenEnabled() const;
     void setFullscreenEnabled(bool isEnabled);
 
 

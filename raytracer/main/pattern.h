@@ -15,7 +15,7 @@ struct Pattern {
     Matrix<4,4> transform = identity_matrix;
     Matrix<4,4> inverse_transform = transform.inverse();
 
-    virtual Color pattern_at(const Point& p) const = 0;
+    [[nodiscard]] virtual Color pattern_at(const Point& p) const = 0;
 
     inline void set_transform(const Matrix<4,4>& t) {
         transform = t;
