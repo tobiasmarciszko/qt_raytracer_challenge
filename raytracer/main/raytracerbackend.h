@@ -93,10 +93,10 @@ private:
     // Camera
     float m_fromX = 1;
     float m_fromY = 1;
-    float m_fromZ = -4;
+    float m_fromZ = -5;
 
     float m_toX = 0;
-    float m_toY = 1;
+    float m_toY = 0.5;
     float m_toZ = 0;
 
     // For rendering

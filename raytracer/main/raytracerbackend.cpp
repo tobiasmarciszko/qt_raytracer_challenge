@@ -208,6 +208,16 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
                                      {b4.x, b4.y},
                                      {b2.x, b2.y}};
 
+            for(const auto& point: top) {
+                if (point.x() <= -1 || point.y() <= -1)
+                    return;
+            }
+
+            for(const auto& point: bottom) {
+                if (point.x() <= -1 || point.y() <= -1)
+                    return;
+            }
+
             p.drawPolygon(top, 4);
             p.drawPolygon(bottom, 4);
             p.drawPolygon(left, 4);

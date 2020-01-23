@@ -116,12 +116,12 @@ namespace Worlds  {
         mwall.pattern_ptr = doomfire_pattern();
         mwall.pattern_ptr->set_transform(translation(0, -1, 0) * scaling(0.002, 0.015, 0.02));
 
-        Cylinder middle;
-        middle.minimum = 0;
-        middle.maximum = 3;
-        middle.closed = true;
-        middle.set_transform(translation(0, 1.2, 0));
-        middle.material = Materials::diamond;
+        Sphere middle;
+//        middle.minimum = 0;
+//        middle.maximum = 3;
+//        middle.closed = true;
+        middle.set_transform(translation(0, 1, 0));
+        middle.material = Materials::glass;
 
         Cylinder right;
         right.minimum = -2;
@@ -149,12 +149,12 @@ namespace Worlds  {
         // world.lights.emplace_back(PointLight(Point(0, 50, 0), Color(0.2, 0.2, 0.2)));
 
         world.shapes = {
-            std::make_shared<Cylinder>(middle),
+            std::make_shared<Sphere>(middle),
             std::make_shared<Cylinder>(right),
             std::make_shared<Cube>(left),
             std::make_shared<Plane>(floor),
-            std::make_shared<Plane>(sky),
-            std::make_shared<Cube>(wall)
+            std::make_shared<Plane>(sky)
+            // std::make_shared<Cube>(wall)
         };
 
         return world;
