@@ -23,6 +23,14 @@ RaytracerBackend::RaytracerBackend(QObject *parent)
     // Material preview
     m_previewCamera.set_transform(
         view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0)));
+
+#ifdef WIREFRAME_CUBE_ROTATION_PLAYGROUND_ENABLED
+    m_intervalTimer.setTimerType(Qt::PreciseTimer);
+    m_intervalTimer.setInterval(1000/30);
+    connect(&m_intervalTimer, SIGNAL(timeout()), this, SLOT(frameTick()));
+    m_intervalTimer.start();
+#endif
+
 }
 
 void RaytracerBackend::progressValueChanged(int value) {
@@ -30,7 +38,7 @@ void RaytracerBackend::progressValueChanged(int value) {
     emit progressChanged();
 }
 
-void RaytracerBackend::setViewportSize(int width, int height) {
+void RaytracerBackend::setViewportSize(float width, float height) {
 
     if (width < 0 || height < 0)
         return;
@@ -148,7 +156,7 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
         const auto yScale = m.get(1, 1);
         const auto zScale = m.get(2, 2);
 
-        if (dynamic_cast<Cube *>(shape.get())) {
+        if (const auto& cube = dynamic_cast<Cube *>(shape.get())) {
 
             const auto top1 = m * Point(1, 1, -1);  // centerPoint.x + xScale;
             const auto top2 = m * Point(1, 1, 1);   // centerPoint.x - xScale;
@@ -328,9 +336,9 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
             auto l = convertWorldToScreenPoint(camera, left);
             auto r = convertWorldToScreenPoint(camera, right);
 
-            p.drawLine(t.x, t.y, b.x, b.y);
-            p.drawLine(fr.x, fr.y, ba.x, ba.y);
-            p.drawLine(l.x, l.y, r.x, r.y);
+            p.drawLine(QPointF{t.x, t.y}, QPointF{b.x, b.y});
+            p.drawLine(QPointF{fr.x, fr.y}, QPointF{ba.x, ba.y});
+            p.drawLine(QPointF{l.x, l.y}, QPointF{r.x, r.y});
         }
 
         if (dynamic_cast<Plane *>(shape.get())) {
@@ -360,15 +368,18 @@ void RaytracerBackend::wireframe() {
     Camera left{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
     Camera right{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
 
+    const Point to{0, 1, 0};
+    const Vector up{0, 1, 0};
+
     front.set_transform(
-        view_transform(Point(0, 1, m_fromZ), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(0, 1, m_fromZ), to, up));
     left.set_transform(
-        view_transform(Point(-m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(-m_fromZ, 1, 0), to, up));
     right.set_transform(
-        view_transform(Point(m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(m_fromZ, 1, 0), to, up));
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ),
                                           Point(m_toX, m_toY, m_toZ),
-                                          Vector(0, 1, 0)));
+                                          up));
 
     QImage front_framebuffer{static_cast<int>(front.hsize),
                              static_cast<int>(front.vsize),
@@ -510,7 +521,7 @@ void RaytracerBackend::drawLine(QImage &framebuffer, const Point &p1,
     QPainter p(&framebuffer);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(color);
-    p.drawLine(p1.x, p1.y, p2.x, p2.y);
+    p.drawLine(QPointF{p1.x, p1.y}, QPointF{p2.x, p2.y});
 }
 
 void RaytracerBackend::switchChanged() {
@@ -560,4 +571,15 @@ void RaytracerBackend::appendTransform(const Matrix<4, 4> &t,
     shape_ptr->set_transform(transform);
     m_selectedObject.setShapePointer(shape_ptr);
     emit selectedObjectChanged();
+}
+void RaytracerBackend::frameTick() {
+
+    for (const auto &shape : m_world.shapes) {
+        if (dynamic_cast<Cube *>(shape.get())) {
+            shape->set_transform(shape->transform() * m_cubeRotation);
+            break;
+        }
+    }
+
+    wireframe();
 }

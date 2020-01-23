@@ -33,15 +33,11 @@ public:
     Q_PROPERTY(ShapeQmlBridge* selectedObject READ getSelectedObject NOTIFY selectedObjectChanged)
 
 public slots:
-// disable diagnostics for unused methods, if slot are only called from QML
-// they are treated as unused which is incorrect (and a bit of a pain...)
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
     void render();
     void wireframe();
     void materialPreview();
     void switchChanged();
-    void setViewportSize(int width, int height);
+    void setViewportSize(float width, float height);
 
     void selectObject(float x, float y) {
         const Ray ray = ray_for_pixel(m_camera, x, y);
@@ -62,8 +58,6 @@ public slots:
     void rotate_x(float angle);
     void rotate_y(float angle);
     void rotate_z(float angle);
-
-#pragma clang diagnostic pop
 // end slots
 
 signals:
@@ -81,6 +75,7 @@ private slots:
     void renderFinished();
     void materialPreviewFinished();
     void progressValueChanged(int value);
+    void frameTick();
 
 private:
     void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
@@ -121,6 +116,9 @@ private:
     Canvas m_previewCanvas{140, 140};
     Camera m_previewCamera{140, 140, M_PI / 3.0};
     QImage m_previewframebuffer{140, 140, QImage::Format_RGB32};
+
+    QTimer m_intervalTimer;
+    Matrix<4,4> m_cubeRotation = rotation_x(0.0174533) * rotation_z(0.0174533);
 };
 
 #endif // RAYTRACER_H
