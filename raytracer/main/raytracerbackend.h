@@ -33,12 +33,9 @@ public:
     Q_PROPERTY(ShapeQmlBridge* selectedObject READ getSelectedObject NOTIFY selectedObjectChanged)
 
 public slots:
-// disable diagnostics for unused methods, if slot are only called from QML
-// they are treated as unused which is incorrect (and a bit of a pain...)
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+
     void render();
-    void wireframe();
+    void wireframe() const;
     void materialPreview();
     void switchChanged();
     void setViewportSize(int width, int height);
@@ -63,12 +60,11 @@ public slots:
     void rotate_y(float angle);
     void rotate_z(float angle);
 
-#pragma clang diagnostic pop
 // end slots
 
 signals:
     void imageReady(const QImage& image);
-    void wireframesReady(const QImage& top, const QImage& left, const QImage& right, const QImage& perspective);
+    void wireframesReady(const QImage& top, const QImage& left, const QImage& right, const QImage& perspective) const;
     void materialPreviewReady(const QImage& image);
     void renderingChanged();
     void progressChanged();
@@ -83,11 +79,13 @@ private slots:
     void progressValueChanged(int value);
 
 private:
-    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255));
-    Point convertWorldToScreenPoint(const Camera& camera, const Point& point);
+    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255)) const;
+    void drawLine(QPainter* p, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255)) const;
+
+    Point convertWorldToScreenPoint(const Camera& camera, const Point& point) const;
     void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
     void copyFrameBuffer(Canvas& from, QImage& to);
-    void wireframe(QImage& framebuffer, const Camera& camera);
+    void wireframe(QImage& framebuffer, const Camera& camera) const;
     void appendTransform(const Matrix<4,4>& transform, bool prepend = false);
 
     // Camera

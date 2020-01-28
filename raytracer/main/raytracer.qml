@@ -131,6 +131,7 @@ ApplicationWindow {
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
                     }
                 }
@@ -158,6 +159,7 @@ ApplicationWindow {
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
                     }
                 }
@@ -186,6 +188,7 @@ ApplicationWindow {
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
                     }
                 }
@@ -226,6 +229,7 @@ ApplicationWindow {
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
                     }
 
@@ -265,6 +269,7 @@ ApplicationWindow {
                             raytracer.rotate_z(deltaX * 0.01)
                         }
 
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
 
                         startX = mouse.x
@@ -301,6 +306,7 @@ ApplicationWindow {
 
             onMoved: {
                 raytracer.fromX = slider.value
+                raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                 raytracer.wireframe()
             }
         }
@@ -321,6 +327,7 @@ ApplicationWindow {
 
             onMoved: {
                 raytracer.fromY = slider1.value
+                raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                 raytracer.wireframe()
             }
         }
