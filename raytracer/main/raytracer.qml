@@ -40,10 +40,9 @@ ApplicationWindow {
         source: "B162"
     }
 
-    Rectangle {
+    Item {
         id: leftRectangle
         Layout.rowSpan: 1
-        color: "transparent"
         x: 0
         y: 0
         width: Math.max(300, 0.2 * window.width)
@@ -55,9 +54,8 @@ ApplicationWindow {
         }
     }
 
-    Rectangle {
+    Item {
         id: middleRectangle
-        color: "transparent"
         x: leftRectangle.visible ? leftRectangle.width : 0
         width: window.width - (leftRectangle.visible ? leftRectangle.width : 0) - (rightRectangle.visible ? rightRectangle.width : 0)
         height: window.height
@@ -100,11 +98,18 @@ ApplicationWindow {
 
             Connections {
                 target: raytracer
-                onWireframesReady: {
-                    liveImageItem.setImage(top)
-                    liveImageItem2.setImage(left)
-                    liveImageItem3.setImage(right)
-                    liveImageItem4.setImage(perspective)
+//                onWireframesReady: {
+//                    if (!settings.fullscreenEnabled) {
+//                        liveImageItem.image = top
+//                        liveImageItem2.image = left
+//                        liveImageItem3.image = right
+//                    }
+//
+//                    liveImageItem4.image = perspective
+//                }
+
+                onLinesReady: {
+                    liveImageItem4.lines = lines
                 }
             }
 
@@ -215,9 +220,10 @@ ApplicationWindow {
                     updateWireframe()
                 }
 
+
                 Connections {
                     target: raytracer
-                    onImageReady: liveImageItem4.setImage(image)
+                    onImageReady: liveImageItem4.image = image
                 }
 
                 MouseArea {
@@ -226,6 +232,7 @@ ApplicationWindow {
 
                     onWheel: {
                         raytracer.fromZ += wheel.angleDelta.y * 1/8 / 50;
+                        raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                         raytracer.wireframe()
                     }
 
@@ -301,6 +308,7 @@ ApplicationWindow {
 
             onMoved: {
                 raytracer.fromX = slider.value
+                raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                 raytracer.wireframe()
             }
         }
@@ -321,6 +329,7 @@ ApplicationWindow {
 
             onMoved: {
                 raytracer.fromY = slider1.value
+                raytracer.setViewportSize(liveImageItem4.width, liveImageItem4.height)
                 raytracer.wireframe()
             }
         }
@@ -564,11 +573,10 @@ ApplicationWindow {
         }
     }
 
-    Rectangle {
+    Item {
         visible: true
         id: rightRectangle
         anchors.right: parent.right
-        color: "transparent"
         width: 250
         height: window.height
 

@@ -286,12 +286,9 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            clip: true
 
             ImageItem {
                 id: liveImageItem
-                fillColor: "#FFFFFF"
-                clip: true
                 enabled: false
                 anchors.fill: parent
 

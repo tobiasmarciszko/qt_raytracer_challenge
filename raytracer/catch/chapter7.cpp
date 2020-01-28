@@ -203,7 +203,7 @@ TEST_CASE("Constructing a camera") {
 
     REQUIRE(c.hsize == 160);
     REQUIRE(c.vsize == 120);
-    REQUIRE(c.field_of_view == M_PI_2);
+    REQUIRE(equal(c.field_of_view, M_PI_2));
     REQUIRE(c.transform() == identity_matrix);
 }
 

@@ -70,6 +70,7 @@ signals:
     void fromYChanged();
     void fromZChanged();
     void selectedObjectChanged();
+    void linesReady(const QList<QLine>& lines);
 
 private slots:
     void renderFinished();
@@ -96,9 +97,28 @@ private:
 
     // For rendering
     Canvas m_canvas;
+
+    // Cameras
     Camera m_camera;
     QImage m_framebuffer;
 
+    Camera m_frontCamera;
+    Camera m_leftCamera;
+    Camera m_rightCamera;
+
+    // Perspectives
+    QImage m_front_framebuffer{static_cast<int>(m_frontCamera.hsize),
+                               static_cast<int>(m_frontCamera.vsize),
+                               QImage::Format_RGB32};
+    QImage m_left_framebuffer{static_cast<int>(m_leftCamera.hsize),
+                              static_cast<int>(m_leftCamera.vsize),
+                               QImage::Format_RGB32};
+    QImage m_right_framebuffer{static_cast<int>(m_rightCamera.hsize),
+                               static_cast<int>(m_rightCamera.vsize),
+                               QImage::Format_RGB32};
+    QImage m_persp_framebuffer{static_cast<int>(m_camera.hsize),
+                               static_cast<int>(m_camera.vsize),
+                               QImage::Format_RGB32};
     World m_world;
     World m_previewWorld;
 
@@ -111,6 +131,7 @@ private:
     QFutureWatcher<void> m_futureWatcher;
     QFutureWatcher<void> m_materialPreviewFutureWatcher;
     QElapsedTimer m_timer;
+    QElapsedTimer m_wireframeTimer;
 
     // Material preview
     Canvas m_previewCanvas{140, 140};

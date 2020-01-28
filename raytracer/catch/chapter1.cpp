@@ -1,5 +1,4 @@
 #include "catch.hpp"
-#include "tuple.h"
 #include "point.h"
 #include "tuple.h"
 #include "point.h"

@@ -24,13 +24,10 @@ RaytracerBackend::RaytracerBackend(QObject *parent)
     m_previewCamera.set_transform(
         view_transform(Point(0, 1.0, -1.5), Point(0, 0, 0), Vector(0, 1, 0)));
 
-#ifdef WIREFRAME_CUBE_ROTATION_PLAYGROUND_ENABLED
     m_intervalTimer.setTimerType(Qt::PreciseTimer);
-    m_intervalTimer.setInterval(1000/30);
+    m_intervalTimer.setInterval((1.0F / 60.0F) * 1000.0F);
     connect(&m_intervalTimer, SIGNAL(timeout()), this, SLOT(frameTick()));
     m_intervalTimer.start();
-#endif
-
 }
 
 void RaytracerBackend::progressValueChanged(int value) {
@@ -43,12 +40,43 @@ void RaytracerBackend::setViewportSize(float width, float height) {
     if (width < 0 || height < 0)
         return;
 
-    m_camera = Camera(width, height, M_PI / 3.0);
+    m_camera = Camera(width, height, M_PI / 3.0F);
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ),
                                           Point(m_toX, m_toY, m_toZ),
                                           Vector(0, 1, 0)));
-    m_framebuffer = QImage(width, height, QImage::Format_RGB32);
-    m_canvas = Canvas(width, height);
+    m_framebuffer = QImage(static_cast<int>(width), static_cast<int>(height), QImage::Format_RGB32);
+    m_canvas = Canvas(static_cast<int>(width), static_cast<int>(height));
+
+    // Perspectives
+    m_frontCamera = Camera{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+    m_leftCamera = Camera{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+    m_rightCamera = Camera{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+
+    const Point to{0, 1, 0};
+    const Vector up{0, 1, 0};
+
+    m_frontCamera.set_transform(
+        view_transform(Point(0, 1, m_fromZ), to, up));
+    m_leftCamera.set_transform(
+        view_transform(Point(-m_fromZ, 1, 0), to, up));
+    m_rightCamera.set_transform(
+        view_transform(Point(m_fromZ, 1, 0), to, up));
+    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ),
+                                          Point(m_toX, m_toY, m_toZ),
+                                          up));
+
+    m_front_framebuffer = QImage{static_cast<int>(m_frontCamera.hsize),
+                                 static_cast<int>(m_frontCamera.vsize),
+                                 QImage::Format_RGB32};
+    m_left_framebuffer = QImage{static_cast<int>(m_leftCamera.hsize),
+                                static_cast<int>(m_leftCamera.vsize),
+                                QImage::Format_RGB32};
+    m_right_framebuffer = QImage{static_cast<int>(m_rightCamera.hsize),
+                                 static_cast<int>(m_rightCamera.vsize),
+                                 QImage::Format_RGB32};
+    m_persp_framebuffer = QImage{static_cast<int>(m_camera.hsize),
+                                 static_cast<int>(m_camera.vsize),
+                                 QImage::Format_RGB32};
 }
 
 void RaytracerBackend::render() {
@@ -130,7 +158,7 @@ void RaytracerBackend::materialPreview() {
 
 void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
 
-    framebuffer.fill(QColor(100, 100, 100));
+    // framebuffer.fill(Qt::GlobalColor::gray);
 
     for (auto &shape : m_world.shapes) {
         auto m = shape->transform();
@@ -156,167 +184,167 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
         const auto yScale = m.get(1, 1);
         const auto zScale = m.get(2, 2);
 
-        if (const auto& cube = dynamic_cast<Cube *>(shape.get())) {
+//        if (const auto& cube = dynamic_cast<Cube *>(shape.get())) {
+//
+//            const auto top1 = m * Point(1, 1, -1);  // centerPoint.x + xScale;
+//            const auto top2 = m * Point(1, 1, 1);   // centerPoint.x - xScale;
+//            const auto top3 = m * Point(-1, 1, -1); // centerPoint.y + yScale;
+//            const auto top4 = m * Point(-1, 1, 1);  // centerPoint.y - yScale;
+//
+//            const auto bot1 = m * Point(1, -1, -1);  // centerPoint.x + xScale;
+//            const auto bot2 = m * Point(1, -1, 1);   // centerPoint.x - xScale;
+//            const auto bot3 = m * Point(-1, -1, -1); // centerPoint.y + yScale;
+//            const auto bot4 = m * Point(-1, -1, 1);  // centerPoint.y - yScale;
+//
+//            // Top points
+//            const auto a1 = convertWorldToScreenPoint(camera, top1);
+//            const auto a2 = convertWorldToScreenPoint(camera, top2);
+//            const auto a3 = convertWorldToScreenPoint(camera, top3);
+//            const auto a4 = convertWorldToScreenPoint(camera, top4);
+//
+//            // Bottom points
+//            const auto b1 = convertWorldToScreenPoint(camera, bot1);
+//            const auto b2 = convertWorldToScreenPoint(camera, bot2);
+//            const auto b3 = convertWorldToScreenPoint(camera, bot3);
+//            const auto b4 = convertWorldToScreenPoint(camera, bot4);
+//
+//            QPainter p(&framebuffer);
+//            p.setRenderHints(QPainter::Antialiasing);
+//            p.setPen("black");
+//            qc.setAlpha(125);
+//            p.setBrush(QBrush(qc));
+//
+//            const QPointF top[4] = {{a1.x, a1.y},
+//                                    {a2.x, a2.y},
+//                                    {a4.x, a4.y},
+//                                    {a3.x, a3.y}};
+//
+//            const QPointF bottom[4] = {{b1.x, b1.y},
+//                                       {b2.x, b2.y},
+//                                       {b4.x, b4.y},
+//                                       {b3.x, b3.y}};
+//
+//            const QPointF left[4] = {{a1.x, a1.y},
+//                                     {a2.x, a2.y},
+//                                     {b2.x, b2.y},
+//                                     {b1.x, b1.y}};
+//
+//            const QPointF right[4] = {{a3.x, a3.y},
+//                                     {a4.x, a4.y},
+//                                     {b4.x, b4.y},
+//                                     {b3.x, b3.y}};
+//
+//            const QPointF front[4] = {{a1.x, a1.y},
+//                                     {a3.x, a3.y},
+//                                     {b3.x, b3.y},
+//                                     {b1.x, b1.y}};
+//
+//            const QPointF back[4] = {{a2.x, a2.y},
+//                                     {a4.x, a4.y},
+//                                     {b4.x, b4.y},
+//                                     {b2.x, b2.y}};
+//
+//            for(const auto& point: top) {
+//                if (point.x() <= -1 || point.y() <= -1)
+//                    return;
+//            }
+//
+//            for(const auto& point: bottom) {
+//                if (point.x() <= -1 || point.y() <= -1)
+//                    return;
+//            }
+//
+//            p.drawPolygon(top, 4);
+//            p.drawPolygon(bottom, 4);
+//            p.drawPolygon(left, 4);
+//            p.drawPolygon(right, 4);
+//            p.drawPolygon(front, 4);
+//            p.drawPolygon(back, 4);
+//            p.end();
+//        }
 
-            const auto top1 = m * Point(1, 1, -1);  // centerPoint.x + xScale;
-            const auto top2 = m * Point(1, 1, 1);   // centerPoint.x - xScale;
-            const auto top3 = m * Point(-1, 1, -1); // centerPoint.y + yScale;
-            const auto top4 = m * Point(-1, 1, 1);  // centerPoint.y - yScale;
-
-            const auto bot1 = m * Point(1, -1, -1);  // centerPoint.x + xScale;
-            const auto bot2 = m * Point(1, -1, 1);   // centerPoint.x - xScale;
-            const auto bot3 = m * Point(-1, -1, -1); // centerPoint.y + yScale;
-            const auto bot4 = m * Point(-1, -1, 1);  // centerPoint.y - yScale;
-
-            // Top points
-            const auto a1 = convertWorldToScreenPoint(camera, top1);
-            const auto a2 = convertWorldToScreenPoint(camera, top2);
-            const auto a3 = convertWorldToScreenPoint(camera, top3);
-            const auto a4 = convertWorldToScreenPoint(camera, top4);
-
-            // Bottom points
-            const auto b1 = convertWorldToScreenPoint(camera, bot1);
-            const auto b2 = convertWorldToScreenPoint(camera, bot2);
-            const auto b3 = convertWorldToScreenPoint(camera, bot3);
-            const auto b4 = convertWorldToScreenPoint(camera, bot4);
-
-            QPainter p(&framebuffer);
-            p.setRenderHints(QPainter::Antialiasing);
-            p.setPen("black");
-            qc.setAlpha(125);
-            p.setBrush(QBrush(qc));
-
-            const QPointF top[4] = {{a1.x, a1.y},
-                                    {a2.x, a2.y},
-                                    {a4.x, a4.y},
-                                    {a3.x, a3.y}};
-
-            const QPointF bottom[4] = {{b1.x, b1.y},
-                                       {b2.x, b2.y},
-                                       {b4.x, b4.y},
-                                       {b3.x, b3.y}};
-
-            const QPointF left[4] = {{a1.x, a1.y},
-                                     {a2.x, a2.y},
-                                     {b2.x, b2.y},
-                                     {b1.x, b1.y}};
-
-            const QPointF right[4] = {{a3.x, a3.y},
-                                     {a4.x, a4.y},
-                                     {b4.x, b4.y},
-                                     {b3.x, b3.y}};
-
-            const QPointF front[4] = {{a1.x, a1.y},
-                                     {a3.x, a3.y},
-                                     {b3.x, b3.y},
-                                     {b1.x, b1.y}};
-
-            const QPointF back[4] = {{a2.x, a2.y},
-                                     {a4.x, a4.y},
-                                     {b4.x, b4.y},
-                                     {b2.x, b2.y}};
-
-            for(const auto& point: top) {
-                if (point.x() <= -1 || point.y() <= -1)
-                    return;
-            }
-
-            for(const auto& point: bottom) {
-                if (point.x() <= -1 || point.y() <= -1)
-                    return;
-            }
-
-            p.drawPolygon(top, 4);
-            p.drawPolygon(bottom, 4);
-            p.drawPolygon(left, 4);
-            p.drawPolygon(right, 4);
-            p.drawPolygon(front, 4);
-            p.drawPolygon(back, 4);
-            p.end();
-        }
-
-        if (const auto cyl = dynamic_cast<Cylinder *>(shape.get())) {
-
-            const auto top1 = m * Point(0, cyl->maximum, -1);
-            const auto top2 = m * Point(0, cyl->maximum, 1);
-            const auto top3 = m * Point(1, cyl->maximum, 0);
-            const auto top4 = m * Point(-1, cyl->maximum, 0);
-
-            const auto top11 = m * Point(0.75, cyl->maximum, -0.75);
-            const auto top21 = m * Point(0.75, cyl->maximum, 0.75);
-            const auto top31 = m * Point(-0.75, cyl->maximum, -0.75);
-            const auto top41 = m * Point(-0.75, cyl->maximum, 0.75);
-
-            const auto bot1 = m * Point(0, cyl->minimum, -1);
-            const auto bot2 = m * Point(0, cyl->minimum, 1);
-            const auto bot3 = m * Point(1, cyl->minimum, 0);
-            const auto bot4 = m * Point(-1, cyl->minimum, 0);
-
-            const auto bot11 = m * Point(0.75, cyl->minimum, -0.75);
-            const auto bot21 = m * Point(0.75, cyl->minimum, 0.75);
-            const auto bot31 = m * Point(-0.75, cyl->minimum, -0.75);
-            const auto bot41 = m * Point(-0.75, cyl->minimum, 0.75);
-
-            // Top points
-            const auto a1 = convertWorldToScreenPoint(camera, top1);
-            const auto a2 = convertWorldToScreenPoint(camera, top2);
-            const auto a3 = convertWorldToScreenPoint(camera, top3);
-            const auto a4 = convertWorldToScreenPoint(camera, top4);
-
-            const auto a11 = convertWorldToScreenPoint(camera, top11);
-            const auto a21 = convertWorldToScreenPoint(camera, top21);
-            const auto a31 = convertWorldToScreenPoint(camera, top31);
-            const auto a41 = convertWorldToScreenPoint(camera, top41);
-
-            // Bottom points
-            const auto b1 = convertWorldToScreenPoint(camera, bot1);
-            const auto b2 = convertWorldToScreenPoint(camera, bot2);
-            const auto b3 = convertWorldToScreenPoint(camera, bot3);
-            const auto b4 = convertWorldToScreenPoint(camera, bot4);
-
-            const auto b11 = convertWorldToScreenPoint(camera, bot11);
-            const auto b21 = convertWorldToScreenPoint(camera, bot21);
-            const auto b31 = convertWorldToScreenPoint(camera, bot31);
-            const auto b41 = convertWorldToScreenPoint(camera, bot41);
-
-            // Top "circle"
-            drawLine(framebuffer, a1, a11, color);
-            drawLine(framebuffer, a11, a3, color);
-            drawLine(framebuffer, a2, a21, color);
-            drawLine(framebuffer, a21, a3, color);
-            drawLine(framebuffer, a1, a31, color);
-            drawLine(framebuffer, a31, a4, color);
-            drawLine(framebuffer, a2, a41, color);
-            drawLine(framebuffer, a41, a4, color);
-
-            // Bottom "circle"
-            drawLine(framebuffer, b1,  b11, color);
-            drawLine(framebuffer, b11, b3, color);
-            drawLine(framebuffer, b2,  b21, color);
-            drawLine(framebuffer, b21, b3, color);
-            drawLine(framebuffer, b1,  b31, color);
-            drawLine(framebuffer, b31, b4, color);
-            drawLine(framebuffer, b2,  b41, color);
-            drawLine(framebuffer, b41, b4, color);
-
-            // Connect top and bottom
-            drawLine(framebuffer, a1, b1, color);
-            drawLine(framebuffer, a2, b2, color);
-            drawLine(framebuffer, a3, b3, color);
-            drawLine(framebuffer, a4, b4, color);
-
-            drawLine(framebuffer, a11, b11, color);
-            drawLine(framebuffer, a21, b21, color);
-            drawLine(framebuffer, a31, b31, color);
-            drawLine(framebuffer, a41, b41, color);
-
-        }
+//        if (const auto cyl = dynamic_cast<Cylinder *>(shape.get())) {
+//
+//            const auto top1 = m * Point(0, cyl->maximum, -1);
+//            const auto top2 = m * Point(0, cyl->maximum, 1);
+//            const auto top3 = m * Point(1, cyl->maximum, 0);
+//            const auto top4 = m * Point(-1, cyl->maximum, 0);
+//
+//            const auto top11 = m * Point(0.75, cyl->maximum, -0.75);
+//            const auto top21 = m * Point(0.75, cyl->maximum, 0.75);
+//            const auto top31 = m * Point(-0.75, cyl->maximum, -0.75);
+//            const auto top41 = m * Point(-0.75, cyl->maximum, 0.75);
+//
+//            const auto bot1 = m * Point(0, cyl->minimum, -1);
+//            const auto bot2 = m * Point(0, cyl->minimum, 1);
+//            const auto bot3 = m * Point(1, cyl->minimum, 0);
+//            const auto bot4 = m * Point(-1, cyl->minimum, 0);
+//
+//            const auto bot11 = m * Point(0.75, cyl->minimum, -0.75);
+//            const auto bot21 = m * Point(0.75, cyl->minimum, 0.75);
+//            const auto bot31 = m * Point(-0.75, cyl->minimum, -0.75);
+//            const auto bot41 = m * Point(-0.75, cyl->minimum, 0.75);
+//
+//            // Top points
+//            const auto a1 = convertWorldToScreenPoint(camera, top1);
+//            const auto a2 = convertWorldToScreenPoint(camera, top2);
+//            const auto a3 = convertWorldToScreenPoint(camera, top3);
+//            const auto a4 = convertWorldToScreenPoint(camera, top4);
+//
+//            const auto a11 = convertWorldToScreenPoint(camera, top11);
+//            const auto a21 = convertWorldToScreenPoint(camera, top21);
+//            const auto a31 = convertWorldToScreenPoint(camera, top31);
+//            const auto a41 = convertWorldToScreenPoint(camera, top41);
+//
+//            // Bottom points
+//            const auto b1 = convertWorldToScreenPoint(camera, bot1);
+//            const auto b2 = convertWorldToScreenPoint(camera, bot2);
+//            const auto b3 = convertWorldToScreenPoint(camera, bot3);
+//            const auto b4 = convertWorldToScreenPoint(camera, bot4);
+//
+//            const auto b11 = convertWorldToScreenPoint(camera, bot11);
+//            const auto b21 = convertWorldToScreenPoint(camera, bot21);
+//            const auto b31 = convertWorldToScreenPoint(camera, bot31);
+//            const auto b41 = convertWorldToScreenPoint(camera, bot41);
+//
+//            // Top "circle"
+//            drawLine(framebuffer, a1, a11, color);
+//            drawLine(framebuffer, a11, a3, color);
+//            drawLine(framebuffer, a2, a21, color);
+//            drawLine(framebuffer, a21, a3, color);
+//            drawLine(framebuffer, a1, a31, color);
+//            drawLine(framebuffer, a31, a4, color);
+//            drawLine(framebuffer, a2, a41, color);
+//            drawLine(framebuffer, a41, a4, color);
+//
+//            // Bottom "circle"
+//            drawLine(framebuffer, b1,  b11, color);
+//            drawLine(framebuffer, b11, b3, color);
+//            drawLine(framebuffer, b2,  b21, color);
+//            drawLine(framebuffer, b21, b3, color);
+//            drawLine(framebuffer, b1,  b31, color);
+//            drawLine(framebuffer, b31, b4, color);
+//            drawLine(framebuffer, b2,  b41, color);
+//            drawLine(framebuffer, b41, b4, color);
+//
+//            // Connect top and bottom
+//            drawLine(framebuffer, a1, b1, color);
+//            drawLine(framebuffer, a2, b2, color);
+//            drawLine(framebuffer, a3, b3, color);
+//            drawLine(framebuffer, a4, b4, color);
+//
+//            drawLine(framebuffer, a11, b11, color);
+//            drawLine(framebuffer, a21, b21, color);
+//            drawLine(framebuffer, a31, b31, color);
+//            drawLine(framebuffer, a41, b41, color);
+//
+//        }
 
         if (dynamic_cast<Sphere *>(shape.get())) {
 
-            QPainter p(&framebuffer);
-            p.setRenderHints(QPainter::Antialiasing);
-            p.setPen(color);
+//            QPainter p(&framebuffer);
+//            p.setRenderHints(QPainter::Antialiasing);
+//            p.setPen(color);
 
             Point top{centerPoint.x, centerPoint.y + yScale, centerPoint.z};
             Point bottom{centerPoint.x, centerPoint.y - yScale, centerPoint.z};
@@ -336,70 +364,49 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) {
             auto l = convertWorldToScreenPoint(camera, left);
             auto r = convertWorldToScreenPoint(camera, right);
 
-            p.drawLine(QPointF{t.x, t.y}, QPointF{b.x, b.y});
-            p.drawLine(QPointF{fr.x, fr.y}, QPointF{ba.x, ba.y});
-            p.drawLine(QPointF{l.x, l.y}, QPointF{r.x, r.y});
+            //p.drawLine(QPointF{t.x, t.y}, QPointF{b.x, b.y});
+            //p.drawLine(QPointF{fr.x, fr.y}, QPointF{ba.x, ba.y});
+
+            QList<QLine> lines = QList{QLine{QPoint{static_cast<int>(t.x), static_cast<int>(t.y)}, QPoint{static_cast<int>(b.x), static_cast<int>(b.y)}},
+                                       QLine{QPoint{static_cast<int>(fr.x), static_cast<int>(fr.y)}, QPoint{static_cast<int>(ba.x), static_cast<int>(ba.y)}}};
+            emit linesReady(lines);
         }
 
-        if (dynamic_cast<Plane *>(shape.get())) {
-
-            auto a2 = convertWorldToScreenPoint(camera, m * Point(1, 0, 0));
-            auto a3 = convertWorldToScreenPoint(camera, m * Point(-1, 0, 0));
-            auto a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -1));
-            auto a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 1));
-
-            drawLine(framebuffer, a2, a3, color);
-            drawLine(framebuffer, a4, a5, color);
-
-            a2 = convertWorldToScreenPoint(camera, m * Point(10, 0, 0));
-            a3 = convertWorldToScreenPoint(camera, m * Point(-10, 0, 0));
-            a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -10));
-            a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 10));
-
-            drawLine(framebuffer, a2, a3, color);
-            drawLine(framebuffer, a4, a5, color);
-        }
+//        if (dynamic_cast<Plane *>(shape.get())) {
+//
+//            auto a2 = convertWorldToScreenPoint(camera, m * Point(1, 0, 0));
+//            auto a3 = convertWorldToScreenPoint(camera, m * Point(-1, 0, 0));
+//            auto a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -1));
+//            auto a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 1));
+//
+//            //drawLine(framebuffer, a2, a3, color);
+//            //drawLine(framebuffer, a4, a5, color);
+//
+//            a2 = convertWorldToScreenPoint(camera, m * Point(10, 0, 0));
+//            a3 = convertWorldToScreenPoint(camera, m * Point(-10, 0, 0));
+//            a4 = convertWorldToScreenPoint(camera, m * Point(0, 0, -10));
+//            a5 = convertWorldToScreenPoint(camera, m * Point(0, 0, 10));
+//
+//            //drawLine(framebuffer, a2, a3, color);
+//            //drawLine(framebuffer, a4, a5, color);
+//
+//
+//        }
     }
 }
 
 void RaytracerBackend::wireframe() {
+    //m_wireframeTimer.start();
 
-    Camera front{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
-    Camera left{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
-    Camera right{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
+    //wireframe(m_front_framebuffer, m_frontCamera);
+    //wireframe(m_left_framebuffer, m_leftCamera);
+    //wireframe(m_right_framebuffer, m_rightCamera);
+    wireframe(m_persp_framebuffer, m_camera);
 
-    const Point to{0, 1, 0};
-    const Vector up{0, 1, 0};
+    //qDebug() << m_wireframeTimer.elapsed();
 
-    front.set_transform(
-        view_transform(Point(0, 1, m_fromZ), to, up));
-    left.set_transform(
-        view_transform(Point(-m_fromZ, 1, 0), to, up));
-    right.set_transform(
-        view_transform(Point(m_fromZ, 1, 0), to, up));
-    m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ),
-                                          Point(m_toX, m_toY, m_toZ),
-                                          up));
-
-    QImage front_framebuffer{static_cast<int>(front.hsize),
-                             static_cast<int>(front.vsize),
-                             QImage::Format_RGB32};
-    QImage left_framebuffer{static_cast<int>(left.hsize),
-                            static_cast<int>(left.vsize), QImage::Format_RGB32};
-    QImage right_framebuffer{static_cast<int>(right.hsize),
-                             static_cast<int>(right.vsize),
-                             QImage::Format_RGB32};
-    QImage persp_framebuffer{static_cast<int>(m_camera.hsize),
-                             static_cast<int>(m_camera.vsize),
-                             QImage::Format_RGB32};
-
-    wireframe(front_framebuffer, front);
-    wireframe(left_framebuffer, left);
-    wireframe(right_framebuffer, right);
-    wireframe(persp_framebuffer, m_camera);
-
-    emit wireframesReady(front_framebuffer, left_framebuffer, right_framebuffer,
-                         persp_framebuffer);
+    //emit wireframesReady(m_front_framebuffer, m_left_framebuffer, m_right_framebuffer,
+    //                     m_persp_framebuffer);
 }
 
 void RaytracerBackend::renderFinished() {
@@ -512,6 +519,7 @@ void RaytracerBackend::setPixel(QImage &framebuffer, int x, int y, uint color) {
 void RaytracerBackend::drawLine(QImage &framebuffer, const Point &p1,
                                 const Point &p2, uint color) {
     // drawLine(p1.x, p1.y, p2.x, p2.y, color);
+    return;
 
     if (p1.x == -1 && p1.y == -1)
         return;
@@ -575,7 +583,7 @@ void RaytracerBackend::appendTransform(const Matrix<4, 4> &t,
 void RaytracerBackend::frameTick() {
 
     for (const auto &shape : m_world.shapes) {
-        if (dynamic_cast<Cube *>(shape.get())) {
+        if (dynamic_cast<Sphere *>(shape.get())) {
             shape->set_transform(shape->transform() * m_cubeRotation);
             break;
         }
