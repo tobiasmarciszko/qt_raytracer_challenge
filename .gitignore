@@ -1,2 +1,11 @@
+cmake-build-*/
 build-*/
 *.o
+build/
+.clangd/
+.idea/
+*.user
+.cmake/
+.vscode/
+compile_commands.json
+/\#.gitignore\#
