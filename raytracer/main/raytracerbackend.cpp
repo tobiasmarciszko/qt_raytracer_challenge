@@ -305,27 +305,27 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) cons
         if (dynamic_cast<Sphere *>(shape.get())) {
             p.setPen(color);
 
-            const Point top{centerPoint.x, centerPoint.y + yScale, centerPoint.z};
-            const Point bottom{centerPoint.x, centerPoint.y - yScale, centerPoint.z};
+            const Point top = m * Point{0, 1, 0};
+            const Point bottom = m * Point{0, -1, 0};
 
             const auto t = convertWorldToScreenPoint(camera, top);
             const auto b = convertWorldToScreenPoint(camera, bottom);
 
-            const Point front{centerPoint.x, centerPoint.y, centerPoint.z - zScale};
-            const Point back{centerPoint.x, centerPoint.y, centerPoint.z + zScale};
+            const Point front = m * Point{0, 0, -1};
+            const Point back = m * Point{0, 0, 1};
 
             const auto fr = convertWorldToScreenPoint(camera, front);
             const auto ba = convertWorldToScreenPoint(camera, back);
 
-            const Point left{centerPoint.x - xScale, centerPoint.y, centerPoint.z};
-            const Point right{centerPoint.x + xScale, centerPoint.y, centerPoint.z};
+            const Point left = m * Point{-1, 0, 0};
+            const Point right= m * Point{1, 0, 0};
 
             const auto l = convertWorldToScreenPoint(camera, left);
             const auto r = convertWorldToScreenPoint(camera, right);
 
-            p.drawLine(static_cast<int>(t.x), static_cast<int>(t.y), static_cast<int>(b.x), static_cast<int>(b.y));
-            p.drawLine(static_cast<int>(fr.x), static_cast<int>(fr.y), static_cast<int>(ba.x), static_cast<int>(ba.y));
-            p.drawLine(static_cast<int>(l.x), static_cast<int>(l.y), static_cast<int>(r.x), static_cast<int>(r.y));
+            p.drawLine(QLineF{t.x, t.y, b.x, b.y});
+            p.drawLine(QLineF{fr.x, fr.y, ba.x, ba.y});
+            p.drawLine(QLineF{l.x, l.y, r.x, r.y});
         }
 
         if (dynamic_cast<Plane *>(shape.get())) {
