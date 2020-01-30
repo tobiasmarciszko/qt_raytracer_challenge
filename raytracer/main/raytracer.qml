@@ -299,7 +299,7 @@ ApplicationWindow {
             anchors.horizontalCenter: middlePane.horizontalCenter
             anchors.top: middlePane.bottom
 
-            stepSize: 0.1
+            stepSize: 0.01
             to: 10
             from: -10
             value: raytracer.fromX
@@ -320,7 +320,7 @@ ApplicationWindow {
 
 
             orientation: Qt.Vertical
-            stepSize: 0.1
+            stepSize: 0.01
             to: 10
             value: raytracer.fromY
             from: -10

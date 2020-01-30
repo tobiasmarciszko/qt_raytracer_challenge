@@ -2,6 +2,7 @@
 
 ImageItem::ImageItem(QQuickItem *parent) : QQuickPaintedItem(parent)
 {
+    setRenderTarget(RenderTarget::FramebufferObject);
 }
 
 void ImageItem::paint(QPainter *painter)
