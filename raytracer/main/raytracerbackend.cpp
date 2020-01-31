@@ -178,35 +178,12 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) cons
             qc.setAlpha(125);
             p.setBrush(QBrush(qc));
 
-            const QPointF top[4] = {{a1.x, a1.y},
-                                    {a2.x, a2.y},
-                                    {a4.x, a4.y},
-                                    {a3.x, a3.y}};
-
-            const QPointF bottom[4] = {{b1.x, b1.y},
-                                       {b2.x, b2.y},
-                                       {b4.x, b4.y},
-                                       {b3.x, b3.y}};
-
-            const QPointF left[4] = {{a1.x, a1.y},
-                                     {a2.x, a2.y},
-                                     {b2.x, b2.y},
-                                     {b1.x, b1.y}};
-
-            const QPointF right[4] = {{a3.x, a3.y},
-                                     {a4.x, a4.y},
-                                     {b4.x, b4.y},
-                                     {b3.x, b3.y}};
-
-            const QPointF front[4] = {{a1.x, a1.y},
-                                     {a3.x, a3.y},
-                                     {b3.x, b3.y},
-                                     {b1.x, b1.y}};
-
-            const QPointF back[4] = {{a2.x, a2.y},
-                                     {a4.x, a4.y},
-                                     {b4.x, b4.y},
-                                     {b2.x, b2.y}};
+            const QPointF top[4] = {a1, a2, a4, a3};
+            const QPointF bottom[4] = {b1, b2, b4, b3};
+            const QPointF left[4] = {a1, a2, b2, b1};
+            const QPointF right[4] = {a3, a4, b4, b3};
+            const QPointF front[4] = {a1, a3, b3, b1};
+            const QPointF back[4] = {a2, a4, b4, b2};
 
             for(const auto& point: top) {
                 if (point.x() <= -1 || point.y() <= -1)
@@ -323,9 +300,9 @@ void RaytracerBackend::wireframe(QImage &framebuffer, const Camera &camera) cons
             const auto l = convertWorldToScreenPoint(camera, left);
             const auto r = convertWorldToScreenPoint(camera, right);
 
-            p.drawLine(QLineF{t.x, t.y, b.x, b.y});
-            p.drawLine(QLineF{fr.x, fr.y, ba.x, ba.y});
-            p.drawLine(QLineF{l.x, l.y, r.x, r.y});
+            p.drawLine(t, b);
+            p.drawLine(fr, ba);
+            p.drawLine(l, r);
         }
 
         if (dynamic_cast<Plane *>(shape.get())) {
@@ -441,25 +418,25 @@ void RaytracerBackend::copyFrameBuffer(Canvas &from, QImage &to) {
 
 // Convert world coordinate to screen space
 // Returns the screen coordinates as a Point (ignore z)
-Point RaytracerBackend::convertWorldToScreenPoint(const Camera &camera,
+QPointF RaytracerBackend::convertWorldToScreenPoint(const Camera &camera,
                                                   const Point &point) const {
 
     // Transform point in world coordinate to camera
-    auto pCamera = camera.transform() * point;
+    const auto pCamera = camera.transform() * point;
 
     // Ignore points behind the camera
     if (pCamera.z >= 0)
-        return {-1, -1, -1};
+        return {-1, -1};
 
     // Perspective divide
-    auto pScreenx = pCamera.x / pCamera.z;
-    auto pScreeny = pCamera.y / -pCamera.z;
+    const auto pScreenx = pCamera.x / pCamera.z;
+    const auto pScreeny = pCamera.y / -pCamera.z;
 
     // Scale and offset acordingly according to the screen size
-    auto p1xoffset = camera.half_width + pScreenx;
-    auto p1yoffset = camera.half_height - pScreeny;
-    auto pRasterx = ((p1xoffset / camera.pixel_size) - 0.5);
-    auto pRastery = ((p1yoffset / camera.pixel_size) - 0.5);
+    const auto p1xoffset = camera.half_width + pScreenx;
+    const auto p1yoffset = camera.half_height - pScreeny;
+    const auto pRasterx = ((p1xoffset / camera.pixel_size) - 0.5);
+    const auto pRastery = ((p1yoffset / camera.pixel_size) - 0.5);
 
     // Enable to draw pixel instead of just converting the coordinates
 #if 0
@@ -473,7 +450,7 @@ Point RaytracerBackend::convertWorldToScreenPoint(const Camera &camera,
 #endif
 
     // Return the pixel coordinates on the canvas/screen
-    return Point(pRasterx, pRastery, 0);
+    return {pRasterx, pRastery};
 }
 
 void RaytracerBackend::setPixel(QImage &framebuffer, int x, int y, uint color) {
@@ -490,32 +467,32 @@ void RaytracerBackend::setPixel(QImage &framebuffer, int x, int y, uint color) {
     p.drawPoint(x, y);
 }
 
-void RaytracerBackend::drawLine(QImage &framebuffer, const Point &p1,
-                                const Point &p2, uint color) const {
+void RaytracerBackend::drawLine(QImage &framebuffer, const QPointF &p1,
+                                const QPointF &p2, uint color) const {
     // drawLine(p1.x, p1.y, p2.x, p2.y, color);
 
-    if (p1.x == -1 && p1.y == -1)
+    if (p1.x() == -1 && p1.y() == -1)
         return;
-    if (p2.x == -1 && p2.y == -1)
+    if (p2.x() == -1 && p2.y() == -1)
         return;
 
     QPainter p(&framebuffer);
     p.setRenderHints(QPainter::Antialiasing);
     p.setPen(color);
-    p.drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
+    p.drawLine(p1, p2);
 }
 
 
-void RaytracerBackend::drawLine(QPainter* p, const Point &p1,
-                                const Point &p2, uint color) const {
+void RaytracerBackend::drawLine(QPainter* p, const QPointF &p1,
+                                const QPointF &p2, uint color) const {
 
-    if (p1.x == -1 && p1.y == -1)
+    if (p1.x() == -1 && p1.y() == -1)
         return;
-    if (p2.x == -1 && p2.y == -1)
+    if (p2.x() == -1 && p2.y() == -1)
         return;
 
     p->setPen(color);
-    p->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
+    p->drawLine(p1, p2);
 }
 
 void RaytracerBackend::switchChanged() {

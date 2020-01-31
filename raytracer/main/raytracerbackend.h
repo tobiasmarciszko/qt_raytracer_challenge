@@ -79,10 +79,10 @@ private slots:
     void progressValueChanged(int value);
 
 private:
-    void drawLine(QImage& framebuffer, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255)) const;
-    void drawLine(QPainter* p, const Point& p1, const Point& p2, uint color = qRgb(255, 255, 255)) const;
+    void drawLine(QImage& framebuffer, const QPointF& p1, const QPointF& p2, uint color = qRgb(255, 255, 255)) const;
+    void drawLine(QPainter* p, const QPointF& p1, const QPointF& p2, uint color = qRgb(255, 255, 255)) const;
 
-    Point convertWorldToScreenPoint(const Camera& camera, const Point& point) const;
+    QPointF convertWorldToScreenPoint(const Camera& camera, const Point& point) const;
     void setPixel(QImage& framebuffer, int x, int y, uint color = qRgb(255, 255, 255));
     void copyFrameBuffer(Canvas& from, QImage& to);
     void wireframe(QImage& framebuffer, const Camera& camera) const;
