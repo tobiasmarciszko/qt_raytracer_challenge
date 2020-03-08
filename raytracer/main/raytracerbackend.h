@@ -89,13 +89,13 @@ private:
     void appendTransform(const Matrix<4,4>& transform, bool prepend = false);
 
     // Camera
-    float m_fromX = 1;
-    float m_fromY = 1;
-    float m_fromZ = -5;
+    float m_fromX = 0;
+    float m_fromY = 0;
+    float m_fromZ = -8;
 
     float m_toX = 0;
-    float m_toY = 0.5;
-    float m_toZ = 0;
+    float m_toY = 0;
+    float m_toZ = 1;
 
     // For rendering
     Canvas m_canvas;

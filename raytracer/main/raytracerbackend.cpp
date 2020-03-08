@@ -12,7 +12,7 @@ static int counter = 0;
 using namespace Raytracer::Engine;
 
 RaytracerBackend::RaytracerBackend(QObject *parent)
-    : QObject(parent), m_world(Worlds::threeBallsOnAPlane()),
+    : QObject(parent), m_world(Worlds::cornell_box()),
       m_previewWorld(Worlds::materialPreviewWorld()) {
     connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(renderFinished()));
     connect(&m_materialPreviewFutureWatcher, SIGNAL(finished()), this,
@@ -35,7 +35,7 @@ void RaytracerBackend::setViewportSize(int width, int height) {
     if (width < 0 || height < 0)
         return;
 
-    m_camera = Camera(static_cast<float>(width), static_cast<float>(height), M_PI / 3.0F);
+    m_camera = Camera(static_cast<float>(width), static_cast<float>(height), M_PI / 6.0F);
     m_camera.set_transform(view_transform(Point(m_fromX, m_fromY, m_fromZ),
                                           Point(m_toX, m_toY, m_toZ),
                                           Vector(0, 1, 0)));
