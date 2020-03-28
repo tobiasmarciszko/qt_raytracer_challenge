@@ -25,7 +25,7 @@ class ShapeQmlBridge : public QObject
 public:
     explicit ShapeQmlBridge(QObject *parent = nullptr);
 
-    void setShapePointer(const std::shared_ptr<Shape>& ptr) {
+    void setShapePointer(Shape* ptr) {
         m_shape_ptr = ptr;
     }
 
@@ -148,7 +148,7 @@ signals:
     void shininessChanged();
 
 private:
-    std::shared_ptr<Shape> m_shape_ptr{nullptr};
+    Shape* m_shape_ptr{nullptr};
 };
 
 #endif // SHAPEQMLBRIDGE_H

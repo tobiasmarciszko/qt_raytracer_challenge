@@ -64,7 +64,6 @@ add_executable(
         color.cpp
         main.cpp
         point.cpp
-        ray.cpp
         raytracerbackend.cpp
         tuple.cpp
         imageitem.cpp

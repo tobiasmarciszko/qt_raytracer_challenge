@@ -130,12 +130,12 @@ TEST_CASE("The color when a ray hits") {
 
 TEST_CASE("The color with an intersection behind the ray") {
     auto w = default_world();
-    auto outer = w.shapes.at(0);
+    auto outer = w.shapes.at(0).get();
     auto m = outer->material;
     m.ambient = 1;
     outer->set_material(m);
 
-    auto inner = w.shapes.at(1);
+    auto inner = w.shapes.at(1).get();
     auto m2 = inner->material;
     m2.ambient = 1;
     inner->set_material(m2);

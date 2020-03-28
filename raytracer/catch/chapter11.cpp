@@ -49,15 +49,15 @@ TEST_CASE("The reflected color for a reflective material")
 {
     World w = default_world();
 
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material;
+    Plane shape;
+    Material m = shape.material;
     m.reflective = 0.5;
-    shape->set_material(m);
-    shape->set_transform(translation(0, -1, 0));
-    w.shapes.emplace_back(shape);
+    shape.set_material(m);
+    shape.set_transform(translation(0, -1, 0));
+    auto& element = w.shapes.emplace_back(std::make_unique<Plane>(shape));
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape.get());
+    Intersection i(M_SQRT2, element.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = reflected_color(w, comps);
@@ -69,15 +69,15 @@ TEST_CASE("shade_hit() with a reflective material")
 {
     World w = default_world();
 
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material;
+    Plane shape;
+    Material m = shape.material;
     m.reflective = 0.5;
-    shape->set_material(m);
-    shape->set_transform(translation(0, -1, 0));
-    w.shapes.emplace_back(shape);
+    shape.set_material(m);
+    shape.set_transform(translation(0, -1, 0));
+    auto& element = w.shapes.emplace_back(std::make_unique<Plane>(shape));
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape.get());
+    Intersection i(M_SQRT2, element.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = shade_hit(w, comps);
@@ -92,19 +92,19 @@ TEST_CASE("color_at() with mutually reflective surfaces")
     Light light = PointLight(Point(0,0,0), Color(1,1,1));
     w.lights.emplace_back(light);
 
-    std::shared_ptr<Shape> lower = std::make_shared<Plane>(Plane());
-    Material m = lower->material;
+    Plane lower;
+    Material m = lower.material;
     m.reflective = 1;
-    lower->set_material(m);
-    lower->set_transform(translation(0, -1, 0));
-    w.shapes.emplace_back(lower);
+    lower.set_material(m);
+    lower.set_transform(translation(0, -1, 0));
+    w.shapes.emplace_back(std::make_unique<Plane>(lower));
 
-    std::shared_ptr<Shape> upper = std::make_shared<Plane>(Plane());
-    m = lower->material;
+    Plane upper;
+    m = lower.material;
     m.reflective = 1;
-    upper->set_material(m);
-    upper->set_transform(translation(0, 11, 0));
-    w.shapes.emplace_back(upper);
+    upper.set_material(m);
+    upper.set_transform(translation(0, 11, 0));
+    w.shapes.emplace_back(std::make_unique<Plane>(upper));
 
     Ray r(Point(0, 0, 0), Vector(0, 1, 0));
 
@@ -117,15 +117,15 @@ TEST_CASE("The reflected color at the maximum recursive depth")
 {
     World w = default_world();
 
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(Plane());
-    Material m = shape->material;
+    Plane shape;
+    Material m = shape.material;
     m.reflective = 0.5;
-    shape->set_material(m);
-    shape->set_transform(translation(0, -1, 0));
-    w.shapes.emplace_back(shape);
+    shape.set_material(m);
+    shape.set_transform(translation(0, -1, 0));
+    auto& element = w.shapes.emplace_back(std::make_unique<Plane>(shape));
 
     Ray r(Point(0, 0, -3), Vector(0, -M_SQRT2/2, M_SQRT2/2));
-    Intersection i(M_SQRT2, shape.get());
+    Intersection i(M_SQRT2, element.get());
 
     Computations comps = prepare_computations(i, r);
     Color color = reflected_color(w, comps, 0);
@@ -288,24 +288,24 @@ TEST_CASE("shade_hit() with a transparent material")
 {
     World w = default_world();
 
-    auto floor = std::make_shared<Plane>(Plane());
-    floor->set_transform(translation(0, -1, 0));
-    Material m1 = floor->material;
+    Plane floor;
+    floor.set_transform(translation(0, -1, 0));
+    Material m1 = floor.material;
     m1.transparency = 0.5;
     m1.refractive_index = 1.5;
-    floor->set_material(m1);
-    w.shapes.emplace_back(floor);
+    floor.set_material(m1);
+    auto& element = w.shapes.emplace_back(std::make_unique<Plane>(floor));
 
-    auto ball = std::make_shared<Sphere>(Sphere());
-    ball->set_transform(translation(0, -3.5, -0.5));
-    Material m2 = ball->material;
+    Sphere ball;
+    ball.set_transform(translation(0, -3.5, -0.5));
+    Material m2 = ball.material;
     m2.color = Color(1, 0, 0);
     m2.ambient = 0.5;
-    ball->set_material(m2);
-    w.shapes.emplace_back(ball);
+    ball.set_material(m2);
+    w.shapes.emplace_back(std::make_unique<Sphere>(ball));
 
     Ray r{Point{0, 0, -3}, Vector{0, -M_SQRT2/2, M_SQRT2/2}};
-    Intersections xs{{M_SQRT2, floor.get()}};
+    Intersections xs{{M_SQRT2, element.get()}};
 
     Computations comps = prepare_computations(xs[0], r, xs);
     Color color = shade_hit(w, comps, LightingModel::Phong, 5);
@@ -356,24 +356,24 @@ TEST_CASE("shade_hit() with a with a reflective, transparent material")
 {
     World w = default_world();
 
-    auto floor = std::make_shared<Plane>(Plane());
-    floor->set_transform(translation(0, -1, 0));
-    Material& m1 = floor->material;
+    Plane floor;
+    floor.set_transform(translation(0, -1, 0));
+    Material& m1 = floor.material;
     m1.transparency = 0.5;
     m1.reflective = 0.5;
     m1.refractive_index = 1.5;
-    w.shapes.emplace_back(floor);
+    auto& element = w.shapes.emplace_back(std::make_unique<Plane>(floor));
 
-    auto ball = std::make_shared<Sphere>(Sphere());
-    ball->set_transform(translation(0, -3.5, -0.5));
-    Material m2 = ball->material;
+    Sphere ball;
+    ball.set_transform(translation(0, -3.5, -0.5));
+    Material m2 = ball.material;
     m2.color = Color(1, 0, 0);
     m2.ambient = 0.5;
-    ball->set_material(m2);
-    w.shapes.emplace_back(ball);
+    ball.set_material(m2);
+    w.shapes.emplace_back(std::make_unique<Sphere>(ball));
 
     Ray r{Point{0, 0, -3}, Vector{0, -M_SQRT2/2, M_SQRT2/2}};
-    Intersections xs{{M_SQRT2, floor.get()}};
+    Intersections xs{{M_SQRT2, element.get()}};
 
     Computations comps = prepare_computations(xs[0], r, xs);
     Color color = shade_hit(w, comps, LightingModel::Phong, 5);

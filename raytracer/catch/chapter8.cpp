@@ -70,15 +70,15 @@ TEST_CASE("shade_hit() is given an intersection in shadow")
 
     w.lights.emplace_back(PointLight(Point(0, 0, -10), Color(1, 1, 1)));
 
-    std::shared_ptr<Shape> s1 = std::make_shared<Sphere>(Sphere());
-    w.shapes.emplace_back(s1);
+    Sphere s1;
+    w.shapes.emplace_back(std::make_unique<Sphere>(s1));
 
-    std::shared_ptr<Shape> s2 = std::make_shared<Sphere>(Sphere());
-    s2->set_transform(translation(0, 0, 10));
-    w.shapes.emplace_back(s2);
+    Sphere s2;
+    s2.set_transform(translation(0, 0, 10));
+    w.shapes.emplace_back(std::make_unique<Sphere>(s2));
 
     const auto r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
-    const auto i = Intersection(4, s2.get());
+    const auto i = Intersection(4, w.shapes.at(1).get());
 
     const auto comps = prepare_computations(i, r);
     const auto c = shade_hit(w, comps);
