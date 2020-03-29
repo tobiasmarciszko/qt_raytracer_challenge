@@ -95,7 +95,7 @@ public:
     [[nodiscard]] constexpr inline size_t getRowCount() const { return m_rows; }
     [[nodiscard]] constexpr inline size_t getColCount() const { return m_cols; }
 
-    inline bool operator==(const Matrix<rows, cols>& matrix) const {
+    [[nodiscard]] constexpr inline bool operator==(const Matrix<rows, cols>& matrix) const {
 
         if (m_rows != matrix.getRowCount()) return false;
         if (m_cols != matrix.getColCount()) return false;
@@ -109,12 +109,12 @@ public:
         return true;
     }
 
-    inline bool operator!=(const Matrix<rows, cols>& matrix) const {
+    [[nodiscard]] constexpr inline bool operator!=(const Matrix<rows, cols>& matrix) const {
         return !(*this == matrix);
     }
 
-    inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
-    inline Tuple operator*(const Tuple& tuple) const;
+    [[nodiscard]] constexpr inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
+    [[nodiscard]] constexpr inline Tuple operator*(const Tuple& tuple) const;
 
     [[nodiscard]] inline Matrix<rows, cols> transpose() const {
         Matrix<rows, cols> result;
@@ -131,7 +131,7 @@ public:
         return result;
     }
 
-    [[nodiscard]] inline float determinant() const {
+    [[nodiscard]] constexpr inline float determinant() const {
         float det = 0;
         for (size_t i = 0; i < cols; i++) {
             const int col = static_cast<int>(i);
@@ -205,16 +205,15 @@ public:
 
 public:
 
-    size_t m_rows = rows;
-    size_t m_cols = cols;
+    static constexpr size_t m_rows{rows};
+    static constexpr size_t m_cols{cols};
 
-    float m_data[rows * cols]{0.0};
-
+    std::array<float, rows * cols> m_data{};
 };
 
 // 2x2 specializations
 template<>
-inline float Matrix<2, 2>::determinant() const {
+[[nodiscard]] constexpr inline float Matrix<2, 2>::determinant() const {
     // [a b]
     // [c d]
     //
@@ -230,7 +229,7 @@ inline float Matrix<2, 2>::determinant() const {
 
 // 4x4 specializations
 template<>
-inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
+[[nodiscard]] constexpr inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
     std::array<float, 4> result{};
     for (unsigned int i = 0; i < 4; i++) {
             result[i] = get(i, 0) * tuple.x +
@@ -243,8 +242,8 @@ inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
 }
 
 template<>
-inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const {
-    Matrix<4,4> result;
+[[nodiscard]] constexpr inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const {
+    Matrix<4,4> result{};
     for (unsigned int row = 0; row < 4; row++) {
         for (unsigned int col = 0; col < 4; col++) {
             auto value = get(row, 0) * multiplier.get(0, col) +
