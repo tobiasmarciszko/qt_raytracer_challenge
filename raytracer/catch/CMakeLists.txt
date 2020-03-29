@@ -22,13 +22,11 @@ add_executable(
         # needed from main project
         ../main/color.cpp
         ../main/point.cpp
-        ../main/tuple.cpp
         ../main/engine.cpp
         ../main/sphere.cpp
         ../main/appsettings.cpp
         ../main/cube.cpp
         ../main/cylinder.cpp
-        ../main/vector.cpp
 
         # test files
         main.cpp

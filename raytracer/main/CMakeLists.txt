@@ -65,13 +65,12 @@ add_executable(
         main.cpp
         point.cpp
         raytracerbackend.cpp
-        tuple.cpp
         imageitem.cpp
         shapeqmlbridge.cpp
         appsettings.cpp
         cube.cpp
         cylinder.cpp
-        vector.cpp)
+)
 
 target_compile_definitions(freeside-raytracer PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
