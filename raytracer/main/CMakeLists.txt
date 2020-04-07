@@ -63,7 +63,6 @@ add_executable(
         engine.cpp
         color.cpp
         main.cpp
-        point.cpp
         raytracerbackend.cpp
         imageitem.cpp
         shapeqmlbridge.cpp

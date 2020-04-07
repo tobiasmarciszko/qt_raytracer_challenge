@@ -8,11 +8,12 @@ struct Vector : public Tuple
     Vector() = default;
     Vector(float x,
            float y,
-           float z) :
-        Tuple(x, y, z, 0)
+           float z,
+           float w = 0) :
+        Tuple(x, y, z, w)
     {}
 
-    Vector(const Tuple& tuple) : Tuple(tuple) {}
+    Vector(const Tuple& tuple) : Tuple(tuple) {} //NOLINT (Implicit conversion used)
 
     [[nodiscard]] constexpr float magnitude() const {
         // aka length

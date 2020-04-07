@@ -21,7 +21,6 @@ add_executable(
 
         # needed from main project
         ../main/color.cpp
-        ../main/point.cpp
         ../main/engine.cpp
         ../main/sphere.cpp
         ../main/appsettings.cpp

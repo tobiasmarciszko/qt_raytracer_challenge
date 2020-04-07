@@ -5,8 +5,8 @@
 
 struct Point : public Tuple
 {
-    Point(float x, float y, float z);
-    Point(const Tuple& tuple) : Tuple(tuple) {}
+    Point(float x, float y, float z, float w = 1) : Tuple(x, y, z, w) {}
+    Point(const Tuple& tuple) : Tuple(tuple) {} //NOLINT (Implicit conversion used)
 };
 
 #endif // POINT_H
