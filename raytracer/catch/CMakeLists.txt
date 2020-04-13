@@ -42,6 +42,6 @@ add_executable(
         chapter11.cpp
         chapter12.cpp
         chapter13.cpp
-)
+        arealights.cpp)
 
 target_link_libraries(catchtests Qt5::Core)

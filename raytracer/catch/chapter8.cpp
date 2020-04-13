@@ -23,11 +23,11 @@ TEST_CASE("Lighting with the surface in shadow")
     const auto eyev = Vector(0, 0, -1);
     const auto normalv = Vector(0, 0, -1);
     const auto light = PointLight(Point(0, 0, -10), Color(1, 1, 1));
-    const auto in_shadow = true;
+    const auto intensity = 0.0;
 
     const auto object = std::make_shared<Sphere>().get();
 
-    const auto result = lighting(m, object, light, position, eyev, normalv, in_shadow);
+    const auto result = lighting(m, object, light, position, eyev, normalv, intensity);
 
     REQUIRE(result == Color(0.1, 0.1, 0.1));
 }
@@ -37,7 +37,7 @@ TEST_CASE("There is no shadow when nothing is collinear with point and light")
     const auto w = default_world();
     const auto p = Point(0, 10, 0);
 
-    REQUIRE_FALSE(is_shadowed(w, p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(), p));
 }
 
 TEST_CASE("The shadow when an object is between the point and the light")
@@ -45,7 +45,7 @@ TEST_CASE("The shadow when an object is between the point and the light")
     const auto w = default_world();
     const auto p = Point(10, -10, 10);
 
-    REQUIRE(is_shadowed(w, p));
+    REQUIRE(is_shadowed(w, w.lights.front().position(), p));
 }
 
 TEST_CASE("There is no shadow when an object is behind the light")
@@ -53,7 +53,7 @@ TEST_CASE("There is no shadow when an object is behind the light")
     const auto w = default_world();
     const auto p = Point(-20, 20, -20);
 
-    REQUIRE_FALSE(is_shadowed(w, p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(), p));
 }
 
 TEST_CASE("There is no shadow when an object is behind the point")
@@ -61,7 +61,7 @@ TEST_CASE("There is no shadow when an object is behind the point")
     const auto w = default_world();
     const auto p = Point(-2, 2, -2);
 
-    REQUIRE_FALSE(is_shadowed(w, p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(),   p));
 }
 
 TEST_CASE("shade_hit() is given an intersection in shadow")

@@ -98,11 +98,11 @@ Intersections intersect_world(const World& w, const Ray& r)
     return is;
 }
 
-bool is_shadowed(const World& world, const Point& point, const Light& light)
+[[nodiscard]] bool is_shadowed(const World& world, const Point& light_position, const Point& point)
 {
     if (FAST_RENDER_ENABLED) return false;
 
-    const Vector v = light.position() - point;
+    const Vector v = light_position - point;
     const auto distance = v.magnitude();
     const auto direction = v.normalize();
 
@@ -112,11 +112,6 @@ bool is_shadowed(const World& world, const Point& point, const Light& light)
     const auto h = hit(intersections);
 
     return (h.has_value() && (h->t < distance));
-}
-
-bool is_shadowed(const World& world, const Point& point)
-{
-    return is_shadowed(world, point, world.lights.front());
 }
 
 Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel, int remaining)
@@ -161,10 +156,10 @@ Color reflected_color(const World& w, const Computations& comps, int remaining)
 
 Color shade_hit(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining)
 {
-
     Color c{0, 0, 0};
     for (const auto& light: w.lights) {
-        const auto in_shadow = is_shadowed(w, comps.over_point, light);
+        // const auto in_shadow = is_shadowed(w, light.position(), comps.over_point);
+        const auto intensity = intensity_at(light, comps.over_point, w);
 
         const auto surface = lighting(
             comps.object->material,
@@ -173,7 +168,7 @@ Color shade_hit(const World& w, const Computations& comps, const LightingModel& 
             comps.over_point,
             comps.eyev,
             comps.normalv,
-            in_shadow,
+            intensity,
             lightingModel);
 
         if (FAST_RENDER_ENABLED) return c + surface;
@@ -286,7 +281,7 @@ Color lighting(
     const Point& point,
     const Vector& eyev,
     const Vector& normalv,
-    const bool in_shadow,
+    const float intensity,
     const LightingModel& lightingModel
     )
 {
@@ -317,12 +312,12 @@ Color lighting(
     // light is on the other side of the surface.
     const auto light_dot_normal = lightv.dot(normalv);
 
-    if (light_dot_normal < 0 || in_shadow) {
+    if (light_dot_normal < 0 || intensity == 0.0) {
         diffuse = black;
         specular = black;
     } else {
         // compute the diffuse contribution
-        diffuse = effective_color * material.diffuse * light_dot_normal;
+        diffuse = effective_color * material.diffuse * light_dot_normal * intensity;
 
         // reflect_dot_eye represents the cosine of the angle between the
         // reflection vector and the eye vector. A negative number means the
@@ -348,7 +343,7 @@ Color lighting(
                 factor = std::pow(halfway_dot, material.shininess);
             }
 
-            specular = light.intensity() * material.specular * factor;
+            specular = light.intensity() * material.specular * factor * intensity;
         }
     }
 
@@ -377,6 +372,16 @@ std::optional<Intersection> hit(Intersections intersections)
     }
 
     return {};
+}
+
+[[nodiscard]] float intensity_at(const Light &light, const Point &point, const World &world) {
+    const bool shadowed = is_shadowed(world, light.position(), point);
+
+    if (shadowed) {
+        return 0.0;
+    }
+
+    return 1.0;
 }
 
 }
