@@ -374,7 +374,7 @@ std::optional<Intersection> hit(Intersections intersections)
     return {};
 }
 
-[[nodiscard]] float intensity_at(const Light &light, const Point &point, const World &world) {
+float intensity_at(const Light &light, const Point &point, const World &world) {
     const bool shadowed = is_shadowed(world, light.position, point);
 
     if (shadowed) {
@@ -382,6 +382,12 @@ std::optional<Intersection> hit(Intersections intersections)
     }
 
     return 1.0;
+}
+
+Point point_on_light(const AreaLight &light, const float u, const float v) {
+    return light.corner +
+           light.uvec * (u + 0.5F) +
+           light.vvec * (v + 0.5F);
 }
 
 }

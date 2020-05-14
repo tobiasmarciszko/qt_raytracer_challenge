@@ -22,7 +22,6 @@ TEST_CASE("is_shadow tests for occlusion between two points")
         const auto r = is_shadowed(w, light_position, point);
         REQUIRE(r == result);
     }
-
 }
 
 TEST_CASE("Point lights evaluate the light intensity at a given point")
@@ -87,3 +86,30 @@ TEST_CASE("Creating an area light")
     REQUIRE(light.samples == 8);
     REQUIRE(light.position == Point{1, 0, 0.5});
 }
+
+TEST_CASE("Finding a single point on an area light")
+{
+    const Point corner{0, 0, 0};
+    const Vector v1{2, 0, 0};
+    const Vector v2{0, 0, 1};
+
+    const AreaLight light = AreaLight{corner, v1, 4, v2, 2, Color{1, 1, 1}};
+
+    const std::vector<std::tuple<float, float, Point>> data{
+        {0, 0, Point{0.25, 0, 0.25}},
+        {1, 0, Point{0.75, 0, 0.25}},
+        {0, 1, Point{0.25, 0, 0.75}},
+        {2, 0, Point{1.25, 0, 0.25}},
+        {3, 1, Point{1.75, 0, 0.75}}
+    };
+
+    for (const auto& [u, v, result]: data) {
+        const auto pt = point_on_light(light, u, v);
+        REQUIRE(pt == result);
+    }
+
+}
+
+
+
+
