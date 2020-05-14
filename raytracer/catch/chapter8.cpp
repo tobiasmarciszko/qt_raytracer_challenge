@@ -37,7 +37,7 @@ TEST_CASE("There is no shadow when nothing is collinear with point and light")
     const auto w = default_world();
     const auto p = Point(0, 10, 0);
 
-    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(), p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position, p));
 }
 
 TEST_CASE("The shadow when an object is between the point and the light")
@@ -45,7 +45,7 @@ TEST_CASE("The shadow when an object is between the point and the light")
     const auto w = default_world();
     const auto p = Point(10, -10, 10);
 
-    REQUIRE(is_shadowed(w, w.lights.front().position(), p));
+    REQUIRE(is_shadowed(w, w.lights.front().position, p));
 }
 
 TEST_CASE("There is no shadow when an object is behind the light")
@@ -53,7 +53,7 @@ TEST_CASE("There is no shadow when an object is behind the light")
     const auto w = default_world();
     const auto p = Point(-20, 20, -20);
 
-    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(), p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position, p));
 }
 
 TEST_CASE("There is no shadow when an object is behind the point")
@@ -61,7 +61,7 @@ TEST_CASE("There is no shadow when an object is behind the point")
     const auto w = default_world();
     const auto p = Point(-2, 2, -2);
 
-    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position(),   p));
+    REQUIRE_FALSE(is_shadowed(w, w.lights.front().position,   p));
 }
 
 TEST_CASE("shade_hit() is given an intersection in shadow")

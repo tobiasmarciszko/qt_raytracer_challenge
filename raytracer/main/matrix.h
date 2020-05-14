@@ -116,7 +116,7 @@ public:
     [[nodiscard]] constexpr inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
     [[nodiscard]] constexpr inline Tuple operator*(const Tuple& tuple) const;
 
-    [[nodiscard]] inline Matrix<rows, cols> transpose() const {
+    [[nodiscard]] constexpr inline Matrix<rows, cols> transpose() const {
         Matrix<rows, cols> result;
 
         for (size_t i = 0; i < rows; i++) {

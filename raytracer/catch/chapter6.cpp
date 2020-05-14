@@ -96,8 +96,8 @@ TEST_CASE("A point light has a position and intensity") {
 
     const auto light = PointLight(position, intensity);
 
-    REQUIRE(light.position() == position);
-    REQUIRE(light.intensity() == intensity);
+    REQUIRE(light.position == position);
+    REQUIRE(light.intensity == intensity);
 }
 
 TEST_CASE("The default material") {

@@ -299,10 +299,10 @@ Color lighting(
     }
 
     // combine the surface color with the light's color/intensity
-    const Color effective_color = materialColor * light.intensity();
+    const Color effective_color = materialColor * light.intensity;
 
     // find the direction to the light source
-    const Vector lightv = Vector(light.position() - point).normalize();
+    const Vector lightv = Vector(light.position - point).normalize();
 
     // compute the ambient contribution
     ambient = effective_color * material.ambient;
@@ -343,7 +343,7 @@ Color lighting(
                 factor = std::pow(halfway_dot, material.shininess);
             }
 
-            specular = light.intensity() * material.specular * factor * intensity;
+            specular = light.intensity * material.specular * factor * intensity;
         }
     }
 
@@ -375,7 +375,7 @@ std::optional<Intersection> hit(Intersections intersections)
 }
 
 [[nodiscard]] float intensity_at(const Light &light, const Point &point, const World &world) {
-    const bool shadowed = is_shadowed(world, light.position(), point);
+    const bool shadowed = is_shadowed(world, light.position, point);
 
     if (shadowed) {
         return 0.0;

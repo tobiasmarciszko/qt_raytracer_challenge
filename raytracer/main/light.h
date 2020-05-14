@@ -2,44 +2,57 @@
 #define LIGHT_H
 
 #include "point.h"
+#include "vector.h"
 #include "color.h"
 
-class Light
+struct Light
 {
-public:
-    Light(const Point& pos, const Color& intensity) :
-        m_position(pos),
-        m_intensity(intensity)
+    Light(const Point& position, const Color& intensity) :
+        position(position),
+        intensity(intensity)
     {}
 
-    [[nodiscard]] inline auto intensity() const {
-        return m_intensity;
+    [[nodiscard]] bool operator==(const Light& l) const {
+        if (!(l.position == position)) return false;
+
+        return (l.intensity == intensity);
     }
 
-    [[nodiscard]] inline auto position() const {
-        return m_position;
-    }
-
-    bool operator==(const Light& l) const {
-        if (!(l.position() == m_position)) return false;
-        if (!(l.intensity() == m_intensity)) return false;
-
-        return true;
-    }
-
-private:
-    Point m_position = Point(0, 0, 0);
-    Color m_intensity = Color(1, 1, 1);
-
+    Point position{0, 0, 0};
+    Color intensity{1, 1, 1};
 };
 
-class PointLight : public Light
+struct PointLight : public Light
 {
-public:
     PointLight(
         const Point& pos,
         const Color& intensity) : Light(pos, intensity)
     {}
+};
+
+struct AreaLight : public Light
+{
+    AreaLight(
+        const Point& corner,
+        const Vector& full_uvec,
+        const float usteps,
+        const Vector& full_vvec,
+        const float vsteps,
+        const Color& intensity
+        ) : Light(Point{1, 0, 0.5}, intensity),
+            corner(corner),
+            uvec(full_uvec / usteps),
+            usteps(usteps),
+            vvec(full_vvec / vsteps),
+            vsteps(vsteps),
+            samples(usteps * vsteps) {}
+
+    Point corner;
+    Vector uvec;
+    float usteps;
+    Vector vvec;
+    float vsteps;
+    float samples;
 };
 
 #endif //LIGHT_H

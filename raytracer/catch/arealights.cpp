@@ -70,3 +70,20 @@ TEST_CASE("lighting() uses light intensity to attenuate color")
     res = lighting(w.shapes.front()->material, w.shapes.front().get(), w.lights.front(), pt, eyev, normalv, 0.0);
     REQUIRE(res == Color{0.1, 0.1, 0.1});
 }
+
+TEST_CASE("Creating an area light")
+{
+    const Point corner{0, 0, 0};
+    const Vector v1{2, 0, 0};
+    const Vector v2{0, 0, 1};
+
+    const AreaLight light = AreaLight(corner, v1, 4, v2, 2, Color{1, 1, 1});
+
+    REQUIRE(light.corner == corner);
+    REQUIRE(light.uvec == Vector{0.5, 0, 0});
+    REQUIRE(light.usteps == 4);
+    REQUIRE(light.vvec == Vector{0, 0, 0.5});
+    REQUIRE(light.vsteps == 2);
+    REQUIRE(light.samples == 8);
+    REQUIRE(light.position == Point{1, 0, 0.5});
+}
