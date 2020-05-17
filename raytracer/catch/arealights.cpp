@@ -107,9 +107,29 @@ TEST_CASE("Finding a single point on an area light")
         const auto pt = point_on_light(light, u, v);
         REQUIRE(pt == result);
     }
-
 }
 
+TEST_CASE("The area light intensity function")
+{
+    const World w = Worlds::default_world();
 
+    const Point corner{-0.5, -0.5, -5};
+    const Vector v1{1, 0, 0};
+    const Vector v2{0, 1, 0};
 
+    const AreaLight light = AreaLight{corner, v1, 2, v2, 2, Color{1, 1, 1}};
 
+    const std::vector<std::tuple<Point, float>> data{
+        {Point{0, 0, 2}, 0.0},
+        {Point{1, -1, 2}, 0.25},
+        {Point{1.5, 0, 2}, 0.5},
+        {Point{1.25, 1.25, 3}, 0.75},
+        {Point{0, 0, -2}, 1.0}
+    };
+
+    for (const auto& [point, result]: data) {
+        const auto intensity = intensity_at(light, point, w);
+        REQUIRE(equal(intensity, result));
+    }
+
+}

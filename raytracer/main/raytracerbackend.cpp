@@ -333,11 +333,11 @@ void RaytracerBackend::wireframe() const {
     Camera right{m_camera.hsize, m_camera.vsize, m_camera.field_of_view};
 
     front.set_transform(
-        view_transform(Point(0, 1, m_fromZ), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(0, 0, m_fromZ), Point(0, 0, 0), Vector(0, 1, 0)));
     left.set_transform(
-        view_transform(Point(-m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(-m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
     right.set_transform(
-        view_transform(Point(m_fromZ, 1, 0), Point(0, 1, 0), Vector(0, 1, 0)));
+        view_transform(Point(m_fromZ, 0, 0), Point(0, 0, 0), Vector(0, 1, 0)));
 
     QImage front_framebuffer{static_cast<int>(front.hsize),
                              static_cast<int>(front.vsize),

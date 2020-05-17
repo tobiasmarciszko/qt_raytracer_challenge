@@ -38,7 +38,8 @@ namespace Raytracer::Engine {
     Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up);
     std::optional<Intersection> hit(Intersections intersections);
     [[nodiscard]] float intensity_at(const Light& light, const Point& point, const World& world);
-    [[nodiscard]] Point point_on_light(const AreaLight& light, float u, float v);
+    [[nodiscard]] float intensity_at(const AreaLight& light, const Point& point, const World& world);
+    [[nodiscard]] Point point_on_light(const AreaLight& light, unsigned int u, unsigned int v);
 }
 
 #endif // ENGINE_H

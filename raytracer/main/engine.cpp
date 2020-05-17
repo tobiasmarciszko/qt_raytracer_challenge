@@ -384,10 +384,27 @@ float intensity_at(const Light &light, const Point &point, const World &world) {
     return 1.0;
 }
 
-Point point_on_light(const AreaLight &light, const float u, const float v) {
+Point point_on_light(const AreaLight &light, const unsigned int u, const unsigned int v) {
     return light.corner +
-           light.uvec * (u + 0.5F) +
-           light.vvec * (v + 0.5F);
+           light.uvec * (static_cast<float>(u) + 0.5F) +
+           light.vvec * (static_cast<float>(v) + 0.5F);
+}
+
+float intensity_at(const AreaLight &light, const Point &point,
+                           const World &world) {
+
+    float total = 0.0;
+
+    for(unsigned int v = 0; v < light.vsteps; ++v) {
+        for(unsigned int u = 0; u < light.usteps; ++u) {
+            const auto light_position = point_on_light(light, u, v);
+            if (!is_shadowed(world, light_position, point)) {
+                total += 1.0;
+            }
+        }
+    }
+
+    return total / static_cast<float>(light.samples);
 }
 
 }

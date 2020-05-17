@@ -35,24 +35,24 @@ struct AreaLight : public Light
     AreaLight(
         const Point& corner,
         const Vector& full_uvec,
-        const float usteps,
+        const unsigned int usteps,
         const Vector& full_vvec,
-        const float vsteps,
+        const unsigned int vsteps,
         const Color& intensity
-        ) : Light(Point{1, 0, 0.5}, intensity),
+        ) : Light(Point{0, 0.9, -2}, intensity),
             corner(corner),
-            uvec(full_uvec / usteps),
+            uvec(full_uvec / static_cast<float>(usteps)),
             usteps(usteps),
-            vvec(full_vvec / vsteps),
+            vvec(full_vvec / static_cast<float>(vsteps)),
             vsteps(vsteps),
             samples(usteps * vsteps) {}
 
     Point corner;
     Vector uvec;
-    float usteps;
+    unsigned int usteps;
     Vector vvec;
-    float vsteps;
-    float samples;
+    unsigned int vsteps;
+    unsigned int samples;
 };
 
 #endif //LIGHT_H

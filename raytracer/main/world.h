@@ -8,8 +8,9 @@
 
 struct World
 {
-    std::vector<Light> lights;
-    std::vector<std::unique_ptr<Shape>> shapes;
+    std::vector<AreaLight> lights{};
+    // std::vector<AreaLight> areaLights{};
+    std::vector<std::unique_ptr<Shape>> shapes{};
 
     [[nodiscard]] Shape* getShapePtrFromId(uint id) const {
         for(auto& shape_ptr: shapes) {
