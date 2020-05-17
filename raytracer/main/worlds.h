@@ -87,7 +87,7 @@ inline World default_world()
 
     // Default world:
     const auto light = PointLight(Point(-10, 10, -10), Color(1, 1, 1));
-    // world.lights = {light};
+    world.lights = {light};
 
     Sphere sphere1;
     Material material;

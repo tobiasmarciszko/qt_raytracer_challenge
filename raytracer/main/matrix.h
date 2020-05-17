@@ -113,7 +113,7 @@ public:
         return !(*this == matrix);
     }
 
-    [[nodiscard]] constexpr inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
+    [[nodiscard]] inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
     [[nodiscard]] inline Tuple operator*(const Tuple& tuple) const;
 
     [[nodiscard]] constexpr inline Matrix<rows, cols> transpose() const {
@@ -242,7 +242,7 @@ template<>
 }
 
 template<>
-[[nodiscard]] constexpr inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const {
+[[nodiscard]] inline Matrix<4, 4> Matrix<4,4>::operator*(const Matrix<4, 4>& multiplier) const {
     Matrix<4,4> result{};
     for (unsigned int row = 0; row < 4; row++) {
         for (unsigned int col = 0; col < 4; col++) {
