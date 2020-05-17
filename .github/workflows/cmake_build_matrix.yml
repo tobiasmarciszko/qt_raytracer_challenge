@@ -178,7 +178,7 @@ jobs:
         ProcessorCount(N)
         set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
         execute_process(
-          COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/raytracer/catch/catchtests
+          COMMAND ./raytracer/catch/catchtests
           WORKING_DIRECTORY build
           RESULT_VARIABLE result
         )
