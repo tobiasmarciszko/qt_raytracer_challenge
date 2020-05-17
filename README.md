@@ -1,3 +1,5 @@
+![CMake Build Matrix](https://github.com/tobiasmarciszko/qt_raytracer_challenge/workflows/CMake%20Build%20Matrix/badge.svg)
+
 # qt_raytracer_challenge
 
 A Qt (for visuals) implementation based on the book The Ray Tracer Challenge. The idea is to completely follow the book and create tests and corresponding implementation.
