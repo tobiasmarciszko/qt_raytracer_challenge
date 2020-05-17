@@ -15,7 +15,7 @@ struct Vector : public Tuple
 
     Vector(const Tuple& tuple) : Tuple(tuple) {} //NOLINT (Implicit conversion used)
 
-    [[nodiscard]] constexpr float magnitude() const {
+    [[nodiscard]] float magnitude() const {
         // aka length
         // Pythagoras to the rescue!
         return std::sqrt((x*x) + (y*y) + (z*z));
