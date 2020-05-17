@@ -178,7 +178,7 @@ jobs:
         ProcessorCount(N)
         set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
         execute_process(
-          COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/ctest -j ${N}
+          COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/raytracer/catch/catchtests
           WORKING_DIRECTORY build
           RESULT_VARIABLE result
         )
@@ -189,16 +189,16 @@ jobs:
       run: ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake --install build --prefix instdir --strip
 
 
-    - name: Pack
-      working-directory: instdir
-      run: ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake -E tar cJfv ../${{ matrix.config.artifact }} .
+#    - name: Pack
+#      working-directory: instdir
+#      run: ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake -E tar cJfv ../${{ matrix.config.artifact }} .
 
 
-    - name: Upload
-      uses: actions/upload-artifact@v1
-      with:
-        path: ./${{ matrix.config.artifact }}
-        name: ${{ matrix.config.artifact }}
+#    - name: Upload
+#      uses: actions/upload-artifact@v1
+#      with:
+#        path: ./${{ matrix.config.artifact }}
+#        name: ${{ matrix.config.artifact }}
 
   release:
     if: contains(github.ref, 'tags/v')
