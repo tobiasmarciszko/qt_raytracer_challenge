@@ -114,7 +114,7 @@ public:
     }
 
     [[nodiscard]] constexpr inline Matrix<4,4> operator*(const Matrix<4,4>& multiplier) const;
-    [[nodiscard]] constexpr inline Tuple operator*(const Tuple& tuple) const;
+    [[nodiscard]] inline Tuple operator*(const Tuple& tuple) const;
 
     [[nodiscard]] constexpr inline Matrix<rows, cols> transpose() const {
         Matrix<rows, cols> result;
@@ -229,7 +229,7 @@ template<>
 
 // 4x4 specializations
 template<>
-[[nodiscard]] constexpr inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
+[[nodiscard]] inline Tuple Matrix<4, 4>::operator*(const Tuple& tuple) const {
     std::array<float, 4> result{};
     for (unsigned int i = 0; i < 4; i++) {
             result[i] = get(i, 0) * tuple.x +
