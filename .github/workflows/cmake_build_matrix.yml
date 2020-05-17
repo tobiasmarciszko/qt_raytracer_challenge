@@ -40,6 +40,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
 
     - name: Download Ninja and CMake
       id: cmake_and_ninja
