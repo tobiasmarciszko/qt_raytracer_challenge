@@ -178,7 +178,7 @@ jobs:
         ProcessorCount(N)
         set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
         execute_process(
-          COMMAND ./raytracer/catch/catchtests
+          COMMAND ./raytracer/catch/catchtests -s -d yes --use-colour yes 
           WORKING_DIRECTORY build
           RESULT_VARIABLE result
         )
