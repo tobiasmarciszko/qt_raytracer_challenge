@@ -159,12 +159,21 @@ Color shade_hit(const World& w, const Computations& comps, const LightingModel& 
     Color c{0, 0, 0};
     for (const auto& light: w.lights) {
         // const auto in_shadow = is_shadowed(w, light.position(), comps.over_point);
-        const auto intensity = intensity_at(light, comps.over_point, w);
+
+        float intensity;
+        if (const auto arealight = dynamic_cast<AreaLight *>(light.get())) {
+            intensity = intensity_at(*arealight, comps.over_point, w);
+        }
+
+        if (const auto pointlight = dynamic_cast<PointLight *>(light.get())) {
+            intensity = intensity_at(*pointlight, comps.over_point, w);
+        }
+
 
         const auto surface = lighting(
             comps.object->material,
             comps.object,
-            light,
+            *light,
             comps.over_point,
             comps.eyev,
             comps.normalv,

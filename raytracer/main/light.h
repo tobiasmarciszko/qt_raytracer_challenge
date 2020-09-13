@@ -4,9 +4,13 @@
 #include "point.h"
 #include "vector.h"
 #include "color.h"
+#include "engine.h"
 
 struct Light
 {
+    virtual ~Light() = default;
+    Light() = delete;
+
     Light(const Point& position, const Color& intensity) :
         position(position),
         intensity(intensity)
@@ -46,6 +50,7 @@ struct AreaLight : public Light
             vvec(full_vvec / static_cast<float>(vsteps)),
             vsteps(vsteps),
             samples(usteps * vsteps) {}
+
 
     Point corner;
     Vector uvec;

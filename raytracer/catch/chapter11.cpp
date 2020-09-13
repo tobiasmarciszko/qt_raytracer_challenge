@@ -89,8 +89,8 @@ TEST_CASE("color_at() with mutually reflective surfaces")
     // This test should not cause an infinite recursion!
 
     World w;
-    Light light = PointLight(Point(0,0,0), Color(1,1,1));
-    w.lights.emplace_back(light);
+    const auto light = PointLight(Point(0,0,0), Color(1,1,1));
+    w.lights.emplace_back(std::make_unique<PointLight>(light));
 
     Plane lower;
     Material m = lower.material;

@@ -9,10 +9,10 @@
 struct World
 {
     // std::vector<AreaLight> lights{};
-    std::vector<Light> lights{};
+    std::vector<std::unique_ptr<Light>> lights{};
     std::vector<std::unique_ptr<Shape>> shapes{};
 
-    Shape* getShapePtrFromId(unsigned int id) const {
+    [[nodiscard]] Shape* getShapePtrFromId(int id) const {
         for(auto& shape_ptr: shapes) {
             if (shape_ptr->id == id) {
                 return shape_ptr.get();

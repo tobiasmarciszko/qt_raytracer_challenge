@@ -67,7 +67,7 @@ inline World cornell_box() {
     AreaLight light = AreaLight{Point{0, 0.9, -2}, Vector{0.25, 0, 0}, 8, Vector{0, 0, 0.25}, 8, Color{1, 1, 1}};
 
     World world;
-    world.lights = {light};
+    world.lights.emplace_back(std::make_unique<AreaLight>(light));
 
     world.shapes.emplace_back(std::make_unique<Plane>(left_wall));
     world.shapes.emplace_back(std::make_unique<Plane>(right_wall));
@@ -87,7 +87,7 @@ inline World default_world()
 
     // Default world:
     const auto light = PointLight(Point(-10, 10, -10), Color(1, 1, 1));
-    world.lights = {light};
+    world.lights.emplace_back(std::make_unique<PointLight>(light));
 
     Sphere sphere1;
     Material material;
@@ -224,7 +224,7 @@ inline World default_world()
 inline World materialPreviewWorld() {
     World world;
     const auto light = PointLight(Point(-10, 10, -10), Color(1, 1, 1));
-    // world.lights = {light};
+    world.lights.emplace_back(std::make_unique<PointLight>(light));
 
     // std::unique_ptr<Sphere> sphere1 = std::make_unique<Sphere>(Sphere());
     Sphere sphere1;

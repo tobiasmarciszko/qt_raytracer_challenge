@@ -100,7 +100,9 @@ TEST_CASE("Shading an intersection") {
 
 TEST_CASE("Shading an intersection from the inside") {
     auto w = default_world();
-    w.lights = {PointLight(Point(0, 0.25, 0), Color(1, 1, 1))};
+    w.lights.clear();
+    w.lights.emplace_back(std::make_unique<PointLight>(PointLight(Point(0, 0.25, 0), Color(1, 1, 1))));
+
     const auto r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
 
     const auto shape = w.shapes.at(1).get();

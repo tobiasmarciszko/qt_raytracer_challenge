@@ -27,7 +27,7 @@ TEST_CASE("is_shadow tests for occlusion between two points")
 TEST_CASE("Point lights evaluate the light intensity at a given point")
 {
     const World w = Worlds::default_world();
-    const Light light = w.lights.front();
+    const PointLight *light = dynamic_cast<PointLight *>(w.lights.front().get());
 
     const std::vector<std::tuple<Point, float>> data{
         {Point{0, 1.0001, 0}, 1.0},
@@ -40,7 +40,7 @@ TEST_CASE("Point lights evaluate the light intensity at a given point")
     };
 
     for (const auto& [point, result]: data) {
-        const float intensity = intensity_at(light, point, w);
+        const float intensity = intensity_at(*light, point, w);
         REQUIRE(intensity == result);
     }
 }
@@ -48,8 +48,7 @@ TEST_CASE("Point lights evaluate the light intensity at a given point")
 TEST_CASE("lighting() uses light intensity to attenuate color")
 {
     World w = Worlds::default_world();
-    w.lights.clear();
-    w.lights.push_back(PointLight(Point{0, 0, -10}, Color{1, 1, 1}));
+    w.lights.front() = std::make_unique<PointLight>(PointLight(Point{0, 0, -10}, Color{1, 1, 1}));
 
     w.shapes.front()->material.ambient = 0.1;
     w.shapes.front()->material.diffuse = 0.9;
@@ -60,13 +59,13 @@ TEST_CASE("lighting() uses light intensity to attenuate color")
     const Vector eyev{0, 0, -1};
     const Vector normalv{0, 0, -1};
 
-    auto res = lighting(w.shapes.front()->material, w.shapes.front().get(), w.lights.front(), pt, eyev, normalv, 1.0);
+    auto res = lighting(w.shapes.front()->material, w.shapes.front().get(), *w.lights.front().get(), pt, eyev, normalv, 1.0);
     REQUIRE(res == Color{1.0, 1.0, 1.0});
 
-    res = lighting(w.shapes.front()->material, w.shapes.front().get(), w.lights.front(), pt, eyev, normalv, 0.5);
+    res = lighting(w.shapes.front()->material, w.shapes.front().get(), *w.lights.front().get(), pt, eyev, normalv, 0.5);
     REQUIRE(res == Color{0.55, 0.55, 0.55});
 
-    res = lighting(w.shapes.front()->material, w.shapes.front().get(), w.lights.front(), pt, eyev, normalv, 0.0);
+    res = lighting(w.shapes.front()->material, w.shapes.front().get(), *w.lights.front().get(), pt, eyev, normalv, 0.0);
     REQUIRE(res == Color{0.1, 0.1, 0.1});
 }
 
