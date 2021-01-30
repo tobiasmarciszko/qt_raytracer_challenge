@@ -63,20 +63,20 @@ inline World cornell_box() {
     sphere2.set_transform(translation(-0.6, -0.75, -2.5) * scaling(0.25, 0.25, 0.25));
 
 
-    // PointLight light = PointLight(Point(0, 0.8, -2), Color(1.0, 1.0, 1.0));
-    AreaLight light = AreaLight{Point{0, 0.9, -2}, Vector{0.25, 0, 0}, 8, Vector{0, 0, 0.25}, 8, Color{1, 1, 1}};
+    const auto pointyLight = PointLight(Point(0, 0.8, -2), Color(1.0, 1.0, 1.0));
+    const auto fluffyLight = AreaLight{Point{0, 0.9, -2}, Vector{0.25, 0, 0}, 8, Vector{0, 0, 0.25}, 8, Color{1, 1, 1}};
 
     World world;
-    world.lights.emplace_back(std::make_unique<AreaLight>(light));
+    world.addLight(fluffyLight);
 
-    world.shapes.emplace_back(std::make_unique<Plane>(left_wall));
-    world.shapes.emplace_back(std::make_unique<Plane>(right_wall));
-    world.shapes.emplace_back(std::make_unique<Plane>(back_wall));
-    world.shapes.emplace_back(std::make_unique<Plane>(floor));
-    world.shapes.emplace_back(std::make_unique<Plane>(ceiling));
-    world.shapes.emplace_back(std::make_unique<Cube>(cube));
-    world.shapes.emplace_back(std::make_unique<Sphere>(sphere));
-    world.shapes.emplace_back(std::make_unique<Sphere>(sphere2));
+    world.addShape(left_wall);
+    world.addShape(right_wall);
+    world.addShape(back_wall);
+    world.addShape(floor);
+    world.addShape(ceiling);
+    world.addShape(cube);
+    world.addShape(sphere);
+    world.addShape(sphere2);
 
     return world;
 }

@@ -116,13 +116,10 @@ Intersections intersect_world(const World& w, const Ray& r)
 
 Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel, int remaining)
 {
-
-    const Color black{0, 0, 0};
-
     const auto is = intersect_world(w, r);
     const auto h = hit(is);
     if (!h.has_value()) {
-        return Color(0, 0, 0);
+        return black;
     }
 
     const auto comps = prepare_computations(h.value(), r, is);
@@ -133,7 +130,6 @@ Color color_at(const World& w, const Ray& r, const LightingModel& lightingModel,
 
 Color reflected_color(const World& w, const Computations& comps, const LightingModel& lightingModel, int remaining)
 {
-
     // Prevent infinite recursion
     if (remaining <= 0) {
         return black;
@@ -158,17 +154,8 @@ Color shade_hit(const World& w, const Computations& comps, const LightingModel& 
 {
     Color c{0, 0, 0};
     for (const auto& light: w.lights) {
-        // const auto in_shadow = is_shadowed(w, light.position(), comps.over_point);
 
-        float intensity;
-        if (const auto arealight = dynamic_cast<AreaLight *>(light.get())) {
-            intensity = intensity_at(*arealight, comps.over_point, w);
-        }
-
-        if (const auto pointlight = dynamic_cast<PointLight *>(light.get())) {
-            intensity = intensity_at(*pointlight, comps.over_point, w);
-        }
-
+        float intensity = intensity_at(light.get(), comps.over_point, w);
 
         const auto surface = lighting(
             comps.object->material,
@@ -383,7 +370,21 @@ std::optional<Intersection> hit(Intersections intersections)
     return {};
 }
 
-float intensity_at(const Light &light, const Point &point, const World &world) {
+float intensity_at(Light* light, const Point &point, const World &world) {
+
+    if (const auto areaLight = dynamic_cast<AreaLight*>(light)) {
+        return intensity_at(*areaLight, point, world);
+    }
+
+    if (const auto pointLight = dynamic_cast<PointLight*>(light)) {
+        return intensity_at(*pointLight, point, world);
+    }
+
+    return 0;
+}
+
+
+float intensity_at(const PointLight &light, const Point &point, const World &world) {
     const bool shadowed = is_shadowed(world, light.position, point);
 
     if (shadowed) {

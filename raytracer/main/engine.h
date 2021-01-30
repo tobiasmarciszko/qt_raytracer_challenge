@@ -10,12 +10,13 @@ struct Intersection;
 struct Ray;
 struct World;
 struct Point;
-struct Light;
+struct PointLight;
 struct Color;
 struct Material;
 struct Shape;
 struct Vector;
 struct AreaLight;
+struct Light;
 
 enum class LightingModel {
     Phong,
@@ -37,7 +38,9 @@ namespace Raytracer::Engine {
     Color reflected_color(const World& w, const Computations& comps, int remaining);
     Matrix<4,4> view_transform(const Point& from, const Point& to, const Vector& up);
     std::optional<Intersection> hit(Intersections intersections);
-    [[nodiscard]] float intensity_at(const Light& light, const Point& point, const World& world);
+
+    [[nodiscard]]float intensity_at(Light* light, const Point& point, const World& world);
+    [[nodiscard]] float intensity_at(const PointLight& light, const Point& point, const World& world);
     [[nodiscard]] float intensity_at(const AreaLight& light, const Point& point, const World& world);
     [[nodiscard]] Point point_on_light(const AreaLight& light, unsigned int u, unsigned int v);
 }
