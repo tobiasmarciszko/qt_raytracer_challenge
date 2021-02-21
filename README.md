@@ -1,4 +1,8 @@
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/tobiasmarciszko/qt_raytracer_challenge.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tobiasmarciszko/qt_raytracer_challenge/alerts/)
+
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/tobiasmarciszko/qt_raytracer_challenge.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tobiasmarciszko/qt_raytracer_challenge/context:cpp)
+
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/tobiasmarciszko/qt_raytracer_challenge.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tobiasmarciszko/qt_raytracer_challenge/context:javascript)
 
 ![CMake Build Matrix](https://github.com/tobiasmarciszko/qt_raytracer_challenge/workflows/CMake%20Build%20Matrix/badge.svg)
 
