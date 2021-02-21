@@ -1,3 +1,5 @@
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/tobiasmarciszko/qt_raytracer_challenge.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tobiasmarciszko/qt_raytracer_challenge/context:cpp)
+
 ![CMake Build Matrix](https://github.com/tobiasmarciszko/qt_raytracer_challenge/workflows/CMake%20Build%20Matrix/badge.svg)
 
 # qt_raytracer_challenge
