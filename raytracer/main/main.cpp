@@ -25,8 +25,10 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    RaytracerBackend raytracer;
-    engine.rootContext()->setContextProperty("raytracer", &raytracer);
+    // Make sure the raytracer engine outlives the QML engine to avoid
+    // binding errors on exit.
+    auto raytracer = new RaytracerBackend(&engine);
+    engine.rootContext()->setContextProperty("raytracer", raytracer);
     engine.rootContext()->setContextProperty("settings", &AppSettings::get());
 
     // This is the item that draw the QImage from the Raytracer
