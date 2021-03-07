@@ -11,6 +11,11 @@ int main(int argc, char *argv[])
     // App settings
     // qmlRegisterType<AppSettings>("myextension", 1, 0, "AppSettings");
 
+    // Make sure the raytracer backend outlives the QML engine to avoid
+    // binding errors on exit. Objects are destructed in reverse order of
+    // construction.
+    RaytracerBackend raytracer;
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
@@ -18,17 +23,15 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Freeside Raytracer");
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/raytracer.qml"));
+
+    const QUrl url("qrc:/raytracer.qml");
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    // Make sure the raytracer engine outlives the QML engine to avoid
-    // binding errors on exit.
-    auto raytracer = new RaytracerBackend(&engine);
-    engine.rootContext()->setContextProperty("raytracer", raytracer);
+    engine.rootContext()->setContextProperty("raytracer", &raytracer);
     engine.rootContext()->setContextProperty("settings", &AppSettings::get());
 
     // This is the item that draw the QImage from the Raytracer
